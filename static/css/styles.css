@@ -1,0 +1,37 @@
+/* Fonts */
+
+/*TODO Load multiple versions*/
+@font-face {
+    font-family: 'test';
+    src: url('DINLight.ttf') format('ttf'), url('DINLight.woff') format('woff');
+}
+
+nav.navbar {
+	margin: 0;
+	border: 0;
+	font-family: 'test', Helvetica, Sans Serif;
+	text-shadow: none;
+}
+
+nav.navbar.top {
+	background-image: none;
+	background-color: #122e43;
+	border-radius: 0;
+}
+
+nav.navbar.sections {
+	background-image: none;
+	background-color: #a5cdd4;
+	border-radius: 0;
+
+}
+
+p.navbar-text {
+	color: #122e43 !important;
+}
+
+#logo {
+	
+	color: #a5cdd4;
+	text-shadow: none;
+}
