@@ -3,6 +3,14 @@ engine-of-engines
 
 Codebase for Engine of Engines Project
 
+Coffee Compilation
+-----------------
+coffee --compile --watch --output static/js static/coffee
+
+Sass Compilation
+-----------------
+sass --watch static/scss/:static/css/
+
 Using Virtual Env
 -----------------
 # Installation
