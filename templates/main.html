@@ -2,12 +2,24 @@
 
 {% block content %}
 <section class="viewport upload-dataset">
-	Viewport
 </section>
 {% endblock %}
 
 {% block left_pane %}
-<section class="left-panel">
-	Left pane
+<section class="left-pane">
+	<ul ng-controller="DatasetListCtrl" class="datasets">
+		<li ng-repeat="dataset in datasets" class="dataset">
+			<div class="title">{[{dataset.title}]}</div>
+			<div class="dimensions">
+				<div class="rows">{[{dataset.rows}]} Rows</div>
+				<div class="columns">{[{dataset.cols}]} Columns</div>
+			</div>
+			<div class="type">{[{dataset.type}]}</div>
+		</li>
+		<li class="add-dataset">
+			<i class="fa fa-plus-circle"></i>
+		</li>
+	</ul>
+	<div class="drag">Drag Here to Upload Dataset</div>
 </section>
 {% endblock %}
