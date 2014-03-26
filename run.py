@@ -27,6 +27,8 @@ def get_sample_data(path):
     f = open(path)
     filename = path.rsplit('/')[-1]
     extension = filename.rsplit('.', 1)[1]
+    rows = 0
+    cols = 0
 
     sample = {}
     for i in range(5):
@@ -35,9 +37,19 @@ def get_sample_data(path):
             break
         else:
             if extension == 'csv':
-                sample[i] = [item.strip() for item in line.split(',')]
+              delim = ','
+            elif extension == 'tsv':
+              delim = '\t'
 
-    return sample
+            sample[i] = [item.strip() for item in line.split(delim)]
+            cols = max(cols, len(sample[i]))
+
+    with open(path) as f:
+        for rows, l in enumerate(f):
+            pass
+    rows += 1
+
+    return sample, rows, cols, extension
 
 @app.route('/')
 def main():
@@ -47,6 +59,7 @@ def main():
 @app.route('/upload', methods=['POST'])
 def upload_file():
     file = request.files.get('dataset')
+    print request.data
     if file and allowed_file(file.filename):
         # save file
         filename = secure_filename(file.filename)
@@ -54,12 +67,16 @@ def upload_file():
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         # get sample data
-        sample = get_sample_data(path)
+        sample, rows, cols, extension  = get_sample_data(path)
 
         # make response
         json_data = json.jsonify({
                                 'status': "success",
-                                'sample': sample
+                                'filename': filename,
+                                'sample': sample,
+                                'rows': rows,
+                                'cols': cols,
+                                'extension': extension,
                                 })
         response = make_response(json_data)
         response.set_cookie('file', filename)

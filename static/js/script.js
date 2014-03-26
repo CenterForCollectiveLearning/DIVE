@@ -12,6 +12,8 @@ app.config(function($interpolateProvider) {
 
 app.controller('DatasetListCtrl', function($scope, $http) {
   window.onload = function() {
+    var files;
+
     $('#data-file').on('change', function(event) {
       files = event.target.files;
     });
@@ -20,9 +22,9 @@ app.controller('DatasetListCtrl', function($scope, $http) {
       var data = new FormData();
       data.append('dataset', files[0])
 
-      $http({
+      $.ajax({
         url: '/upload',
-        method: 'POST',
+        type: 'POST',
         data: data,
         cache: false,
         processData: false,
