@@ -76,7 +76,7 @@ def upload_file():
                                 'sample': sample,
                                 'rows': rows,
                                 'cols': cols,
-                                'extension': extension,
+                                'type': extension,
                                 })
         response = make_response(json_data)
         response.set_cookie('file', filename)

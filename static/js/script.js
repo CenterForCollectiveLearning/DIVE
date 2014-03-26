@@ -29,7 +29,17 @@ app.controller('DatasetListCtrl', function($scope, $http) {
         cache: false,
         processData: false,
         contentType: false,
-      }).success(function(data) {alert(data);});
+      }).success(function(data) {
+        if (data.status === "success") {
+          delete data['status'];
+
+          // update model with file data
+          $scope.$apply(function() {
+            data.title = data.filename;
+            $scope.datasets.push(data);
+          });
+        }
+      });
     });
   };
 
