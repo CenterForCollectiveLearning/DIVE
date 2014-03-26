@@ -45,7 +45,5 @@ app.controller('DatasetListCtrl', function($scope, $http) {
     }
   ];
 
-
-
   return console.log($scope);
 });
