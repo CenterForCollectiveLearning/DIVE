@@ -35,6 +35,11 @@ app.controller('DatasetListCtrl', function($scope, $http) {
         // update model with file data
         $scope.$apply(function() {
           data.title = data.filename;
+          data.attrs = []
+          for (i=0; i<data.cols; i++) {
+            data.attrs[i] = { name:"name_"+i,
+                              type:"type_"+i };
+          }
           $scope.datasets.push(data);
         });
       }
@@ -50,25 +55,32 @@ app.controller('DatasetListCtrl', function($scope, $http) {
       title: "Dataset 1",
       rows: 100,
       cols: 1000,
-      type: "CSV"
+      type: "CSV",
     }, {
       title: "Dataset 2",
       rows: 150,
       cols: 1500,
-      type: "TSV"
+      type: "TSV",
     }, {
-      cols:3,
-      filename:"student.csv",
+      title:"student.csv",
       rows:6,
-      sample:{
+      cols:3,
+      type:"csv",
+      filename:"student.csv",
+      sample: {
         "0":["vikas","student","mit"],
         "1":["kevin","graduate","mit"],
         "2":["alyssa","student","mit"],
         "3":["ben","student","mit"],
         "4":["alice","graduate","mit"],
         "5":["bob","graduate","mit"] },
-      type:"csv",
-      title:"student.csv"
+      attrs: [
+        { name:"name_0",
+          type:"type_0" },
+        { name:"name_1",
+          type:"type_1" },
+        { name:"name_2",
+          type:"type_2" }, ],
     },
   ];
 

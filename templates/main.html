@@ -32,7 +32,17 @@
 		<div ng-if="dataset.sample">
 			<table>
 				<tr>
+					<td ng-repeat="attr in dataset.attrs">
+						<input type="text" ng-model="attr.name">
+					</td>
+				</tr>
+
 				<tr>
+					<td ng-repeat="attr in dataset.attrs">
+						<input type="text" ng-model="attr.type">
+					</td>
+				</tr>
+
 				<tr ng-repeat="(index, row) in dataset.sample">
 					<td ng-repeat="elem in row"> {[{elem}]} </td>
 				</tr>
