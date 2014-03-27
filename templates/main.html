@@ -1,63 +1,41 @@
-{% extends "core.html" %}
+<html ng-app="engineApp" lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Engine of Engines</title>
 
-{% block left_pane %}
-<section class="left-pane">
-	<ul class="datasets">
-		<li ng-repeat="dataset in datasets" class="dataset" ng-click="select_dataset($index)" ng-class="{'selected-dataset':$index==selected_index}">
-			<div class="title">{[{dataset.title}]}</div>
-			<div class="dimensions">
-				<div class="rows">{[{dataset.rows}]} Rows</div>
-				<div class="columns">{[{dataset.cols}]} Columns</div>
+		<!-- Style Sheets -->
+		<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+		<link href="/static/css/bootstrap-theme.min.css" rel="stylesheet">
+		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+		<link href="/static/css/styles.css" rel="stylesheet">
+
+		<!-- Javascript -->
+		<script src="{{ url_for('static', filename='js/jquery-1.11.0.js')}}" type="text/javascript"></script>
+		<script src="{{ url_for('static', filename='js/bootstrap.min.js')}}" type="text/javascript"></script>
+		<script src="{{ url_for('static', filename='js/underscore.min.js')}}" type="text/javascript"></script>
+		<script src="{{ url_for('static', filename='js/d3.min.js')}}" type="text/javascript"></script>
+
+		<!-- AngularJS -->
+		<script src="{{ url_for('static', filename='js/angular.min.js')}}" type="text/javascript"></script>
+		<script src="{{ url_for('static', filename='js/angular-route.min.js')}}" type="text/javascript"></script>
+
+		<!-- Application js -->
+		<script src="{{ url_for('static', filename='js/script.js')}}" type="text/javascript"></script>
+		<script src="{{ url_for('static', filename='js/controllers.js')}}" type="text/javascript"></script>
+	</head>
+
+	<body>
+		<!-- Navigation Bar -->
+		<nav class="navbar navbar-default top" role="navigation">
+			<div class="navbar-header">
+				<a class="navbar-brand" id="logo" href="#">Engine of Engines</a>
 			</div>
-			<div class="type">{[{dataset.type}]}</div>
-		</li>
-		<li class="add-dataset">
-			<i class="fa fa-plus-circle"></i>
-		</li>
-	</ul>
+		</nav>
+		<nav class="navbar navbar-default sections" role="navigation">
+			<p class="navbar-text navbar-left">Upload Dataset</p>
+			<p class="navbar-text navbar-left">Create Ontology</p>
+		</nav>
 
-	<form id="upload-form" method="post" enctype="multipart/form-data">
-		<label for="dataset">Select a dataset to upload</label>
-		<input id="data-file" type="file" name="dataset">
-		<button id="data-submit">Upload</button>
-	</form>
-
-</section>
-{% endblock %}
-
-{% block content %}
-<section class="viewport">
-	<div ng-repeat="dataset in datasets" ng-if="$index==selected_index">
-		<div ng-if="dataset.sample">
-			<table>
-				<tr>
-					<td>
-    				</td>
-					<td ng-repeat="attr in dataset.colAttrs">
-						<input type="text" ng-model="attr.name">
-					</td>
-				</tr>
-				<tr>
-					<td>
-    				</td>
-					<td ng-repeat="attr in dataset.colAttrs">
-						<input type="text" ng-model="attr.type">
-					</td>
-				</tr>
-
-				<tr ng-repeat="(index, row) in dataset.sample">
-					<td>
-					    <input type="text" ng-model="dataset.rowAttrs.name" ng-if="index==0">
-    					<input type="text" ng-model="dataset.rowAttrs.type" ng-if="index==1">
-    				</td>
-					<td ng-repeat="elem in row"> {[{elem}]} </td>
-				</tr>
-			</table>
-		</div>
-		ROW ATTRIBUTES
-		{[{dataset.rowAttrs}]}
-		COL ATTRIBUTES 
-		{[{dataset.colAttrs}]}
-	</div>
-</section>
-{% endblock %}
+		<div ng-view></div>
+	</body>
+</html>
