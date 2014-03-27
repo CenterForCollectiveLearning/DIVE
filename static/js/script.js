@@ -50,6 +50,16 @@ app.controller('DatasetListCtrl', function($scope, $http) {
     $scope.selected_index = index;
   }
 
+  $scope.currentDataset = {
+    headers: ["col1", "col2", "col3", "col4", "col5", "col6", "col7", "col8"],
+    rows: [
+        {row: ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8"]},
+        {row: ["b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8"]},
+        {row: ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"]},
+        {row: ["d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8"]},
+    ]
+  }
+
   $scope.datasets = [
     {
       title: "Dataset 1",

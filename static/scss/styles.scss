@@ -103,7 +103,24 @@ section.left-pane {
     }
 }
 
+
+
 /* Upload */
 section.upload-dataset {
     height: 100%;
+    margin-left: 300px;
+    ul, li {
+        padding: 0;
+        list-style-type: none;        
+    }
+
+    ul.data-rows {
+        li.data-row {
+            ul.data-cells {
+                li.data-cell {
+                    float: left;
+                }
+            }
+        }
+    }
 }
