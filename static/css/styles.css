@@ -48,8 +48,6 @@ section.left-pane {
       section.left-pane ul.datasets li.dataset {
         cursor: pointer;
         padding: 15px; }
-      section.left-pane ul.datasets li.selected-dataset {
-        background-color: #eee; }
       section.left-pane ul.datasets li.add-dataset {
         cursor: pointer;
         width: 100%;
@@ -84,3 +82,8 @@ section.upload-dataset {
     list-style-type: none; }
   section.upload-dataset ul.data-rows li.data-row ul.data-cells li.data-cell {
     float: left; }
+
+/* Viewport */
+section.viewport {
+  margin-left: 300px;
+  padding: 20px; }

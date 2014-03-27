@@ -46,32 +46,14 @@ app.controller('DatasetListCtrl', function($scope, $http) {
     });
   });
 
+  $scope.selected_index = 0;
+
   $scope.select_dataset = function(index) {
     $scope.selected_index = index;
   }
 
-  $scope.currentDataset = {
-    headers: ["col1", "col2", "col3", "col4", "col5", "col6", "col7", "col8"],
-    rows: [
-        {row: ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8"]},
-        {row: ["b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8"]},
-        {row: ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8"]},
-        {row: ["d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8"]},
-    ]
-  }
-
   $scope.datasets = [
     {
-      title: "Dataset 1",
-      rows: 100,
-      cols: 1000,
-      type: "CSV",
-    }, {
-      title: "Dataset 2",
-      rows: 150,
-      cols: 1500,
-      type: "TSV",
-    }, {
       title:"student.csv",
       rows:6,
       cols:3,
@@ -84,7 +66,11 @@ app.controller('DatasetListCtrl', function($scope, $http) {
         "3":["ben","student","mit"],
         "4":["alice","graduate","mit"],
         "5":["bob","graduate","mit"] },
-      attrs: [
+      rowAttrs: {
+        name: "row_name",
+        type: "row_type"
+      },
+      colAttrs: [
         { name:"name_0",
           type:"type_0" },
         { name:"name_1",

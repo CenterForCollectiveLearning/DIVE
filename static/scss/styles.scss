@@ -103,8 +103,6 @@ section.left-pane {
     }
 }
 
-
-
 /* Upload */
 section.upload-dataset {
     height: 100%;
@@ -123,4 +121,10 @@ section.upload-dataset {
             }
         }
     }
+}
+
+/* Viewport */
+section.viewport {
+    margin-left: 300px;
+    padding: 20px;
 }

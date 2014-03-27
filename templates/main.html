@@ -27,27 +27,37 @@
 
 {% block content %}
 <section class="viewport">
-	<div ng-repeat="dataset in datasets" ng-if="$index===selected_index">
-		FOR DEBUGGING {[{dataset}]} <br>
+	<div ng-repeat="dataset in datasets" ng-if="$index==selected_index">
 		<div ng-if="dataset.sample">
 			<table>
 				<tr>
-					<td ng-repeat="attr in dataset.attrs">
+					<td>
+    				</td>
+					<td ng-repeat="attr in dataset.colAttrs">
 						<input type="text" ng-model="attr.name">
 					</td>
 				</tr>
-
 				<tr>
-					<td ng-repeat="attr in dataset.attrs">
+					<td>
+    				</td>
+					<td ng-repeat="attr in dataset.colAttrs">
 						<input type="text" ng-model="attr.type">
 					</td>
 				</tr>
 
 				<tr ng-repeat="(index, row) in dataset.sample">
+					<td>
+					    <input type="text" ng-model="dataset.rowAttrs.name" ng-if="index==0">
+    					<input type="text" ng-model="dataset.rowAttrs.type" ng-if="index==1">
+    				</td>
 					<td ng-repeat="elem in row"> {[{elem}]} </td>
 				</tr>
 			</table>
 		</div>
+		ROW ATTRIBUTES
+		{[{dataset.rowAttrs}]}
+		COL ATTRIBUTES 
+		{[{dataset.colAttrs}]}
 	</div>
 </section>
 {% endblock %}
