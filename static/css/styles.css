@@ -48,6 +48,8 @@ section.left-pane {
       section.left-pane ul.datasets li.dataset {
         cursor: pointer;
         padding: 15px; }
+      section.left-pane ul.datasets li.selected-dataset {
+        background-color: #eee; }
       section.left-pane ul.datasets li.add-dataset {
         cursor: pointer;
         width: 100%;

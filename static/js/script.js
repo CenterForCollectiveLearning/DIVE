@@ -43,7 +43,6 @@ app.controller('DatasetListCtrl', function($scope, $http) {
 
   $scope.select_dataset = function(index) {
     $scope.selected_index = index;
-    console.log(index);
   }
 
   $scope.datasets = [
