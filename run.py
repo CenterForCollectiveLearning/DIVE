@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 # from flask.ext.scss import Scss
 # from flask_cake import Cake
 
+TEST_DATA_FOLDER = os.path.join(os.curdir, 'test_data')
 UPLOAD_FOLDER = os.path.join(os.curdir, 'uploads')
 ALLOWED_EXTENSIONS = set(['csv'])
 
@@ -18,6 +19,7 @@ app = Flask(__name__, static_path='/static')
 # cake.init_app(app)
 # Scss(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['TEST_DATA_FOLDER'] = TEST_DATA_FOLDER
 
 # function to filter uploaded files
 def allowed_file(filename):
@@ -90,9 +92,9 @@ def upload_file():
 @app.route('/get_test_datasets', methods=['GET'])
 def get_test_datasets():
     test_dataset_samples = []
-    filenames = [f for f in listdir(app.config['UPLOAD_FOLDER']) if isfile(join(app.config['UPLOAD_FOLDER'], f))]
+    filenames = [f for f in listdir(app.config['TEST_DATA_FOLDER']) if (isfile(join(app.config['TEST_DATA_FOLDER'], f)) and f[0] is not '.')]
     for filename in filenames:
-        path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        path = os.path.join(app.config['TEST_DATA_FOLDER'], filename)
         # make response
         sample, rows, cols, extension = get_sample_data(path)
         json_data = {

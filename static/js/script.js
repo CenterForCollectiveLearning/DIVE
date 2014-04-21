@@ -52,7 +52,6 @@ app.service('initialDataService', function($http) {
   return {
     promise: promise,
     getData: function() {
-      console.log("getData", myData);
       return myData;
     }
   }
