@@ -30,7 +30,8 @@ nav.navbar {
     background-color: #a5cdd4;
     border-radius: 0; }
     nav.navbar.sections p.navbar-text {
-      color: #122e43; }
+      color: #122e43; 
+    }
 
 section.left-pane {
   position: relative;

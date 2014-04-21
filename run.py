@@ -2,6 +2,8 @@ from flask import Flask, render_template, redirect, url_for, request, make_respo
 
 #file upload
 import os
+from os import listdir
+from os.path import isfile, join
 from werkzeug.utils import secure_filename
 
 # from flask.ext.scss import Scss
@@ -61,6 +63,7 @@ def upload_file():
     file = request.files.get('dataset')
     print request.data
     if file and allowed_file(file.filename):
+
         # save file
         filename = secure_filename(file.filename)
         path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -83,6 +86,27 @@ def upload_file():
         return response
 
     return json.jsonify({'status': "upload failed"})
+
+@app.route('/get_test_datasets', methods=['GET'])
+def get_test_datasets():
+    test_dataset_samples = []
+    filenames = [f for f in listdir(app.config['UPLOAD_FOLDER']) if isfile(join(app.config['UPLOAD_FOLDER'], f))]
+    for filename in filenames:
+        path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        # make response
+        sample, rows, cols, extension = get_sample_data(path)
+        json_data = {
+                        'filename': filename,
+                        'sample': sample,
+                        'rows': rows,
+                        'cols': cols,
+                        'type': extension,
+                    }
+        test_dataset_samples.append(json_data)
+
+    result = json.jsonify({'status': "success", 'samples': test_dataset_samples})
+    return result
+
 
 @app.route('/tag', methods=['GET'])
 def tag_data():

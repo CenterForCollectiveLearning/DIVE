@@ -14,9 +14,46 @@ app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
     when('/data_view', {
       templateUrl: 'static/html/data_view.html',
+      controller: 'DatasetListCtrl',
+      resolve: {
+        initialData: function(initialDataService) {
+          return initialDataService.promise;
+        }
+      }
+    }).
+    when('/edit_ontology', {
+      templateUrl: 'static/html/edit_ontology.html',
+      controller: 'DatasetListCtrl'
+    }).
+    when('/visualize', {
+      templateUrl: 'static/html/create_viz.html',
       controller: 'DatasetListCtrl'
     }).
     otherwise({
       redirectTo: '/data_view'
     });
 }]);
+
+app.service('initialDataService', function($http) {
+  var myData = [];
+
+  var promise = $http.get('get_test_datasets').success(function(data) {
+    for (var i=0; i<data.samples.length; i++) {
+      var d = data.samples[i];
+      d.title = d.filename;
+      d.attrs = [];
+      for (var j=0; j<d.cols; j++) {
+        d.attrs[j] = { name: "name_"+j, type: "type_"+j};
+      }
+      myData.push(d);
+    }
+  })
+
+  return {
+    promise: promise,
+    getData: function() {
+      console.log("getData", myData);
+      return myData;
+    }
+  }
+})

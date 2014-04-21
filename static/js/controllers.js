@@ -1,6 +1,6 @@
 var controllers = angular.module('engineControllers', []);
 
-controllers.controller('DatasetListCtrl', function($scope, $http) {
+controllers.controller('DatasetListCtrl', function($scope, $http, initialDataService) {
   var files;
 
   $('#data-file').on('change', function(event) {
@@ -9,7 +9,7 @@ controllers.controller('DatasetListCtrl', function($scope, $http) {
 
   $('#data-submit').click(function(event) {
     var data = new FormData();
-    data.append('dataset', files[0])
+    data.append('dataset', files[0]);
 
     $.ajax({
       url: '/upload',
@@ -26,7 +26,7 @@ controllers.controller('DatasetListCtrl', function($scope, $http) {
         $scope.$apply(function() {
           data.title = data.filename;
           data.attrs = []
-          for (i=0; i<data.cols; i++) {
+          for (var i=0; i<data.cols; i++) {
             data.attrs[i] = { name:"name_"+i,
                               type:"type_"+i };
           }
@@ -42,33 +42,6 @@ controllers.controller('DatasetListCtrl', function($scope, $http) {
     console.log()
   }
 
-  $scope.datasets = [
-    {
-      title:"student.csv",
-      rows:6,
-      cols:3,
-      type:"csv",
-      filename:"student.csv",
-      sample: {
-        "0":["vikas","student","mit"],
-        "1":["kevin","graduate","mit"],
-        "2":["alyssa","student","mit"],
-        "3":["ben","student","mit"],
-        "4":["alice","graduate","mit"],
-        "5":["bob","graduate","mit"] },
-      rowAttrs: {
-        name: "row_name",
-        type: "row_type"
-      },
-      colAttrs: [
-        { name:"name_0",
-          type:"type_0" },
-        { name:"name_1",
-          type:"type_1" },
-        { name:"name_2",
-          type:"type_2" }, ],
-    },
-  ];
-
+  $scope.datasets = initialDataService.getData();
   return console.log($scope);
 });

@@ -1,0 +1,77 @@
+countryCode3,countryCode,countryName,continentName,dataset
+AFG,"Arab World","Arab World",Unknown,murray
+ARG,"Latin Am","Latin Am",Unknown,murray
+AUS,AU,Australia,Oceania,murray
+AUT,AT,Austria,Europe,murray
+AUT,Balkans,Balkans,Europe,murray
+BEL,BE,Belgium,Europe,murray
+BGD,"Arab World","Arab World",Unknown,murray
+BGR,Balkans,Balkans,Europe,murray
+BIH,Balkans,Balkans,Europe,murray
+BRA,"Latin Am","Latin Am",Unknown,murray
+CAN,CA,Canada,"North America",murray
+CHE,CH,Switzerland,Europe,murray
+CHL,"Latin Am","Latin Am",Unknown,murray
+CHN,CN,China,Asia,murray
+CUB,"Latin Am","Latin Am",Unknown,murray
+CZE,CZ,Czech,Europe,murray
+DEU,DE,Germany,Europe,murray
+DNK,DK,Denmark,Europe,murray
+EGY,"Anc Greece","Anc Greece",Unknown,murray
+EGY,"Arab World","Arab World",Unknown,murray
+EGY,Balkans,Balkans,Europe,murray
+ESP,"Arab World","Arab World",Unknown,murray
+ESP,ES,Spain,Europe,murray
+FIN,FI,Finland,Europe,murray
+FRA,"Anc Greece","Anc Greece",Unknown,murray
+FRA,FR,France,Europe,murray
+GBR,GB,Britain,Europe,murray
+GRC,"Anc Greece","Anc Greece",Unknown,murray
+GRC,"Arab World","Arab World",Unknown,murray
+GRC,Balkans,Balkans,Europe,murray
+GRC,IT,Rome,Europe,murray
+GTM,"Latin Am","Latin Am",Unknown,murray
+HRV,"Arab World","Arab World",Unknown,murray
+HRV,Balkans,Balkans,Europe,murray
+HUN,HU,Hungary,Europe,murray
+IND,IN,India,Asia,murray
+IRN,"Arab World","Arab World",Unknown,murray
+IRQ,"Arab World","Arab World",Unknown,murray
+ISL,IS,Iceland,Europe,murray
+ITA,"Anc Greece","Anc Greece",Unknown,murray
+ITA,IT,Italy,Europe,murray
+ITA,IT,Rome,Europe,murray
+JOR,"Anc Greece","Anc Greece",Unknown,murray
+JPN,JP,Japan,Asia,murray
+KWT,"Arab World","Arab World",Unknown,murray
+LBN,"Arab World","Arab World",Unknown,murray
+LBY,"Anc Greece","Anc Greece",Unknown,murray
+MEX,"Latin Am","Latin Am",Unknown,murray
+MNE,Balkans,Balkans,Europe,murray
+NIC,"Latin Am","Latin Am",Unknown,murray
+NLD,NL,Netherlands,Europe,murray
+NOR,NO,Norway,Europe,murray
+NZL,NZ,"New Zealand",Oceania,murray
+PER,"Latin Am","Latin Am",Unknown,murray
+POL,PL,Poland,Europe,murray
+PRT,PT,Portugal,Europe,murray
+ROU,Balkans,Balkans,Europe,murray
+RUS,RU,Russia,Europe,murray
+SAU,"Arab World","Arab World",Unknown,murray
+SVK,SK,Slovakia,Europe,murray
+SVN,Balkans,Balkans,Europe,murray
+SWE,SE,Sweden,Europe,murray
+SYR,"Anc Greece","Anc Greece",Unknown,murray
+SYR,"Arab World","Arab World",Unknown,murray
+TJK,"Arab World","Arab World",Unknown,murray
+TUN,"Arab World","Arab World",Unknown,murray
+TUR,"Anc Greece","Anc Greece",Unknown,murray
+TUR,"Arab World","Arab World",Unknown,murray
+UNK,"Anc Greece","Anc Greece",Unknown,murray
+UNK,"Arab World","Arab World",Unknown,murray
+UNK,Balkans,Balkans,Europe,murray
+UNK,"Latin Am","Latin Am",Unknown,murray
+UNK,"SS Africa","SS Africa",Africa,murray
+USA,US,USA,"North America",murray
+UZB,"Arab World","Arab World",Unknown,murray
+ZAF,"SS Africa","SS Africa",Africa,murray
