@@ -41,12 +41,13 @@ app.service('initialDataService', function($http) {
     for (var i=0; i<data.samples.length; i++) {
       var d = data.samples[i];
       d.title = d.filename;
-      d.attrs = [];
+      d.colAttrs = [];
       for (var j=0; j<d.cols; j++) {
-        d.attrs[j] = { name: "name_"+j, type: "type_"+j};
+        d.colAttrs[j] = { name: d.header[j], type: d.types[j]};
       }
       myData.push(d);
     }
+    console.log(myData);
   })
 
   return {

@@ -25,10 +25,10 @@ controllers.controller('DatasetListCtrl', function($scope, $http, initialDataSer
         // update model with file data
         $scope.$apply(function() {
           data.title = data.filename;
-          data.attrs = []
+          data.colAttrs = []
           for (var i=0; i<data.cols; i++) {
-            data.attrs[i] = { name:"name_"+i,
-                              type:"type_"+i };
+            data.colAttrs[i] = { name: data.header[i],
+                              type: data.types[i] };
           }
           $scope.datasets.push(data);
         });

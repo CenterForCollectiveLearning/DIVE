@@ -26,11 +26,33 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+# Utility function to get the type of a variable
+# TODO: Parse dates
+def get_variable_type(v):
+    t = type(v)
+    if t is int: r = "int"
+    elif t is float: r = "float"
+    elif t is long: r = "long"
+    elif t is str: r = "str"
+    else: r = "str"
+    return r
+
+# Utility function to get a list of column types in a dataset given a file path
+# TODO Check if header
+# TODO Use some scheme of parsing such that they aren't all strings
+def get_column_types(path):
+    f = open(path)
+    header = f.readline()
+    sample_line = f.readline()
+    types = [get_variable_type(v) for v in sample_line]
+    return types
+
 # function to get sample from data file
 def get_sample_data(path):
     f = open(path)
     filename = path.rsplit('/')[-1]
     extension = filename.rsplit('.', 1)[1]
+    header = f.readline()
     rows = 0
     cols = 0
 
@@ -53,7 +75,10 @@ def get_sample_data(path):
             pass
     rows += 1
 
-    return sample, rows, cols, extension
+    # Parse header
+    header = header.split(delim)
+
+    return sample, rows, cols, extension, header
 
 @app.route('/')
 def main():
@@ -72,12 +97,14 @@ def upload_file():
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         # get sample data
-        sample, rows, cols, extension  = get_sample_data(path)
+        sample, rows, cols, extension, header  = get_sample_data(path)
+        print header
 
         # make response
         json_data = json.jsonify({
                                 'status': "success",
                                 'filename': filename,
+                                'header': header,
                                 'sample': sample,
                                 'rows': rows,
                                 'cols': cols,
@@ -89,6 +116,7 @@ def upload_file():
 
     return json.jsonify({'status': "upload failed"})
 
+# TODO: Combine with previous function
 @app.route('/get_test_datasets', methods=['GET'])
 def get_test_datasets():
     test_dataset_samples = []
@@ -96,13 +124,16 @@ def get_test_datasets():
     for filename in filenames:
         path = os.path.join(app.config['TEST_DATA_FOLDER'], filename)
         # make response
-        sample, rows, cols, extension = get_sample_data(path)
+        sample, rows, cols, extension, header = get_sample_data(path)
+        types = get_column_types(path)
         json_data = {
                         'filename': filename,
+                        'header': header,
                         'sample': sample,
                         'rows': rows,
                         'cols': cols,
-                        'type': extension,
+                        'filetype': extension,
+                        'types': types
                     }
         test_dataset_samples.append(json_data)
 
