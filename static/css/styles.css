@@ -30,8 +30,12 @@ nav.navbar {
     background-color: #a5cdd4;
     border-radius: 0; }
     nav.navbar.sections p.navbar-text {
-      color: #122e43; 
-    }
+      color: #122e43;
+      float: left;
+      margin-left: 15px;
+      margin-right: 15px; }
+      nav.navbar.sections p.navbar-text:hover {
+        text-decoration: underline; }
 
 section.left-pane {
   position: relative;
@@ -49,8 +53,6 @@ section.left-pane {
       section.left-pane ul.datasets li.dataset {
         cursor: pointer;
         padding: 15px; }
-      section.left-pane ul.datasets li.selected-dataset {
-        background-color: #eee; }
       section.left-pane ul.datasets li.add-dataset {
         cursor: pointer;
         width: 100%;
@@ -88,5 +90,19 @@ section.upload-dataset {
 
 /* Viewport */
 section.viewport {
-  margin-left: 300px;
-  padding: 20px; }
+  margin-left: 300px; }
+
+/* Table */
+tr.ng-scope td {
+  padding: 4px; }
+
+input {
+  padding: 4px;
+  -webkit-appearance: none;
+  border: none;
+  background-color: #e0e5e9;
+  width: 100%;
+  min-width: 150px; }
+  input:focus {
+    outline: none;
+    background-color: #C0C0C0; }
