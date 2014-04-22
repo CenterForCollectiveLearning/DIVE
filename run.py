@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request, make_respo
 
 #file upload
 import os
+import re
 from os import listdir
 from os.path import isfile, join
 from werkzeug.utils import secure_filename
@@ -26,14 +27,15 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+INT_REGEX = "^-?[0-9]+$"
+FLOAT_REGEX = "[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?"
+
+
 # Utility function to get the type of a variable
 # TODO: Parse dates
 def get_variable_type(v):
-    t = type(v)
-    if t is int: r = "int"
-    elif t is float: r = "float"
-    elif t is long: r = "long"
-    elif t is str: r = "str"
+    if re.match(INT_REGEX, v): r = "int"
+    elif re.match(FLOAT_REGEX, v): r = "float"
     else: r = "str"
     return r
 
@@ -44,7 +46,13 @@ def get_column_types(path):
     f = open(path)
     header = f.readline()
     sample_line = f.readline()
-    types = [get_variable_type(v) for v in sample_line]
+    extension = path.rsplit('.', 1)[1]
+    if extension == 'csv':
+      delim = ','
+    elif extension == 'tsv':
+      delim = '\t'
+
+    types = [get_variable_type(v) for v in sample_line.split(delim)]
     return types
 
 # function to get sample from data file
