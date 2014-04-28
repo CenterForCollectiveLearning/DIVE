@@ -47,7 +47,6 @@ app.service('initialDataService', function($http) {
       }
       myData.push(d);
     }
-    console.log(myData);
   })
 
   return {

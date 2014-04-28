@@ -43,6 +43,4 @@ controllers.controller('DatasetListCtrl', function($scope, $http, initialDataSer
 
   // Initialize datasets
   $scope.datasets = initialDataService.getData();
-
-  return console.log($scope);
 });
