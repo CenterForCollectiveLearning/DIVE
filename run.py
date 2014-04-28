@@ -1,9 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request, make_response, json
 
-#file upload
 import os
 import re
-from collections import OrderedDict  # Get unique elements of list while preserving order
 from random import sample
 from os import listdir
 from os.path import isfile, join
@@ -12,6 +10,7 @@ from werkzeug.utils import secure_filename
 
 from server.utility import *
 
+# TODO Get this working
 # from flask.ext.scss import Scss
 # from flask_cake import Cake
 
@@ -31,6 +30,7 @@ app.config['TEST_DATA_FOLDER'] = TEST_DATA_FOLDER
 @app.route('/')
 def main():
     return render_template('/main.html')
+
 
 # file upload handler
 @app.route('/upload', methods=['POST'])
@@ -64,6 +64,7 @@ def upload_file():
 
     return json.jsonify({'status': "upload failed"})
 
+
 # TODO: Combine with previous function
 @app.route('/get_test_datasets', methods=['GET'])
 def get_test_datasets():
@@ -90,36 +91,50 @@ def get_test_datasets():
 
 
 # Utility function to detect possible relationships between datasets
+# TODO: Deal with header lines somehow
 # TODO: use Pandas for this?
 @app.route('/get_relationships', methods=['GET'])
 def get_relationships():
+    headers_dict = {}
     unique_columns_dict = {}
     paths = [os.path.join(app.config['TEST_DATA_FOLDER'], f) for f in listdir(app.config['TEST_DATA_FOLDER']) if (isfile(join(app.config['TEST_DATA_FOLDER'], f)) and f[0] is not '.')]
 
     # For each dataset, get unique values in all columns
     for path in paths:
         f = open(path)
-        # header = f.readline()
         lines = f.readlines()
+
+        # Sample file if it is too large
         # if len(lines) > 1000:
         #     lines = sample(lines, 1000)
         delim = get_delimiter(path)
-        columns = get_columns(lines, delim)
-        unique_columns = [get_unique(col) for col in columns]
-        unique_columns_dict[path] = unique_columns
+        header, columns = read_file(path, delim)
+        headers_dict[path] = header
+        unique_columns_dict[path] = [get_unique(col) for col in columns]
 
     # Pairwise comparison of columns cross datasets
     for path1, path2 in combinations(paths, 2):
         print "---------------------------------"
-        print path1, path2
+        print path1.split('/')[-1], path2.split('/')[-1]
+        print "---------------------------------"
+        header1 = headers_dict[path1]
+        header2 = headers_dict[path2]
         unique_columns1 = unique_columns_dict[path1]
         unique_columns2 = unique_columns_dict[path2]
 
-        for col1 in unique_columns1:
-            for col2 in unique_columns2:
+        for i1, col1 in enumerate(unique_columns1):
+            for i2, col2 in enumerate(unique_columns2):
                 d = get_distance(col1, col2)
-                print d, path1.split('/')[-1], col1[0], path2.split('/')[-1], col2[0]
+                if d:
+                    print d, header1[i1], header2[i2]
     return
+
+
+# Determine the probability that columns within a table are nested
+@app.route('/get_nestedness', methods=['GET'])
+def get_nestedness():
+    return
+
 
 @app.route('/tag', methods=['GET'])
 def tag_data():
