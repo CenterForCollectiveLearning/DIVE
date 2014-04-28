@@ -42,8 +42,7 @@
         <tr ng-repeat="(index, row) in dataset.sample">
           <td>
               <input type="text" ng-model="dataset.rowAttrs.name" ng-if="index==0">
-              <input type="text" ng-model="dataset.rowAttrs.type" ng-if="index==1">
-            </td>
+          </td>
           <td ng-repeat="elem in row"> {[{elem}]} </td>
         </tr>
       </table>

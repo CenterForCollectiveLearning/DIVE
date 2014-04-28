@@ -28,7 +28,7 @@ controllers.controller('DatasetListCtrl', function($scope, $http, initialDataSer
           data.colAttrs = []
           for (var i=0; i<data.cols; i++) {
             data.colAttrs[i] = { name: data.header[i],
-                              type: data.types[i] };
+                                 type: data.types[i] };
           }
           $scope.datasets.push(data);
         });
