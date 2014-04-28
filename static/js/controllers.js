@@ -39,7 +39,9 @@ controllers.controller('DatasetListCtrl', function($scope, $http, initialDataSer
   $scope.selected_index = 0;
   $scope.select_dataset = function(index) {
     $scope.selected_index = index;
-  }
+  };
+
+  $scope.types = ['int', 'float', 'str'];
 
   // Initialize datasets
   $scope.datasets = initialDataService.getData();

@@ -35,7 +35,7 @@
           <td>
             </td>
           <td ng-repeat="attr in dataset.colAttrs">
-            <input type="text" ng-model="attr.type">
+            <select ng-model="attr.type" ng-options="type for type in types">
           </td>
         </tr>
 
