@@ -28,10 +28,10 @@ nav.navbar {
     &.top {
          background-image: none;
          background-color: $dark-blue;
-         border-radius: 0;  
+         border-radius: 0;
 
         a.navbar-brand {
-            text-shadow: none;             
+            text-shadow: none;
             color: $light-blue;
         }
     }
@@ -87,6 +87,10 @@ section.left-pane {
                 }
             }
 
+            &.selected-dataset {
+              background-color: #eee;
+            }
+
             div.title {
                 font-size: 1.5rem;
             }
@@ -116,7 +120,7 @@ section.upload-dataset {
     margin-left: 300px;
     ul, li {
         padding: 0;
-        list-style-type: none;        
+        list-style-type: none;
     }
 
     ul.data-rows {
