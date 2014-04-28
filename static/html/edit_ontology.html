@@ -1,0 +1,15 @@
+<section class="left-pane">
+  Ontology Editor Left
+</section>
+
+<section class="viewport">
+  Ontology Editor Main
+  <ontology-editor val="data"></ontology-editor>
+
+  <div ng-repeat="dataset in datasets">
+  	ROW ATTRIBUTES
+    {[{dataset.rowAttrs}]}
+    COL ATTRIBUTES
+    {[{dataset.colAttrs}]}
+  </div>
+</section>
