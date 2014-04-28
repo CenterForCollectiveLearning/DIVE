@@ -3,7 +3,6 @@
 @font-face {
   font-family: 'DIN';
   src: url("DINLight.ttf") format("ttf"), url("DINLight.woff") format("woff"); }
-
 *, *:before, *:after {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -63,6 +62,8 @@ section.left-pane {
         color: #e0e5e9; }
         section.left-pane ul.datasets li.add-dataset:hover {
           color: #222222; }
+      section.left-pane ul.datasets li.selected-dataset {
+        background-color: #eee; }
       section.left-pane ul.datasets li div.title {
         font-size: 1.5rem; }
       section.left-pane ul.datasets li div.dimensions {
