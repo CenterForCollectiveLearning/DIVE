@@ -1,6 +1,6 @@
 var controllers = angular.module('engineControllers', []);
 
-controllers.controller('DatasetListCtrl', function($scope, $http, initialDataService) {
+controllers.controller('DatasetListCtrl', function($scope, $http, initialDataService, overlapService) {
   var files;
 
   $('#data-file').on('change', function(event) {
@@ -45,4 +45,8 @@ controllers.controller('DatasetListCtrl', function($scope, $http, initialDataSer
 
   // Initialize datasets
   $scope.datasets = initialDataService.getData();
+
+  // Get non-zero overlaps between columns
+  // TODO When do you call this?
+  $scope.overlaps = overlapService.getData();
 });

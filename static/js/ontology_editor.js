@@ -43,39 +43,6 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
      
                 renderTimeout = $timeout(function() {
 
-                // svg.selectAll('rect')
-                //   .data(data)
-                //   .enter()
-                //     .append('rect')
-                //     .on('click', function(d,i) {
-                //       return scope.onClick({item: d});
-                //     })
-                //     .attr('height', barHeight)
-                //     .attr('width', 140)
-                //     .attr('x', Math.round(margin/2))
-                //     .attr('y', function(d,i) {
-                //       return i * (barHeight + barPadding);
-                //     })
-                //     .attr('fill', function(d) {
-                //       return color(d.score);
-                //     })
-                //     .transition()
-                //       .duration(1000)
-                //       .attr('width', function(d) {
-                //         return xScale(d.score);
-                //       });
-                // svg.selectAll('text')
-                //   .data(data)
-                //   .enter()
-                //     .append('text')
-                //     .attr('fill', '#fff')
-                //     .attr('y', function(d,i) {
-                //       return i * (barHeight + barPadding) + 15;
-                //     })
-                //     .attr('x', 15)
-                //     .text(function(d) {
-                //       return d.name + " (scored: " + d.score + ")";
-                //     });
               }, 200);
             };
         });

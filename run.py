@@ -97,7 +97,8 @@ def get_test_datasets():
 def get_relationships():
     headers_dict = {}
     unique_columns_dict = {}
-    paths = [os.path.join(app.config['TEST_DATA_FOLDER'], f) for f in listdir(app.config['TEST_DATA_FOLDER']) if (isfile(join(app.config['TEST_DATA_FOLDER'], f)) and f[0] is not '.')]
+    filenames = [f for f in listdir(app.config['TEST_DATA_FOLDER']) if (isfile(join(app.config['TEST_DATA_FOLDER'], f)) and f[0] is not '.')]
+    paths = [os.path.join(app.config['TEST_DATA_FOLDER'], f) for f in filenames]
 
     # For each dataset, get unique values in all columns
     for path in paths:
@@ -112,22 +113,26 @@ def get_relationships():
         headers_dict[path] = header
         unique_columns_dict[path] = [get_unique(col) for col in columns]
 
-    # Pairwise comparison of columns cross datasets
-    for path1, path2 in combinations(paths, 2):
-        print "---------------------------------"
-        print path1.split('/')[-1], path2.split('/')[-1]
-        print "---------------------------------"
-        header1 = headers_dict[path1]
-        header2 = headers_dict[path2]
-        unique_columns1 = unique_columns_dict[path1]
-        unique_columns2 = unique_columns_dict[path2]
+    res = {}
 
-        for i1, col1 in enumerate(unique_columns1):
-            for i2, col2 in enumerate(unique_columns2):
-                d = get_distance(col1, col2)
+    # Pairwise comparison of columns cross datasets
+    # TODO Make this not suck
+    for pathA, pathB in combinations(paths, 2):
+        fA, fB = pathA.split('/')[-1], pathB.split('/')[-1]
+        headerA = headers_dict[pathA]
+        headerB = headers_dict[pathB]
+        unique_colsA = unique_columns_dict[pathA]
+        unique_colsB = unique_columns_dict[pathB]
+
+        res['%s\t%s' % (fA, fB)] = {}
+
+        for indexA, colA in enumerate(unique_colsA):
+            for indexB, colB in enumerate(unique_colsB):
+                h1, h2 = headerA[indexA], headerB[indexB]
+                d = get_distance(colA, colB)
                 if d:
-                    print d, header1[i1], header2[i2]
-    return
+                    res['%s\t%s' % (fA, fB)]['%s\t%s' % (h1, h2)] = d
+    return json.jsonify({'result': res})
 
 
 # Determine the probability that columns within a table are nested
