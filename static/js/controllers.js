@@ -1,6 +1,6 @@
 var controllers = angular.module('engineControllers', []);
 
-controllers.controller('DatasetListCtrl', function($scope, $http, initialDataService, overlapService) {
+controllers.controller('DatasetListCtrl', function($scope, $http, DataService) {
   var files;
 
   $('#data-file').on('change', function(event) {
@@ -30,6 +30,8 @@ controllers.controller('DatasetListCtrl', function($scope, $http, initialDataSer
             data.colAttrs[i] = { name: data.header[i],
                                  type: data.types[i] };
           }
+          delete data['header']
+          delete data['types']
           $scope.datasets.push(data);
         });
       }
@@ -44,9 +46,16 @@ controllers.controller('DatasetListCtrl', function($scope, $http, initialDataSer
   $scope.types = ['int', 'float', 'str'];
 
   // Initialize datasets
-  $scope.datasets = initialDataService.getData();
+  $scope.datasets = DataService.getData();
+});
 
-  // Get non-zero overlaps between columns
-  // TODO When do you call this?
+controllers.controller('OntologyEditorCtrl', function($scope, $http, DataService) {
+  // Initialize datasets
+  $scope.datasets = DataService.getData();
   $scope.overlaps = overlapService.getData();
+});
+
+controllers.controller('CreatVizCtrl', function($scope, $http, DataService) {
+  // Initialize datasets
+  $scope.datasets = DataService.getData();
 });

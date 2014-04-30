@@ -1,4 +1,4 @@
-app.service('initialDataService', function($http) {
+app.service('DataService', function($http) {
   var myData = [];
 
   var promise = $http.get('get_test_datasets').success(function(data) {
@@ -7,10 +7,12 @@ app.service('initialDataService', function($http) {
       d.title = d.filename;
       d.colAttrs = [];
       for (var j=0; j<d.cols; j++) {
-        d.colAttrs[j] = { 
-          name: d.header[j], 
+        d.colAttrs[j] = {
+          name: d.header[j],
           type: d.types[j]};
         }
+        delete d['header']
+        delete d['types']
         myData.push(d);
       }
     })
@@ -32,8 +34,6 @@ app.service('overlapService', function($http) {
 
   return {
     promise: promise,
-    getData: function() {
-      return myData;
-    }
+    getData: myData
   }
 })

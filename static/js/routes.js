@@ -4,18 +4,28 @@ app.config(['$routeProvider', function($routeProvider) {
       templateUrl: 'static/html/data_view.html',
       controller: 'DatasetListCtrl',
       resolve: {
-        initialData: function(initialDataService) {
-          return initialDataService.promise;
+        initialData: function(DataService) {
+          return DataService.promise;
         }
       }
     }).
     when('/edit_ontology', {
       templateUrl: 'static/html/edit_ontology.html',
-      controller: 'DatasetListCtrl'
+      controller: 'OntologyEditorCtrl',
+      resolve: {
+        initialData: function(DataService) {
+          return DataService.promise;
+        }
+      }
     }).
     when('/visualize', {
       templateUrl: 'static/html/create_viz.html',
-      controller: 'DatasetListCtrl'
+      controller: 'CreatVizCtrl',
+      resolve: {
+        initialData: function(DataService) {
+          return DataService.promise;
+        }
+      }
     }).
     otherwise({
       redirectTo: '/data_view'
