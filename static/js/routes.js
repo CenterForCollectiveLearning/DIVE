@@ -15,6 +15,9 @@ app.config(['$routeProvider', function($routeProvider) {
       resolve: {
         initialData: function(DataService) {
           return DataService.promise;
+        },
+        overlapService: function(OverlapService) {
+          return OverlapService.promise;
         }
       }
     }).

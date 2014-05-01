@@ -2,6 +2,12 @@ app.service('DataService', function($http) {
   var myData = [];
 
   var promise = $http.get('get_test_datasets').success(function(data) {
+    // Hardcoded ordering -- BAD
+    // TODO Develop algo to minimize edge-crossings
+    var temp = data.samples[2];
+    data.samples[2] = data.samples[1];
+    data.samples[1] = temp;
+
     for (var i=0; i<data.samples.length; i++) {
       var d = data.samples[i];
       d.title = d.filename;
@@ -25,15 +31,34 @@ app.service('DataService', function($http) {
   }
 })
 
-app.service('overlapService', function($http) {
-  var myData = null;
+app.service('OverlapService', function($http) {
+  var myData;
 
   var promise = $http.get('get_relationships').success(function(data) {
-    myData = data['result']
-    })
+    // var initialOverlaps = data['overlaps'];
+    // var initialHierarchy = data['hierarchies'];
+    // var parsedResult = {};
+
+    // // Parse overlap return
+    // for (var datasetPair in initialResult) {
+    //   var interDatasetOverlaps = {}
+
+    //   var columnPairs = initialResult[datasetPair];
+    //   for (var columnPair in columnPairs) {
+    //     interDatasetOverlaps[columnPair.split('\t')] = columnPairs[columnPair];
+    //   }
+    //   parsedResult[datasetPair.split('\t')] = interDatasetOverlaps;
+    // }
+
+    myData = data;
+
+    console.log(myData);
+  })
 
   return {
     promise: promise,
-    getData: myData
+    getData: function() { 
+      return myData;
+    }
   }
 })

@@ -49,10 +49,14 @@ controllers.controller('DatasetListCtrl', function($scope, $http, DataService) {
   $scope.datasets = DataService.getData();
 });
 
-controllers.controller('OntologyEditorCtrl', function($scope, $http, DataService) {
+controllers.controller('OntologyEditorCtrl', function($scope, $http, DataService, OverlapService) {
   // Initialize datasets
   $scope.datasets = DataService.getData();
-  $scope.overlaps = overlapService.getData();
+  // Get non-zero overlaps between columns
+  var relnData = OverlapService.getData();
+
+  $scope.overlaps = relnData.overlaps;
+  $scope.hierarchies = relnData.hierarchies;
 });
 
 controllers.controller('CreatVizCtrl', function($scope, $http, DataService) {

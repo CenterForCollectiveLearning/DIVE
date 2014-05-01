@@ -3,6 +3,7 @@
 @font-face {
   font-family: 'DIN';
   src: url("DINLight.ttf") format("ttf"), url("DINLight.woff") format("woff"); }
+
 *, *:before, *:after {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -107,3 +108,7 @@ input {
   input:focus {
     outline: none;
     background-color: #C0C0C0; }
+
+/* Ontology Editor */
+g {
+  cursor: default; }

@@ -96,6 +96,7 @@ def get_test_datasets():
 @app.route('/get_relationships', methods=['GET'])
 def get_relationships():
     headers_dict = {}
+    raw_columns_dict = {}
     unique_columns_dict = {}
     filenames = [f for f in listdir(app.config['TEST_DATA_FOLDER']) if (isfile(join(app.config['TEST_DATA_FOLDER'], f)) and f[0] is not '.')]
     paths = [os.path.join(app.config['TEST_DATA_FOLDER'], f) for f in filenames]
@@ -111,9 +112,11 @@ def get_relationships():
         delim = get_delimiter(path)
         header, columns = read_file(path, delim)
         headers_dict[path] = header
+        raw_columns_dict[path] = [list(col) for col in columns]
         unique_columns_dict[path] = [get_unique(col) for col in columns]
 
-    res = {}
+    overlaps = {}
+    hierarchies = {}
 
     # Pairwise comparison of columns cross datasets
     # TODO Make this not suck
@@ -121,24 +124,37 @@ def get_relationships():
         fA, fB = pathA.split('/')[-1], pathB.split('/')[-1]
         headerA = headers_dict[pathA]
         headerB = headers_dict[pathB]
+        raw_colsA = raw_columns_dict[pathA]
+        raw_colsB = raw_columns_dict[pathB]
         unique_colsA = unique_columns_dict[pathA]
         unique_colsB = unique_columns_dict[pathB]
 
-        res['%s\t%s' % (fA, fB)] = {}
+        overlaps['%s\t%s' % (fA, fB)] = {}
+        hierarchies['%s\t%s' % (fA, fB)] = {}
+
+        for indexA, colA in enumerate(raw_colsA):
+            for indexB, colB in enumerate(raw_colsB):
+                h1, h2 = headerA[indexA], headerB[indexB]
+                d = get_distance(colA, colB)
+                h = get_hierarchy(colA, colB)
+                if d:
+                    hierarchies['%s\t%s' % (fA, fB)]['%s\t%s' % (h1, h2)] = h
 
         for indexA, colA in enumerate(unique_colsA):
             for indexB, colB in enumerate(unique_colsB):
                 h1, h2 = headerA[indexA], headerB[indexB]
                 d = get_distance(colA, colB)
+                h = get_hierarchy(colA, colB)
                 if d:
-                    res['%s\t%s' % (fA, fB)]['%s\t%s' % (h1, h2)] = d
-    return json.jsonify({'result': res})
+                    overlaps['%s\t%s' % (fA, fB)]['%s\t%s' % (h1, h2)] = d
+
+    return json.jsonify({'overlaps': overlaps, 'hierarchies': hierarchies})
 
 
 # Determine the probability that columns within a table are nested
-@app.route('/get_nestedness', methods=['GET'])
-def get_nestedness():
-    return
+# @app.route('/get_nestedness', methods=['GET'])
+# def get_nestedness():
+#     return
 
 
 @app.route('/tag', methods=['GET'])

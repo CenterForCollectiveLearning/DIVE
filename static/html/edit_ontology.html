@@ -1,12 +1,12 @@
 <section class="left-pane">
 	<div ng-repeat="dataset in datasets">
-		ROW ATTRIBUTES
+<!-- 		ROW ATTRIBUTES
 		{[{dataset.rowAttrs}]}
 		COL ATTRIBUTES
-		{[{dataset.colAttrs}]}
+		{[{dataset.colAttrs}]} -->
 	</div>
 </section>
 
 <section class="viewport">
-    <ontology-editor data="datasets"></ontology-editor>
+    <ontology-editor data="datasets" overlaps="overlaps" hierarchies="hierarchies"></ontology-editor>
 </section>
