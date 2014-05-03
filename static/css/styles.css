@@ -4,6 +4,20 @@
   font-family: 'DIN';
   src: url("DINLight.ttf") format("ttf"), url("DINLight.woff") format("woff"); }
 
+@font-face {
+  font-family: 'Karbon';
+  src: url("karbon-medium-webfont.woff") format("woff"); }
+
+@font-face {
+  font-family: 'Karbon';
+  src: url("karbon-light-webfont.woff") format("woff");
+  font-weight: 300; }
+
+@font-face {
+  font-family: 'Karbon';
+  src: url("karbon-regular-webfont.woff") format("woff");
+  font-weight: normal; }
+
 *, *:before, *:after {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -18,24 +32,38 @@ html, body {
 nav.navbar {
   margin: 0;
   border: 0; }
+  nav.navbar div.navbar-header {
+    height: 50px; }
   nav.navbar.top {
     background-image: none;
     background-color: #122e43;
     border-radius: 0; }
     nav.navbar.top a.navbar-brand {
+      height: 50px;
+      font-family: 'Karbon';
+      text-transform: uppercase;
       text-shadow: none;
-      color: #a5cdd4; }
+      font-size: 30px;
+      color: #a5cdd4;
+      font-weight: 300;
+      letter-spacing: 2px; }
   nav.navbar.sections {
     background-image: none;
     background-color: #a5cdd4;
     border-radius: 0; }
     nav.navbar.sections p.navbar-text {
+      font-family: 'Karbon';
+      font-weight: 300;
       color: #122e43;
       float: left;
       margin-left: 15px;
-      margin-right: 15px; }
+      margin-right: 15px;
+      font-size: 16px; }
+      nav.navbar.sections p.navbar-text.active {
+        font-weight: normal; }
       nav.navbar.sections p.navbar-text:hover {
-        text-decoration: underline; }
+        position: relative;
+        bottom: 1px; }
 
 section.left-pane {
   position: relative;

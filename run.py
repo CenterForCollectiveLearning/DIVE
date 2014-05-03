@@ -27,12 +27,16 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['TEST_DATA_FOLDER'] = TEST_DATA_FOLDER
 
 
+# TODO Abstract state into a class (see: State Pattern)
+NUM_DATASETS = 0
+
+
 @app.route('/')
 def main():
     return render_template('/main.html')
 
 
-# file upload handler
+# File upload handler
 @app.route('/upload', methods=['POST'])
 def upload_file():
     file = request.files.get('dataset')
@@ -68,14 +72,30 @@ def upload_file():
 # TODO: Combine with previous function
 @app.route('/get_test_datasets', methods=['GET'])
 def get_test_datasets():
+    global NUM_DATASETS  # TODO Don't do this
     test_dataset_samples = []
     filenames = [f for f in listdir(app.config['TEST_DATA_FOLDER']) if (isfile(join(app.config['TEST_DATA_FOLDER'], f)) and f[0] is not '.')]
+
     for filename in filenames:
+
         path = os.path.join(app.config['TEST_DATA_FOLDER'], filename)
+
+        canonical_form = get_canonical_form(path)
+        canonical_index = NUM_DATASETS
+        NUM_DATASETS += 1
+
+        delim = get_delimiter(path)
+        header, columns = read_file(path, delim)
+        unique_cols = [detect_unique_list(col) for col in columns]
+        print unique_cols
+
         # make response
         sample, rows, cols, extension, header = get_sample_data(path)
         types = get_column_types(path)
         json_data = {
+                        '_id': canonical_index,
+                        'canonical_form': canonical_form,
+                        'unique_cols': unique_cols,
                         'filename': filename,
                         'header': header,
                         'sample': sample,
@@ -86,8 +106,13 @@ def get_test_datasets():
                     }
         test_dataset_samples.append(json_data)
 
-    result = json.jsonify({'status': "success", 'samples': test_dataset_samples})
+    result = json.jsonify({'status': 'success', 'samples': test_dataset_samples})
     return result
+
+
+@app.route('/get_uniqueness', methods=['GET'])
+def get_uniqueness():
+    return
 
 
 # Utility function to detect possible relationships between datasets
@@ -96,6 +121,7 @@ def get_test_datasets():
 @app.route('/get_relationships', methods=['GET'])
 def get_relationships():
     headers_dict = {}
+    is_unique_dict = {}
     raw_columns_dict = {}
     unique_columns_dict = {}
     filenames = [f for f in listdir(app.config['TEST_DATA_FOLDER']) if (isfile(join(app.config['TEST_DATA_FOLDER'], f)) and f[0] is not '.')]
@@ -114,6 +140,11 @@ def get_relationships():
         headers_dict[path] = header
         raw_columns_dict[path] = [list(col) for col in columns]
         unique_columns_dict[path] = [get_unique(col) for col in columns]
+
+        # List of booleans -- is a column composed of unique elements?
+        is_unique_dict[path] = [detect_unique_list(col) for col in columns]
+
+        print is_unique_dict
 
     overlaps = {}
     hierarchies = {}
@@ -149,12 +180,6 @@ def get_relationships():
                     overlaps['%s\t%s' % (fA, fB)]['%s\t%s' % (h1, h2)] = d
 
     return json.jsonify({'overlaps': overlaps, 'hierarchies': hierarchies})
-
-
-# Determine the probability that columns within a table are nested
-# @app.route('/get_nestedness', methods=['GET'])
-# def get_nestedness():
-#     return
 
 
 @app.route('/tag', methods=['GET'])

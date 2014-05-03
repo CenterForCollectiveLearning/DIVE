@@ -8,6 +8,8 @@ app.service('DataService', function($http) {
     data.samples[2] = data.samples[1];
     data.samples[1] = temp;
 
+    console.log(data);
+
     for (var i=0; i<data.samples.length; i++) {
       var d = data.samples[i];
       d.title = d.filename;

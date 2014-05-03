@@ -38,8 +38,6 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
    
             scope.render = function(data, overlaps, hierarchies) {
                 svg.selectAll('*').remove();
-
-                console.log(overlaps, hierarchies)
      
                 if (!data) return;
                 if (renderTimeout) clearTimeout(renderTimeout);
@@ -110,6 +108,7 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                             })
                             .attr('class', 'attributes')
                             .each(function(d) {
+                                var unique_cols = d.unique_cols;
                                 texts = d3.select(this)
                                     .selectAll('g text')   
                                     .data(d.colAttrs)
@@ -121,7 +120,11 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                                     .attr('fill', '#000000')
                                     .attr('font-size', 14)
                                     .attr('font-weight', 'bold')
-                                    .text(function(d) { return d.name + ' (' + d.type + ')'; })
+                                    .text(function(d, i) { 
+                                        // Add asterisk if column is unique
+                                        var unique = unique_cols[i] ? '*' : '';
+                                        return d.name + unique + ' (' + d.type + ')'; 
+                                    })
                             })
 
                     // TODO DO THIS PROPERLY

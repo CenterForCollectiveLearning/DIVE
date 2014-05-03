@@ -59,7 +59,13 @@ controllers.controller('OntologyEditorCtrl', function($scope, $http, DataService
   $scope.hierarchies = relnData.hierarchies;
 });
 
-controllers.controller('CreatVizCtrl', function($scope, $http, DataService) {
+controllers.controller('CreatVizCtrl', function($scope, $http, DataService, OverlapService) {
   // Initialize datasets
   $scope.datasets = DataService.getData();
+
+  var relnData = OverlapService.getData();
+
+  // Probably not the right place to put this
+  $scope.overlaps = relnData.overlaps;
+  $scope.hierarchies = relnData.hierarchies;
 });
