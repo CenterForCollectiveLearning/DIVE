@@ -79,7 +79,7 @@ controllers.controller('CreatVizCtrl', function($scope, $http, DataService, Over
     var node = {
       _id: dataset._id,
       model: dataset.title,
-      attrs: dataset.colattrs
+      attrs: dataset.colAttrs
     }
     nodes.push(node);
   }
