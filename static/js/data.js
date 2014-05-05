@@ -37,6 +37,8 @@ app.service('OverlapService', function($http) {
   var myData;
 
   var promise = $http.get('get_relationships').success(function(data) {
+
+    // Parsing input -- not necessary for now
     // var initialOverlaps = data['overlaps'];
     // var initialHierarchy = data['hierarchies'];
     // var parsedResult = {};
@@ -53,8 +55,6 @@ app.service('OverlapService', function($http) {
     // }
 
     myData = data;
-
-    console.log(myData);
   })
 
   return {
