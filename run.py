@@ -92,6 +92,7 @@ def get_test_datasets():
         # make response
         sample, rows, cols, extension, header = get_sample_data(path)
         types = get_column_types(path)
+
         json_data = {
                         '_id': canonical_index,
                         'canonical_form': canonical_form,
@@ -104,6 +105,7 @@ def get_test_datasets():
                         'filetype': extension,
                         'types': types
                     }
+
         test_dataset_samples.append(json_data)
 
     result = json.jsonify({'status': 'success', 'samples': test_dataset_samples})

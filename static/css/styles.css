@@ -36,7 +36,7 @@ nav.navbar {
     height: 50px; }
   nav.navbar.top {
     background-image: none;
-    background-color: #122e43;
+    background-color: black;
     border-radius: 0; }
     nav.navbar.top a.navbar-brand {
       height: 50px;
@@ -44,17 +44,18 @@ nav.navbar {
       text-transform: uppercase;
       text-shadow: none;
       font-size: 30px;
-      color: #a5cdd4;
-      font-weight: 300;
+      color: white;
+      font-weight: normal;
       letter-spacing: 2px; }
   nav.navbar.sections {
     background-image: none;
-    background-color: #a5cdd4;
+    background-color: white;
+    border-bottom: 1px solid black;
     border-radius: 0; }
     nav.navbar.sections p.navbar-text {
       font-family: 'Karbon';
-      font-weight: 300;
-      color: #122e43;
+      font-weight: normal;
+      color: black;
       float: left;
       margin-left: 15px;
       margin-right: 15px;
@@ -108,6 +109,13 @@ section.left-pane {
     width: 100%;
     text-align: center; }
 
+section.right-pane {
+  position: relative;
+  float: right;
+  width: 300px;
+  height: 100%;
+  border-left: 5px solid #e0e5e9; }
+
 /* Upload */
 section.upload-dataset {
   height: 100%;
@@ -120,13 +128,16 @@ section.upload-dataset {
 
 /* Viewport */
 section.viewport {
-  margin-left: 300px; }
+  margin-left: 300px;
+  margin-right: 300px; }
 
 /* Table */
 tr.ng-scope td {
   padding: 4px; }
 
 input {
+  font-family: 'DIN';
+  font-size: 16px;
   padding: 4px;
   -webkit-appearance: none;
   border: none;

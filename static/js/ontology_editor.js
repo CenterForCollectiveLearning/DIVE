@@ -234,7 +234,7 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                                 .attr('marker-end', 'url(#arrowhead)')
                                 .attr('d', 'M' + finalAPos[0] + ',' + finalAPos[1] + 'L' + finalBPos[0] + ',' + finalBPos[1])  // TODO Create a wrapper for this
                                 .attr('stroke', 'black')
-                                .attr('stroke-width', 2)
+                                .attr('stroke-width', 1)
 
                         }
                     }

@@ -21,32 +21,30 @@
 </section>
 
 <section class="viewport">
+
   <div ng-repeat="dataset in datasets" ng-if="$index==selected_index">
     <div ng-if="dataset.sample">
+      <input type="text" ng-model="dataset.title">
       <table>
         <tr>
-          <td>
-            </td>
           <td ng-repeat="attr in dataset.colAttrs">
             <input type="text" ng-model="attr.name">
           </td>
         </tr>
         <tr>
-          <td>
-            </td>
           <td ng-repeat="attr in dataset.colAttrs">
             <select ng-model="attr.type" ng-options="type for type in types">
           </td>
         </tr>
 
-        <tr ng-repeat="(index, row) in dataset.sample">
-          <td>
-              <input type="text" ng-model="dataset.rowAttrs.name" ng-if="index==0">
-          </td>
+       <tr ng-repeat="(index, row) in dataset.sample">
           <td ng-repeat="elem in row"> {[{elem}]} </td>
         </tr>
       </table>
     </div>
+
+
+
     ROW ATTRIBUTES
     {[{dataset.rowAttrs}]}
     COL ATTRIBUTES

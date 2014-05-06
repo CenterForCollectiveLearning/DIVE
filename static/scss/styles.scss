@@ -47,9 +47,10 @@ nav.navbar {
     }
 
     &.top {
-         background-image: none;
-         background-color: $dark-blue;
-         border-radius: 0;
+        background-image: none;
+        // background-color: $dark-blue;
+        background-color: black;
+        border-radius: 0;
 
         a.navbar-brand {
             height: 50px;
@@ -57,21 +58,25 @@ nav.navbar {
             text-transform: uppercase;
             text-shadow: none;
             font-size: 30px;
-            color: $light-blue;
-            font-weight: 300;
+            // color: $light-blue;
+            color: white;
+            font-weight: normal;
             letter-spacing: 2px;
         }
     }
 
     &.sections {
         background-image: none;
-        background-color: $light-blue;
+        // background-color: $light-blue;
+        background-color: white;
+        border-bottom: 1px solid black;
         border-radius: 0;
 
         p.navbar-text {
             font-family: 'Karbon';
-            font-weight: 300;            
-            color: $dark-blue;
+            font-weight: normal;            
+            // color: $dark-blue;
+            color: black;
             float: left;
             margin-left: 15px;
             margin-right: 15px;
@@ -151,6 +156,14 @@ section.left-pane {
     }
 }
 
+section.right-pane {
+    position: relative;
+    float: right;
+    width: 300px;
+    height: 100%;
+    border-left: 5px solid $light-gray;
+}
+
 /* Upload */
 section.upload-dataset {
     height: 100%;
@@ -174,6 +187,7 @@ section.upload-dataset {
 /* Viewport */
 section.viewport {
     margin-left: 300px;
+    margin-right: 300px;
 }
 
 /* Table */
@@ -183,6 +197,8 @@ tr.ng-scope {
     }
 }
 input {
+    font-family: 'DIN';
+    font-size: 16px;
     padding: 4px;
     -webkit-appearance: none;
     border: none;
