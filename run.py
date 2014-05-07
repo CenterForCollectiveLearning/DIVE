@@ -30,10 +30,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['TEST_DATA_FOLDER'] = TEST_DATA_FOLDER
 
 
-# TODO Abstract state into a class (see: State Pattern)
-NUM_DATASETS = 0
-
-
 @app.route('/')
 def main():
     return render_template('/main.html')
@@ -75,37 +71,38 @@ class upload_file(Resource):
 # TODO: Combine with previous function
 class get_test_datasets(Resource):
     def get(self):
-        global NUM_DATASETS  # TODO Don't do this
         test_dataset_samples = []
         filenames = [f for f in listdir(app.config['TEST_DATA_FOLDER']) if (isfile(join(app.config['TEST_DATA_FOLDER'], f)) and f[0] is not '.')]
     
         for filename in filenames:
     
             path = os.path.join(app.config['TEST_DATA_FOLDER'], filename)
-    
-            canonical_form = get_canonical_form(path)
-            canonical_index = NUM_DATASETS
-            NUM_DATASETS += 1
-    
-            delim = get_delimiter(path)
-            header, columns = read_file(path, delim)
+
+            # TODO Don't try to insert a new one every time
+            DAL.insert_dataset(path)
+            dataset_id = DAL.get_dataset_id(path)
+            column_ids = DAL.get_column_ids(path)
+
+            header, columns = read_file(path)
             unique_cols = [detect_unique_list(col) for col in columns]
     
             # make response
             sample, rows, cols, extension, header = get_sample_data(path)
             types = get_column_types(path)
+
+            column_attrs = [{'name': header[i], 'type': types[i], 'column_id': i} for i in column_ids]
     
             json_data = {
-                            '_id': canonical_index,
-                            'canonical_form': canonical_form,
+                            'dataset_id': dataset_id,
+                            'column_ids': column_ids,
+                            'column_attrs': column_attrs,
                             'unique_cols': unique_cols,
                             'filename': filename,
-                            'header': header,
                             'sample': sample,
+                            'title': filename,
                             'rows': rows,
                             'cols': cols,
                             'filetype': extension,
-                            'types': types
                         }
     
             test_dataset_samples.append(json_data)
@@ -154,65 +151,62 @@ class get_treemap_data(Resource):
 # Utility function to detect possible relationships between datasets
 # TODO: Deal with header lines somehow
 # TODO: use Pandas for this?
+# TODO: CUT THIS DOWN
 class get_relationships(Resource):
     def get(self):
+
+        # Data Access
+        filenames = [f for f in listdir(app.config['TEST_DATA_FOLDER']) if (isfile(join(app.config['TEST_DATA_FOLDER'], f)) and f[0] is not '.')]
+        paths = [os.path.join(app.config['TEST_DATA_FOLDER'], f) for f in filenames]
+
+        dataset_ids = {}
+        column_ids = {}
         headers_dict = {}
         is_unique_dict = {}
         raw_columns_dict = {}
         unique_columns_dict = {}
-        filenames = [f for f in listdir(app.config['TEST_DATA_FOLDER']) if (isfile(join(app.config['TEST_DATA_FOLDER'], f)) and f[0] is not '.')]
-        paths = [os.path.join(app.config['TEST_DATA_FOLDER'], f) for f in filenames]
-    
-        # For each dataset, get unique values in all columns
+
+        # For each dataset, get raw and unique values in all columns
         for path in paths:
-            f = open(path)
-            lines = f.readlines()
-    
-            # Sample file if it is too large
-            # if len(lines) > 1000:
-            #     lines = sample(lines, 1000)
-            delim = get_delimiter(path)
-            header, columns = read_file(path, delim)
-            headers_dict[path] = header
-            raw_columns_dict[path] = [list(col) for col in columns]
-            unique_columns_dict[path] = [get_unique(col) for col in columns]
+            dataset_id = DAL.get_dataset_id(path)
+            dataset_ids[path] = dataset_id
+            column_ids[path] = DAL.get_column_ids(path)
+
+            header, columns = read_file(path)
+
+            headers_dict[dataset_id] = header
+            raw_columns_dict[dataset_id] = [list(col) for col in columns]
+            unique_columns_dict[dataset_id] = [get_unique(col) for col in columns]
     
             # List of booleans -- is a column composed of unique elements?
-            is_unique_dict[path] = [detect_unique_list(col) for col in columns]
-    
+            is_unique_dict[dataset_id] = [detect_unique_list(col) for col in columns]
+
         overlaps = {}
         hierarchies = {}
     
         # Pairwise comparison of columns cross datasets
-        # TODO Make this not suck
-        for pathA, pathB in combinations(paths, 2):
-            fA, fB = pathA.split('/')[-1], pathB.split('/')[-1]
-            headerA = headers_dict[pathA]
-            headerB = headers_dict[pathB]
-            raw_colsA = raw_columns_dict[pathA]
-            raw_colsB = raw_columns_dict[pathB]
-            unique_colsA = unique_columns_dict[pathA]
-            unique_colsB = unique_columns_dict[pathB]
+        for dataset_idA, dataset_idB in combinations(dataset_ids.values(), 2):
+            raw_colsA = raw_columns_dict[dataset_idA]
+            raw_colsB = raw_columns_dict[dataset_idB]
+            unique_colsA = unique_columns_dict[dataset_idA]
+            unique_colsB = unique_columns_dict[dataset_idB]
     
-            overlaps['%s\t%s' % (fA, fB)] = {}
-            hierarchies['%s\t%s' % (fA, fB)] = {}
+            overlaps['%s\t%s' % (dataset_idA, dataset_idB)] = {}
+            hierarchies['%s\t%s' % (dataset_idA, dataset_idB)] = {}
     
             for indexA, colA in enumerate(raw_colsA):
                 for indexB, colB in enumerate(raw_colsB):
-                    h1, h2 = headerA[indexA], headerB[indexB]
-                    d = get_distance(colA, colB)
                     h = get_hierarchy(colA, colB)
+                    d = get_distance(colA, colB)
                     if d:
-                        hierarchies['%s\t%s' % (fA, fB)]['%s\t%s' % (h1, h2)] = h
+                        hierarchies['%s\t%s' % (dataset_idA, dataset_idB)]['%s\t%s' % (indexA, indexB)] = h
     
             for indexA, colA in enumerate(unique_colsA):
                 for indexB, colB in enumerate(unique_colsB):
-                    h1, h2 = headerA[indexA], headerB[indexB]
                     d = get_distance(colA, colB)
-                    h = get_hierarchy(colA, colB)
                     if d:
-                        overlaps['%s\t%s' % (fA, fB)]['%s\t%s' % (h1, h2)] = d
-    
+                        overlaps['%s\t%s' % (dataset_idA, dataset_idB)]['%s\t%s' % (indexA, indexB)] = d
+
         return json.jsonify({'overlaps': overlaps, 'hierarchies': hierarchies})
 
 

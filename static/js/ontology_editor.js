@@ -72,6 +72,9 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                     var colorScale = d3.scale.category10();
                     colorScale.domain(Object.keys(overlaps));
 
+                    console.log(data);
+                    console.log(overlaps);
+
                     g = svg.selectAll('g')
                             .data(data)
                           .enter()
@@ -87,7 +90,7 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                         .attr('rx', 3)
                         .attr('ry', 3)
                         .attr('stroke', '#000000')
-                        .attr('stroke-width', 2)
+                        .attr('stroke-width', 1)
                         .attr('fill', function(d) { return '#FFFFFF' })
 
                     // Header
@@ -97,7 +100,7 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                         .attr('y', 20)
                         .attr('font-size', 16)
                         .attr('font-weight', 'bold')
-                        .text(function(d) { return d.filename })
+                        .text(function(d) { return d.title })
 
                     // Attributes
                     tspan = g.append('g')
@@ -111,7 +114,7 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                                 var unique_cols = d.unique_cols;
                                 texts = d3.select(this)
                                     .selectAll('g text')   
-                                    .data(d.colAttrs)
+                                    .data(d.column_attrs)
                                     .enter()
                                   .append('g')
                                     .attr('class', 'attr')
@@ -137,7 +140,9 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
 
                     // Get left and right positions for each node (relative to parent)
                     d3.selectAll('g.attr').each(function(d, i) {
-                        var attrName = d.name
+                        console.log(d);
+                        var attrName = d.name;
+                        var column_id = d.column_id;
                         var bbox = d3.select(this).node().getBBox();
                         var h = bbox.height;
                         var w = bbox.width;
@@ -168,13 +173,13 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                         //     .attr('r', 2)
                         //     .attr('fill', 'black')
                         
-                        var parentTitle = d3.select(this.parentNode).datum().title;
+                        var dataset_id = d3.select(this.parentNode).datum().dataset_id;
 
-                        if (!(parentTitle in attributePositions)) {
-                            attributePositions[parentTitle] = {}
+                        if (!(dataset_id in attributePositions)) {
+                            attributePositions[dataset_id] = {}
                         }
 
-                        attributePositions[parentTitle][attrName] = {
+                        attributePositions[dataset_id][column_id] = {
                             l: [finalLeftX, finalLeftY],
                             r: [finalRightX, finalRightY]
                         }
@@ -192,16 +197,16 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                             var columns = columnPair.split('\t')
                             var overlap = columnPairs[columnPair];
                             if (overlap > OVERLAP_THRESHOLD) {
-                                links.push([[datasets[0], columns[0]], [datasets[1], columns[1]]]);
+                                links.push([[parseInt(datasets[0]), parseInt(columns[0])], [parseInt(datasets[1]), parseInt(columns[1])]]);
                             }
                         }
                     }
 
                     // TODO Generate this dynamically
                     var boxOrderings = {
-                        "countries.csv": 0,
-                        "people.csv": 1,
-                        "domains.csv": 2
+                        0: 0,
+                        2: 1,
+                        1: 2
                     }
 
                     // Link overlapping attributes
@@ -214,6 +219,7 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                         var tableL = l[0];
                         var tableR = r[0];
 
+                        console.log(attributePositions);
                         var attrPositionsA = attributePositions[l[0]][l[1]];
                         var attrPositionsB = attributePositions[r[0]][r[1]];
 

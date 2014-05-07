@@ -27,12 +27,12 @@
       <input type="text" ng-model="dataset.title">
       <table>
         <tr>
-          <td ng-repeat="attr in dataset.colAttrs">
+          <td ng-repeat="attr in dataset.column_attrs">
             <input type="text" ng-model="attr.name">
           </td>
         </tr>
         <tr>
-          <td ng-repeat="attr in dataset.colAttrs">
+          <td ng-repeat="attr in dataset.column_attrs">
             <select ng-model="attr.type" ng-options="type for type in types">
           </td>
         </tr>
@@ -42,12 +42,5 @@
         </tr>
       </table>
     </div>
-
-
-
-    ROW ATTRIBUTES
-    {[{dataset.rowAttrs}]}
-    COL ATTRIBUTES
-    {[{dataset.colAttrs}]}
   </div>
 </section>
