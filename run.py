@@ -9,6 +9,7 @@ from os.path import isfile, join
 from itertools import combinations
 from werkzeug.utils import secure_filename
 
+from server.data import DAL
 from server.utility import *
 
 # TODO Get this working
@@ -39,7 +40,6 @@ def main():
 
 
 # File upload handler
-
 class upload_file(Resource):
     def get(self):
         file = request.files.get('dataset')
@@ -90,7 +90,6 @@ class get_test_datasets(Resource):
             delim = get_delimiter(path)
             header, columns = read_file(path, delim)
             unique_cols = [detect_unique_list(col) for col in columns]
-            print unique_cols
     
             # make response
             sample, rows, cols, extension, header = get_sample_data(path)
@@ -116,15 +115,39 @@ class get_test_datasets(Resource):
 
 
 treemapDataParser = reqparse.RequestParser()
-treemapDataParser.add_argument('condition', type='str', required=True)
-treemapDataParser.add_argument('aggregate', type='str', required=True)
-treemapDataParser.add_argument('by', type='str', required=True)
-treemapDataParser.add_argument('query', type='str', required=True)
+treemapDataParser.add_argument('condition', type=str, required=True)
+treemapDataParser.add_argument('aggregate', type=str, required=True)
+treemapDataParser.add_argument('by', type=str, required=True)
+treemapDataParser.add_argument('query', type=str, required=True)
 treemapDataParser.add_argument('aggFn', type=str, default='sum')
 class get_treemap_data(Resource):
     def get(self):
+
+        # Get and parse arguments
         args = treemapDataParser.parse_args()
-        print args
+        condition = args.get('condition')
+        aggregate = args.get('aggregate')
+        by = args.get('by')
+        query = args.get('query').strip('[').strip(']').split(',')
+        aggFn = args.get('aggFn')
+
+        # TODO
+        # Create a generalized class to access this data
+        # Use canonical forms
+
+        # Test
+        # http://localhost:5000/get_treemap_data?condition=countryName&aggregate=people.tsv&by=occupation&query=[USA]
+
+        print condition, aggregate, by, query, aggFn
+        path = os.path.join(app.config['TEST_DATA_FOLDER'], aggregate)
+        delim = get_delimiter(path)
+
+        df = pd.read_table(path, sep=delim)
+        cond_df = df[df[condition].isin(query)]
+        group_obj = cond_df.groupby(by)
+        finalDf = group_obj.size()
+
+        print finalDf
         return
 
 
@@ -156,8 +179,6 @@ class get_relationships(Resource):
     
             # List of booleans -- is a column composed of unique elements?
             is_unique_dict[path] = [detect_unique_list(col) for col in columns]
-    
-            print is_unique_dict
     
         overlaps = {}
         hierarchies = {}
