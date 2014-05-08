@@ -17,23 +17,21 @@ app.service('OverlapService', function($http) {
   var myData;
 
   var promise = $http.get('get_relationships').success(function(data) {
+    myData = data;
+  })
 
-    // Parsing input -- not necessary for now
-    // var initialOverlaps = data['overlaps'];
-    // var initialHierarchy = data['hierarchies'];
-    // var parsedResult = {};
+  return {
+    promise: promise,
+    getData: function() { 
+      return myData;
+    }
+  }
+})
 
-    // // Parse overlap return
-    // for (var datasetPair in initialResult) {
-    //   var interDatasetOverlaps = {}
+app.service('VizDataService', function($http) {
+  var myData;
 
-    //   var columnPairs = initialResult[datasetPair];
-    //   for (var columnPair in columnPairs) {
-    //     interDatasetOverlaps[columnPair.split('\t')] = columnPairs[columnPair];
-    //   }
-    //   parsedResult[datasetPair.split('\t')] = interDatasetOverlaps;
-    // }
-
+  var promise = $http.get('get_treemap_data').success(function(data) {
     myData = data;
   })
 

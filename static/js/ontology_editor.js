@@ -37,6 +37,7 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
             }, true);
    
             scope.render = function(data, overlaps, hierarchies) {
+
                 svg.selectAll('*').remove();
      
                 if (!data) return;

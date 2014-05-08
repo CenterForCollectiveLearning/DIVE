@@ -61,7 +61,7 @@ controllers.controller('OntologyEditorCtrl', function($scope, $http, DataService
   $scope.hierarchies = relnData.hierarchies;
 });
 
-controllers.controller('CreatVizCtrl', function($scope, $http, DataService, OverlapService) {
+controllers.controller('CreatVizCtrl', function($scope, $http, DataService, OverlapService, VizDataService) {
 
   // Initialize datasets
   var datasets = DataService.getData();
@@ -115,24 +115,41 @@ controllers.controller('CreatVizCtrl', function($scope, $http, DataService, Over
 
   $scope.initNetwork = initNetwork;
 
-  $scope.selected_vizType = 3;
+  $scope.selected_vizType = 'treemap';
+  $scope.selected_vizType_index = 3;
   $scope.select_vizType = function(index) {
-    $scope.selected_vizType = index;
+    $scope.selected_vizType = $scope.vizTypes[index].name;
+    $scope.selected_vizType_index = index;
   };
 
-  $scope.selected_vizSpec = 0;
+  $scope.selected_vizSpec_index = 0;
   $scope.select_vizSpec = function(index) {
-    $scope.selected_vizSpec = index;
+    $scope.selected_vizSpec_index = index;
   };
 
-  console.log(datasets);
 
+  // TODO Abstract these to a global client-side ID reference
   $scope.getDatasetTitle = function(dataset_id) {
     return datasets[dataset_id].title;
   }
 
   $scope.getColumnName = function(dataset_id, column_id) {
     return datasets[dataset_id].column_attrs[column_id].name;
+  }
+
+
+  $scope.displayVisualization = function(vizSpec) {
+    console.log("VIZTYPE", $scope.selected_vizType)
+    console.log("VIZSPEC", vizSpec)
+
+    $http.get('get_treemap_data', {
+      params: {
+        condition: vizSpec.condition,
+        aggregate: vizSpec.aggregate,
+        query: '*',
+        groupBy: vizSpec.groupBy
+      }
+    })
   }
 
   // TODO Put this into a service

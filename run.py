@@ -39,7 +39,6 @@ def main():
 class upload_file(Resource):
     def get(self):
         file = request.files.get('dataset')
-        print request.data
         if file and allowed_file(file.filename):
     
             # save file
@@ -49,7 +48,6 @@ class upload_file(Resource):
     
             # get sample data
             sample, rows, cols, extension, header  = get_sample_data(path)
-            print header
     
             # make response
             json_data = json.jsonify({
@@ -114,37 +112,44 @@ class get_test_datasets(Resource):
 treemapDataParser = reqparse.RequestParser()
 treemapDataParser.add_argument('condition', type=int, required=True)
 treemapDataParser.add_argument('aggregate', type=int, required=True)
-treemapDataParser.add_argument('by', type=str, required=True)
+treemapDataParser.add_argument('groupBy', type=int, required=True)
 treemapDataParser.add_argument('query', type=str, required=True)
 treemapDataParser.add_argument('aggFn', type=str, default='sum')
 class get_treemap_data(Resource):
     def get(self):
-
         # Get and parse arguments
         args = treemapDataParser.parse_args()
         condition = args.get('condition')
         aggregate = args.get('aggregate')
-        by = args.get('by')
+        by = args.get('groupBy')
         query = args.get('query').strip('[').strip(']').split(',')
         aggFn = args.get('aggFn')
-
-        # TODO
-        # Create a generalized class to access this data
-        # Use canonical forms
 
         # Test
         # http://localhost:5000/get_treemap_data?condition=11&aggregate=2&by=14&query=[USA]
         path = DAL.get_path_from_id(aggregate)
-        print path
         delim = get_delimiter(path)
-
         df = pd.read_table(path, sep=delim)
-        cond_df = df[df[condition].isin(query)]
-        group_obj = cond_df.groupby(by)
-        finalDf = group_obj.size()
 
-        print finalDf
-        return {'result': finalDf}
+        by = DAL.get_column_name_from_id(aggregate, by)
+        condition = DAL.get_column_name_from_id(aggregate, condition)
+
+        if query[0] == '*':
+            cond_df = df
+        else:
+            # Uses column indexing for now
+            cond_df = df[df[condition].isin(query)]
+
+        group_obj = cond_df.groupby(by)
+        finalSeries = group_obj.size()
+
+        result = []
+        for row in finalSeries.iteritems():
+            result.append({
+                by: row[0], 
+                'count': row[1]
+            })
+        return {'result': result}
 
 vizFromOntParser = reqparse.RequestParser()
 # vizFromOntParser.add_argument('network', type=str, required=True)
@@ -171,16 +176,15 @@ class get_visualizations_from_ontology(Resource):
             edge_to_type_dict[tuple(source)] = type
             edge_to_type_dict[tuple(target)] = type
 
-        print edge_to_type_dict
 
         # SCATTERPLOT
         # ATTR vs ATTR, optional QUERY and GROUP
-        for node in nodes:
-            attrs = node['attrs']
-            for attrA, attrB in combinations(attrs, 2):
-                # TODO Don't plot against unique columns
-                if (attrA['type'] in ['int', 'float'] or attrB['type'] in ['int', 'float']):
-                    print attrA['name'], attrB['name']
+        # for node in nodes:
+        #     attrs = node['attrs']
+        #     for attrA, attrB in combinations(attrs, 2):
+        #         # TODO Don't plot against unique columns
+        #         if (attrA['type'] in ['int', 'float'] or attrB['type'] in ['int', 'float']):
+        #             print attrA['name'], attrB['name']
 
         # TODO Detect redundant fields
         # Detect objects that are attributes of another (count one-to-many edges leading outward)
@@ -189,13 +193,10 @@ class get_visualizations_from_ontology(Resource):
             sourceDataset = edge['source'][0]
             targetDataset = edge['target'][0]
             type = edge['type']
-            print edge
             if type == '1N':
                 numOutwardOneToManys[targetDataset] += 1
             if type == 'N1':
                 numOutwardOneToManys[sourceDataset] += 1
-        print "OUTWARD ONE TO MANYS:"
-        print numOutwardOneToManys
 
         # TREEMAP
         # CONDITION -> QUERY -> N * GROUP BY
