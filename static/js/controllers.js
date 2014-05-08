@@ -49,6 +49,8 @@ controllers.controller('DatasetListCtrl', function($scope, $http, DataService) {
   $scope.datasets = DataService.getData();
 });
 
+
+// TODO Make this controller thin
 controllers.controller('OntologyEditorCtrl', function($scope, $http, DataService, OverlapService) {
   // Initialize datasets
   $scope.datasets = DataService.getData();
@@ -60,6 +62,7 @@ controllers.controller('OntologyEditorCtrl', function($scope, $http, DataService
 });
 
 controllers.controller('CreatVizCtrl', function($scope, $http, DataService, OverlapService) {
+
   // Initialize datasets
   var datasets = DataService.getData();
   $scope.datasets = datasets
@@ -70,6 +73,7 @@ controllers.controller('CreatVizCtrl', function($scope, $http, DataService, Over
   $scope.overlaps = relnData.overlaps;
   $scope.hierarchies = relnData.hierarchies;
 
+  // TODO Watch changes and propagate changes
   var nodes = [];
   var edges = [];
 
@@ -77,9 +81,8 @@ controllers.controller('CreatVizCtrl', function($scope, $http, DataService, Over
   for (var i=0; i<datasets.length; i++) {
     var dataset = datasets[i];
     var node = {
-      _id: dataset._id,
-      model: dataset.title,
-      attrs: dataset.colAttrs
+      model: dataset.dataset_id,
+      attrs: dataset.column_attrs
     }
     nodes.push(node);
   }
@@ -92,12 +95,16 @@ controllers.controller('CreatVizCtrl', function($scope, $http, DataService, Over
       var type = hierarchy[columnPair];
       var columnPairList = columnPair.split('\t');
 
-      var edge = {
-        source: [datasetPairList[0], columnPairList[1]],
-        target: [datasetPairList[1], columnPairList[1]],
-        type: type
+      var d =relnData.overlaps[datasetPair][columnPair];
+      if (d > 0.5) {
+        // Only add edge if overlap
+        var edge = {
+          source: [parseInt(datasetPairList[0]), parseInt(columnPairList[1])],
+          target: [parseInt(datasetPairList[1]), parseInt(columnPairList[1])],
+          type: type
+        }
+        edges.push(edge);
       }
-      edges.push(edge);
     }
   }
 
@@ -107,4 +114,50 @@ controllers.controller('CreatVizCtrl', function($scope, $http, DataService, Over
   };
 
   $scope.initNetwork = initNetwork;
+
+  $scope.selected_vizType = 3;
+  $scope.select_vizType = function(index) {
+    $scope.selected_vizType = index;
+  };
+
+  $scope.selected_vizSpec = 0;
+  $scope.select_vizSpec = function(index) {
+    $scope.selected_vizSpec = index;
+  };
+
+  console.log(datasets);
+
+  $scope.getDatasetTitle = function(dataset_id) {
+    return datasets[dataset_id].title;
+  }
+
+  $scope.getColumnName = function(dataset_id, column_id) {
+    return datasets[dataset_id].column_attrs[column_id].name;
+  }
+
+  // TODO Put this into a service
+  $.ajax({
+      url: 'get_visualizations_from_ontology',
+      type: 'POST',
+      data: JSON.stringify(initNetwork),
+      cache: false,
+      processData: false,
+      contentType: false,
+    }).success(function(data) {
+      if (data.status === "success") {
+
+        $scope.$apply(function() {
+          var visualizations = data.visualizations;
+          var vizTypes = []
+          for (var visualization in visualizations) {
+            vizTypes.push({
+              'name': visualization,
+              'count': visualizations[visualization].length
+            })
+          }
+          $scope.vizTypes = vizTypes;
+          $scope.vizSpecs = visualizations[visualization];
+        });
+      }
+    });
 });

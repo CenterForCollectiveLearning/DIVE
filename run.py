@@ -112,8 +112,8 @@ class get_test_datasets(Resource):
 
 
 treemapDataParser = reqparse.RequestParser()
-treemapDataParser.add_argument('condition', type=str, required=True)
-treemapDataParser.add_argument('aggregate', type=str, required=True)
+treemapDataParser.add_argument('condition', type=int, required=True)
+treemapDataParser.add_argument('aggregate', type=int, required=True)
 treemapDataParser.add_argument('by', type=str, required=True)
 treemapDataParser.add_argument('query', type=str, required=True)
 treemapDataParser.add_argument('aggFn', type=str, default='sum')
@@ -133,10 +133,9 @@ class get_treemap_data(Resource):
         # Use canonical forms
 
         # Test
-        # http://localhost:5000/get_treemap_data?condition=countryName&aggregate=people.tsv&by=occupation&query=[USA]
-
-        print condition, aggregate, by, query, aggFn
-        path = os.path.join(app.config['TEST_DATA_FOLDER'], aggregate)
+        # http://localhost:5000/get_treemap_data?condition=11&aggregate=2&by=14&query=[USA]
+        path = DAL.get_path_from_id(aggregate)
+        print path
         delim = get_delimiter(path)
 
         df = pd.read_table(path, sep=delim)
@@ -145,8 +144,91 @@ class get_treemap_data(Resource):
         finalDf = group_obj.size()
 
         print finalDf
-        return
+        return {'result': finalDf}
 
+vizFromOntParser = reqparse.RequestParser()
+# vizFromOntParser.add_argument('network', type=str, required=True)
+class get_visualizations_from_ontology(Resource):
+    def post(self):
+        visualizations = {
+            "treemap": [],
+            "geomap": [],
+            "barchart": [],
+            "scatterplot": []
+        }
+
+        # TODO Use regular argument parser
+        network = json.loads(request.data)
+        nodes = network['nodes']
+        edges = network['edges']
+
+        edge_to_type_dict = {}
+        for edge in edges:
+            source = edge['source']
+            target = edge['target']
+            type = edge['type']
+
+            edge_to_type_dict[tuple(source)] = type
+            edge_to_type_dict[tuple(target)] = type
+
+        print edge_to_type_dict
+
+        # SCATTERPLOT
+        # ATTR vs ATTR, optional QUERY and GROUP
+        for node in nodes:
+            attrs = node['attrs']
+            for attrA, attrB in combinations(attrs, 2):
+                # TODO Don't plot against unique columns
+                if (attrA['type'] in ['int', 'float'] or attrB['type'] in ['int', 'float']):
+                    print attrA['name'], attrB['name']
+
+        # TODO Detect redundant fields
+        # Detect objects that are attributes of another (count one-to-many edges leading outward)
+        numOutwardOneToManys = dict([(node['model'], 0) for node in nodes])
+        for edge in edges:
+            sourceDataset = edge['source'][0]
+            targetDataset = edge['target'][0]
+            type = edge['type']
+            print edge
+            if type == '1N':
+                numOutwardOneToManys[targetDataset] += 1
+            if type == 'N1':
+                numOutwardOneToManys[sourceDataset] += 1
+        print "OUTWARD ONE TO MANYS:"
+        print numOutwardOneToManys
+
+        # TREEMAP
+        # CONDITION -> QUERY -> N * GROUP BY
+        for node in nodes:
+            dataset_id = node['model']
+
+            # Must be a first-order object
+            if numOutwardOneToManys[dataset_id]:
+                attrs = node['attrs']
+
+                for attrA, attrB in combinations(attrs, 2):
+                    column_idA = attrA['column_id']
+                    column_idB = attrB['column_id']
+
+                    column_relnA = edge_to_type_dict.get(tuple([dataset_id, column_idA]))
+                    column_relnB = edge_to_type_dict.get(tuple([dataset_id, column_idB]))
+
+                    # Ensure that the condition and grouping attributes map to second-order objects
+                    # (do we want to do this???)
+                    if column_relnA or column_relnB:
+                        treemap_spec = {
+                            'condition': column_idA,
+                            'aggregate': dataset_id,
+                            'groupBy': column_idB,
+                        }
+                        visualizations['treemap'].append(treemap_spec)
+
+        json_data = json.jsonify({
+                                'status': "success",
+                                'visualizations': visualizations,
+                                })
+        response = make_response(json_data)
+        return response
 
 # Utility function to detect possible relationships between datasets
 # TODO: Deal with header lines somehow
@@ -222,6 +304,7 @@ class tag_data(Resource):
 api.add_resource(upload_file, '/upload')
 api.add_resource(get_test_datasets, '/get_test_datasets')
 api.add_resource(get_relationships, '/get_relationships')
+api.add_resource(get_visualizations_from_ontology, '/get_visualizations_from_ontology')
 api.add_resource(tag_data, '/tag')
 
 # Visualization Endpoints

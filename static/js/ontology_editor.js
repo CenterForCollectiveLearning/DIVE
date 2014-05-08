@@ -154,9 +154,9 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                         var parentTop = parentBBox.y;
 
                         // Final Positions
-                        var finalLeftX = parentLeft + margins.left + 10;
+                        var finalLeftX = parentLeft + margins.left + 10 - 10;
                         var finalLeftY = parentTop + y + boxMargins.y + attributesYOffset + (h/2);
-                        var finalRightX = parentLeft + margins.left + w + 10;
+                        var finalRightX = parentLeft + margins.left + w + 10 + 10;
                         var finalRightY = parentTop + y + boxMargins.y + attributesYOffset + (h/2);
 
                         // // Left Circles

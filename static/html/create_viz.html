@@ -1,15 +1,24 @@
 <section class="left-pane">
-  Visualization Mapper Left
+  <ul class="datasets">
+    <li ng-repeat="vizType in vizTypes" class="dataset" ng-click="select_vizType($index)" ng-class="{'selected-dataset':$index==selected_vizType}">
+      <div class="title">{[{vizType.name}]}</div>
+      <div class="count">{[{vizType.count}]}</div>
+    </li>
+  </ul>
 </section>
 
 <section class="right-pane">
-  Visualization Mapper Right
+  <ul class="datasets">
+    <li ng-repeat="vizSpec in vizSpecs" class="dataset" ng-click="select_vizSpec($index)" ng-class="{'selected-dataset':$index==selected_vizSpec}">
+      Aggregate {[{getDatasetTitle(vizSpec.aggregate)}]} conditioned on {[{getColumnName(vizSpec.aggregate, vizSpec.condition)}]} and group by {[{getColumnName(vizSpec.aggregate, vizSpec.groupBy)}]}.
+    </li>
+  </ul>
 </section>
 
 <section class="viewport">
   Visualization Mapper Main
 
-  {[{initNetwork}]}
+  <!-- {[{initNetwork}]} -->
 <!--   {[{overlaps}]} -->
 <!--   {[{hierarchies}]}
   {[{datasets}]} -->

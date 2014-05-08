@@ -66,23 +66,25 @@ nav.navbar {
         position: relative;
         bottom: 1px; }
 
-section.left-pane {
+section.left-pane, section.right-pane {
   position: relative;
   float: left;
   width: 300px;
   height: 100%;
-  border-right: 5px solid #e0e5e9; }
-  section.left-pane ul.datasets {
+  border-right: 5px solid #e0e5e9;
+  max-height: 100%;
+  overflow-y: auto; }
+  section.left-pane ul.datasets, section.right-pane ul.datasets {
     padding-left: 0;
     list-style-type: none; }
-    section.left-pane ul.datasets li {
+    section.left-pane ul.datasets li, section.right-pane ul.datasets li {
       list-style-type: none;
       height: 100px;
       border-bottom: 1px solid #e0e5e9; }
-      section.left-pane ul.datasets li.dataset {
+      section.left-pane ul.datasets li.dataset, section.right-pane ul.datasets li.dataset {
         cursor: pointer;
         padding: 15px; }
-      section.left-pane ul.datasets li.add-dataset {
+      section.left-pane ul.datasets li.add-dataset, section.right-pane ul.datasets li.add-dataset {
         cursor: pointer;
         width: 100%;
         height: 50px;
@@ -90,20 +92,20 @@ section.left-pane {
         line-height: 50px;
         text-align: center;
         color: #e0e5e9; }
-        section.left-pane ul.datasets li.add-dataset:hover {
+        section.left-pane ul.datasets li.add-dataset:hover, section.right-pane ul.datasets li.add-dataset:hover {
           color: #222222; }
-      section.left-pane ul.datasets li.selected-dataset {
+      section.left-pane ul.datasets li.selected-dataset, section.right-pane ul.datasets li.selected-dataset {
         background-color: #eee; }
-      section.left-pane ul.datasets li div.title {
+      section.left-pane ul.datasets li div.title, section.right-pane ul.datasets li div.title {
         font-size: 1.5rem; }
-      section.left-pane ul.datasets li div.dimensions {
+      section.left-pane ul.datasets li div.dimensions, section.right-pane ul.datasets li div.dimensions {
         float: left;
         margin-top: 10px;
         width: 200px; }
-      section.left-pane ul.datasets li div.type {
+      section.left-pane ul.datasets li div.type, section.right-pane ul.datasets li div.type {
         text-align: right;
         margin-top: 20px; }
-  section.left-pane div.drag {
+  section.left-pane div.drag, section.right-pane div.drag {
     position: absolute;
     top: 500px;
     width: 100%;

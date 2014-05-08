@@ -2,12 +2,6 @@ app.service('DataService', function($http) {
   var myData = [];
 
   var promise = $http.get('get_test_datasets').success(function(data) {
-    // Hardcoded ordering -- BAD
-    // TODO Develop algo to minimize edge-crossings
-    var temp = data.samples[2];
-    data.samples[2] = data.samples[1];
-    data.samples[1] = temp;
-
     myData = data.samples;
     })
 
