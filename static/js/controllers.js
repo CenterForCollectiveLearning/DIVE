@@ -61,7 +61,7 @@ controllers.controller('OntologyEditorCtrl', function($scope, $http, DataService
   $scope.hierarchies = relnData.hierarchies;
 });
 
-controllers.controller('CreatVizCtrl', function($scope, $http, DataService, OverlapService, VizDataService) {
+controllers.controller('CreateVizCtrl', function($scope, $http, DataService, OverlapService, VizDataService, VizFromOntologyService) {
 
   // Initialize datasets
   var datasets = DataService.getData();
@@ -113,12 +113,17 @@ controllers.controller('CreatVizCtrl', function($scope, $http, DataService, Over
     'edges': edges
   };
 
+
+  // TODO Pare down this UI stuff
   $scope.initNetwork = initNetwork;
 
+  // TODO Don't be redundant
+  $scope.vizType = 'treemap';
   $scope.selected_vizType = 'treemap';
   $scope.selected_vizType_index = 3;
   $scope.select_vizType = function(index) {
     $scope.selected_vizType = $scope.vizTypes[index].name;
+    $scope.vizType = $scope.vizTypes[index].name;
     $scope.selected_vizType_index = index;
   };
 
@@ -126,7 +131,6 @@ controllers.controller('CreatVizCtrl', function($scope, $http, DataService, Over
   $scope.select_vizSpec = function(index) {
     $scope.selected_vizSpec_index = index;
   };
-
 
   // TODO Abstract these to a global client-side ID reference
   $scope.getDatasetTitle = function(dataset_id) {
@@ -148,51 +152,33 @@ controllers.controller('CreatVizCtrl', function($scope, $http, DataService, Over
     }).success(function(result) {
       $scope.$apply(function() {
         $scope.vizData = result.data.result;
-        console.log($scope.selected_vizType, $scope.vizData);
       })
     })
   }
 
-
-  // $scope.displayVisualization = function(vizSpec) {
-  //   $http.get('get_treemap_data', {
-  //     params: {
-  //       condition: vizSpec.condition,
-  //       aggregate: vizSpec.aggregate,
-  //       query: '*',
-  //       groupBy: vizSpec.groupBy
-  //     }
-  //   }).success(function(result) {
-  //     $scope.$apply(function() {
-  //       $scope.vizData = result.data.result;
-  //       console.log($scope.selected_vizType, $scope.vizData);
-  //     })
-  //   })
-  // }
-
-  // TODO Put this into a service
-  $.ajax({
-      url: 'get_visualizations_from_ontology',
-      type: 'POST',
-      data: JSON.stringify(initNetwork),
-      cache: false,
-      processData: false,
-      contentType: false,
-    }).success(function(data) {
-      if (data.status === "success") {
-
-        $scope.$apply(function() {
-          var visualizations = data.visualizations;
-          var vizTypes = []
-          for (var visualization in visualizations) {
-            vizTypes.push({
-              'name': visualization,
-              'count': visualizations[visualization].length
-            })
-          }
-          $scope.vizTypes = vizTypes;
-          $scope.vizSpecs = visualizations[visualization];
-        });
+  // Correct way to handle argument passing to async service
+  $scope.vizFromOntology = function() {
+    // TODO Move parsing logic to server side...or just have it in the correct format anyways
+    VizFromOntologyService.promise($scope.initNetwork, function(data) {
+      var visualizations = data.visualizations;
+      var vizTypes = []
+      for (var visualization in visualizations) {
+        vizTypes.push({
+          'name': visualization,
+          'count': visualizations[visualization].length
+        })
       }
-    });
+      $scope.vizTypes = vizTypes;
+      $scope.vizSpecs = visualizations[visualization];
+    })
+  }
+  $scope.vizFromOntology()
+
+  $scope.setVizData = function(vizSpec) {
+    $scope.vizSpec = vizSpec;
+    VizDataService.promise(vizSpec, function(result) {
+      $scope.vizData = result.result;
+    })
+    console.log("scope", $scope);
+  }
 });

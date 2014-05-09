@@ -1,21 +1,26 @@
 app.directive('visualizationPreview', ['$window', '$timeout', 'd3Service', 
-    function($window, $timeout, d3Service, d3PlusService) {
+    function($window, $timeout, d3Service) {
     	return {
         restrict: 'EA',
         scope: {
-            vizData: '=',
             vizType: '=',
+            vizSpec: '=',
+            vizData: '=',
             label: '@',
             onClick: '&'
         },
         link: function(scope, ele, attrs) {
+            d3Service.d3().then(function(d3) {
+
+            console.log("Link scope:", scope);
+
             var renderTimeout;
    
             var svg = d3.select(ele[0])
               .append('svg')
                 .style('width', '100%')
                 .style('height', '100%');
-   
+
             $window.onresize = function() {
                 scope.$apply();
             };
@@ -23,27 +28,33 @@ app.directive('visualizationPreview', ['$window', '$timeout', 'd3Service',
             scope.$watch(function() {
                 return angular.element($window)[0].innerWidth;
             }, function() {
-                console.log(scope);
-                scope.render(scope.vizData, scope.vizType);
+                scope.render(scope.vizType, scope.vizSpec, scope.vizData);
             });
    
-            scope.$watchCollection('[vizData, vizType]', function(newData) {
-                console.log("NEWDATA", newData);
-                scope.render(newData[0], newData[1]);
+            scope.$watchCollection('[selected_vizType, vizSpec, vizData]', function(newData) {
+                console.log("NEW DATA", newData)
+                scope.render(newData[0], newData[1], newData[2]);
             }, true);
    
-            scope.render = function(vizData, vizType) {
-                console.log("IN VIZPREVIEW");
-                console.log(vizData, vizType);
+            scope.render = function(vizType, vizSpec, vizData) {
+                console.log("vizType", vizType);
+                console.log("vizSpec", vizSpec);
+                console.log("vizData", vizData);
                 svg.selectAll('*').remove();
      
                 if (!vizData) return;
                 if (renderTimeout) clearTimeout(renderTimeout);
 
-                console.log("***", vizData, vizType)
                 renderTimeout = $timeout(function() {
-                	// console.log(d3plus);
+                   var viz = d3plus.viz()
+                    .container('div#visualization-preview')
+                    .data(vizData)
+                    .type('tree_map')
+                    .id(vizSpec.by)
+                    .size('count')
+                    .draw()
                 }, 200);
             };
+        })
 	}}
 }])

@@ -3,7 +3,6 @@ app.config(['$routeProvider', function($routeProvider) {
     when('/data_view', {
       templateUrl: 'static/html/data_view.html',
       controller: 'DatasetListCtrl',
-      activetab: 'data_view',
       resolve: {
         initialData: function(DataService) {
           return DataService.promise;
@@ -13,7 +12,6 @@ app.config(['$routeProvider', function($routeProvider) {
     when('/edit_ontology', {
       templateUrl: 'static/html/edit_ontology.html',
       controller: 'OntologyEditorCtrl',
-      activetab: 'edit_ontology',
       resolve: {
         initialData: function(DataService) {
           return DataService.promise;
@@ -25,14 +23,19 @@ app.config(['$routeProvider', function($routeProvider) {
     }).
     when('/visualize', {
       templateUrl: 'static/html/create_viz.html',
-      controller: 'CreatVizCtrl',
-      activetab: 'create_viz',
+      controller: 'CreateVizCtrl',
       resolve: {
         initialData: function(DataService) {
           return DataService.promise;
         },
         overlapService: function(OverlapService) {
           return OverlapService.promise;
+        },
+        vizFromOntologyService: function(VizFromOntologyService) {
+          return VizFromOntologyService.promise;
+        },
+        vizDataService: function(VizDataService) {
+          return VizDataService.promise;
         }
       }
     }).

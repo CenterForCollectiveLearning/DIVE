@@ -9,7 +9,7 @@
 
 <section class="right-pane">
   <ul class="datasets">
-    <li ng-repeat="vizSpec in vizSpecs" class="dataset" ng-click="select_vizSpec($index);" ng-class="{'selected-dataset':$index==selected_vizSpec_index}">
+    <li ng-repeat="vizSpec in vizSpecs" class="dataset" ng-click="select_vizSpec($index);setVizData(vizSpec);" ng-class="{'selected-dataset':$index==selected_vizSpec_index}">
       Aggregate {[{getDatasetTitle(vizSpec.aggregate)}]} conditioned on {[{getColumnName(vizSpec.aggregate, vizSpec.condition)}]} and group by {[{getColumnName(vizSpec.aggregate, vizSpec.groupBy)}]}.
     </li>
   </ul>
@@ -17,7 +17,7 @@
 
 <section class="viewport">
   {[{vizData}]}
-  <visualization-preview vizData="vizData" vizType="selected_vizType">
+  <visualization-preview vizType="selected_vizType" vizSpec="vizSpec" vizData="vizData">
   </visualization-preview>
 </section>
 

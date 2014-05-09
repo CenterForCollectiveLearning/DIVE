@@ -73,9 +73,6 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                     var colorScale = d3.scale.category10();
                     colorScale.domain(Object.keys(overlaps));
 
-                    console.log(data);
-                    console.log(overlaps);
-
                     g = svg.selectAll('g')
                             .data(data)
                           .enter()
@@ -141,7 +138,6 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
 
                     // Get left and right positions for each node (relative to parent)
                     d3.selectAll('g.attr').each(function(d, i) {
-                        console.log(d);
                         var attrName = d.name;
                         var column_id = d.column_id;
                         var bbox = d3.select(this).node().getBBox();
@@ -220,7 +216,6 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                         var tableL = l[0];
                         var tableR = r[0];
 
-                        console.log(attributePositions);
                         var attrPositionsA = attributePositions[l[0]][l[1]];
                         var attrPositionsB = attributePositions[r[0]][r[1]];
 
