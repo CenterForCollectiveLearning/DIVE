@@ -3,17 +3,13 @@ app.directive('visualizationPreview', ['$window', '$timeout', 'd3Service',
     	return {
         restrict: 'EA',
         scope: {
-            data: '=',
-            overlaps: '=',  // What does this do??
-            hierarchies: '=',
+            vizData: '=',
+            vizType: '=',
             label: '@',
             onClick: '&'
         },
         link: function(scope, ele, attrs) {
             var renderTimeout;
-            var margin = parseInt(attrs.margin) || 20,
-                barHeight = parseInt(attrs.barHeight) || 20,
-                barPadding = parseInt(attrs.barPadding) || 5;
    
             var svg = d3.select(ele[0])
               .append('svg')
@@ -27,33 +23,24 @@ app.directive('visualizationPreview', ['$window', '$timeout', 'd3Service',
             scope.$watch(function() {
                 return angular.element($window)[0].innerWidth;
             }, function() {
-                scope.render(scope.data, scope.overlaps, scope.hierarchies);
+                console.log(scope);
+                scope.render(scope.vizData, scope.vizType);
             });
    
-            scope.$watchCollection('[data,overlaps,hierarchies]', function(newData) {
-                scope.render(newData[0], newData[1], newData[2]);
+            scope.$watchCollection('[vizData, vizType]', function(newData) {
+                console.log("NEWDATA", newData);
+                scope.render(newData[0], newData[1]);
             }, true);
    
-            scope.render = function(data, overlaps, hierarchies) {
-
+            scope.render = function(vizData, vizType) {
+                console.log("IN VIZPREVIEW");
+                console.log(vizData, vizType);
                 svg.selectAll('*').remove();
      
-                if (!data) return;
+                if (!vizData) return;
                 if (renderTimeout) clearTimeout(renderTimeout);
 
-                // Margins and Positioning
-                var boxWidth = 220;
-                var margins = {
-                    left: 20
-                }
-
-                var boxMargins = {
-                    x: 20,
-                    y: 20
-                }
-
-                var attributesYOffset = 60;
-
+                console.log("***", vizData, vizType)
                 renderTimeout = $timeout(function() {
                 	// console.log(d3plus);
                 }, 200);

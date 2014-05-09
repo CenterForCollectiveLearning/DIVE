@@ -9,14 +9,15 @@
 
 <section class="right-pane">
   <ul class="datasets">
-    <li ng-repeat="vizSpec in vizSpecs" class="dataset" ng-click="select_vizSpec($index);displayVisualization(vizSpec) " ng-class="{'selected-dataset':$index==selected_vizSpec_index}">
+    <li ng-repeat="vizSpec in vizSpecs" class="dataset" ng-click="select_vizSpec($index);" ng-class="{'selected-dataset':$index==selected_vizSpec_index}">
       Aggregate {[{getDatasetTitle(vizSpec.aggregate)}]} conditioned on {[{getColumnName(vizSpec.aggregate, vizSpec.condition)}]} and group by {[{getColumnName(vizSpec.aggregate, vizSpec.groupBy)}]}.
     </li>
   </ul>
 </section>
 
 <section class="viewport">
-  <visualization-preview data="datasets" overlaps="overlaps" hierarchies="hierarchies">
+  {[{vizData}]}
+  <visualization-preview vizData="vizData" vizType="selected_vizType">
   </visualization-preview>
 </section>
 

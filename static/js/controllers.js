@@ -137,11 +137,7 @@ controllers.controller('CreatVizCtrl', function($scope, $http, DataService, Over
     return datasets[dataset_id].column_attrs[column_id].name;
   }
 
-
-  $scope.displayVisualization = function(vizSpec) {
-    console.log("VIZTYPE", $scope.selected_vizType)
-    console.log("VIZSPEC", vizSpec)
-
+  displayVisualization = function(vizSpec) {
     $http.get('get_treemap_data', {
       params: {
         condition: vizSpec.condition,
@@ -149,8 +145,30 @@ controllers.controller('CreatVizCtrl', function($scope, $http, DataService, Over
         query: '*',
         groupBy: vizSpec.groupBy
       }
+    }).success(function(result) {
+      $scope.$apply(function() {
+        $scope.vizData = result.data.result;
+        console.log($scope.selected_vizType, $scope.vizData);
+      })
     })
   }
+
+
+  // $scope.displayVisualization = function(vizSpec) {
+  //   $http.get('get_treemap_data', {
+  //     params: {
+  //       condition: vizSpec.condition,
+  //       aggregate: vizSpec.aggregate,
+  //       query: '*',
+  //       groupBy: vizSpec.groupBy
+  //     }
+  //   }).success(function(result) {
+  //     $scope.$apply(function() {
+  //       $scope.vizData = result.data.result;
+  //       console.log($scope.selected_vizType, $scope.vizData);
+  //     })
+  //   })
+  // }
 
   // TODO Put this into a service
   $.ajax({

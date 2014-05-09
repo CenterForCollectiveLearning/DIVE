@@ -149,6 +149,7 @@ class get_treemap_data(Resource):
                 by: row[0], 
                 'count': row[1]
             })
+        print result
         return {'result': result}
 
 vizFromOntParser = reqparse.RequestParser()
