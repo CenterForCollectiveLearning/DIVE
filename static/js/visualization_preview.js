@@ -15,12 +15,6 @@ app.directive('visualizationPreview', ['$window', '$timeout', 'd3Service',
             console.log("Link scope:", scope);
 
             var renderTimeout;
-   
-            var svg = d3.select(ele[0])
-              .append('svg')
-                .style('width', '100%')
-                .style('height', '100%');
-
             $window.onresize = function() {
                 scope.$apply();
             };
@@ -51,6 +45,11 @@ app.directive('visualizationPreview', ['$window', '$timeout', 'd3Service',
                     .container('div#viz-container')
                     .data(vizData)
                     .type('tree_map')
+                    .style({
+                        font: { 
+                            family: 'Karbon'
+                        }
+                    })
                     .id(vizSpec.groupBy)
                     .size('count')
                     .draw()

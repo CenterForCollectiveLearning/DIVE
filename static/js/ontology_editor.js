@@ -12,8 +12,6 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
         link: function(scope, ele, attrs) {
             d3Service.d3().then(function(d3) {
 
-            console.log("LINK SCOPE", scope)
-   
             var renderTimeout;
             var margin = parseInt(attrs.margin) || 20,
                 barHeight = parseInt(attrs.barHeight) || 20,

@@ -1,8 +1,8 @@
 <section class="left-pane">
   <ul class="datasets">
     <li ng-repeat="vizType in vizTypes" class="dataset" ng-click="select_vizType($index)" ng-class="{'selected-dataset':$index==selected_vizType_index}">
-      <div class="title">{[{vizType.name}]}</div>
-      <div class="count">{[{vizType.count}]}</div>
+      <div class="title"><b>{[{vizType.name | capitalize}]}</b></div>
+      <div class="count">{[{vizType.count}]} Visualization Types</div>
     </li>
   </ul>
 </section>
@@ -10,7 +10,9 @@
 <section class="right-pane">
   <ul class="datasets">
     <li ng-repeat="vizSpec in vizSpecs" class="dataset" ng-click="select_vizSpec($index);setVizData(vizSpec);" ng-class="{'selected-dataset':$index==selected_vizSpec_index}">
-      Aggregate {[{getDatasetTitle(vizSpec.aggregate)}]} conditioned on {[{getColumnName(vizSpec.aggregate, vizSpec.condition)}]} and group by {[{getColumnName(vizSpec.aggregate, vizSpec.groupBy)}]}.
+      <div>Aggregate <b>{[{getDatasetTitle(vizSpec.aggregate)}]}</b></div>
+      <div>Condition on <b>{[{getColumnName(vizSpec.aggregate, vizSpec.condition)}]}</b></div>
+      <div>Group by <b>{[{getColumnName(vizSpec.aggregate, vizSpec.groupBy)}]}</b></div>
     </li>
   </ul>
 </section>

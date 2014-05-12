@@ -38,18 +38,22 @@
 
 	<body>
 		<!-- Navigation Bar -->
-		<nav class="navbar navbar-default top" role="navigation">
-			<div class="navbar-header">
-				<a class="navbar-brand" id="logo" href="#">DIVE</a>
-			</div>
-		</nav>
-		<nav class="navbar navbar-default sections" role="navigation">
-			<a href="#data_view"><p class="navbar-text navbar-left" ng-class="{'active': $route.current.activetab == 'data_view'}">Manage Dataset</p></a>
-			<a href="#edit_ontology"><p class="navbar-text navbar-left">Edit Ontology</p></a>
-			<a href="#visualize"><p class="navbar-text navbar-left">Select Visualizations</p></a>
-			<a href="#assemble"><p class="navbar-text navbar-left">Assemble Engine</p></a>
-		</nav>
+		<header>
+			<nav class="navbar navbar-default top" role="navigation">
+				<div class="navbar-header">
+					<a class="navbar-brand" id="logo" href="#">DIVE</a>
+				</div>
+			</nav>
+			<nav class="navbar navbar-default sections" role="navigation">
+				<a href="#data_view"><p class="navbar-text navbar-left" ng-class="{'active': $route.current.activetab == 'data_view'}">Manage Dataset</p></a>
+				<a href="#edit_ontology"><p class="navbar-text navbar-left">Edit Ontology</p></a>
+				<a href="#visualize"><p class="navbar-text navbar-left">Select Visualizations</p></a>
+				<a href="#assemble"><p class="navbar-text navbar-left">Assemble Engine</p></a>
+			</nav>
+		</header>
 
-		<div ng-view></div>
+		<div class="wrapper">
+    		<div ng-view></div>
+    	</div>
 	</body>
 </html>

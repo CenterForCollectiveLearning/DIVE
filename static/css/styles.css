@@ -18,6 +18,11 @@
   src: url("karbon-regular-webfont.woff") format("woff");
   font-weight: normal; }
 
+@font-face {
+  font-family: 'Karbon';
+  src: url("karbon-semibold-webfont.woff") format("woff");
+  font-weight: bold; }
+
 *, *:before, *:after {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -26,7 +31,8 @@
 html, body {
   height: 100%;
   max-height: 100%;
-  font-family: 'DIN', Helvetica, Sans Serif; }
+  overflow-y: scroll;
+  font-family: 'Karbon', 'DIN', Helvetica, Sans Serif; }
 
 /* Layout */
 nav.navbar {
@@ -67,12 +73,12 @@ nav.navbar {
         bottom: 1px; }
 
 section.left-pane, section.right-pane {
+  font-size: 16px;
   position: relative;
   float: left;
   width: 300px;
   height: 100%;
   border-right: 5px solid #e0e5e9;
-  max-height: 100%;
   overflow-y: auto; }
   section.left-pane ul.datasets, section.right-pane ul.datasets {
     padding-left: 0;
@@ -96,8 +102,6 @@ section.left-pane, section.right-pane {
           color: #222222; }
       section.left-pane ul.datasets li.selected-dataset, section.right-pane ul.datasets li.selected-dataset {
         background-color: #eee; }
-      section.left-pane ul.datasets li div.title, section.right-pane ul.datasets li div.title {
-        font-size: 1.5rem; }
       section.left-pane ul.datasets li div.dimensions, section.right-pane ul.datasets li div.dimensions {
         float: left;
         margin-top: 10px;
@@ -115,8 +119,8 @@ section.right-pane {
   position: relative;
   float: right;
   width: 300px;
-  height: 100%;
-  border-left: 5px solid #e0e5e9; }
+  border-left: 5px solid #e0e5e9;
+  font-size: 16px; }
 
 /* Upload */
 section.upload-dataset {
@@ -130,7 +134,6 @@ section.upload-dataset {
 
 /* Viewport */
 section.viewport {
-  padding: 20px;
   margin-left: 300px;
   margin-right: 300px; }
 
@@ -150,6 +153,9 @@ input {
   input:focus {
     outline: none;
     background-color: #C0C0C0; }
+
+div#viz-container {
+  width: 100%; }
 
 /* Ontology Editor */
 g {

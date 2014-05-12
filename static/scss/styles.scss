@@ -27,6 +27,12 @@ $dark-gray: #222222;
     font-weight: normal;
 }
 
+@font-face {
+    font-family: 'Karbon';
+    src: url('karbon-semibold-webfont.woff') format('woff');
+    font-weight: bold;
+}
+
 *, *:before, *:after {
     -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
 }
@@ -34,7 +40,8 @@ $dark-gray: #222222;
 html, body {
     height: 100%;
     max-height: 100%;
-    font-family: 'DIN', Helvetica, Sans Serif;
+    overflow-y: scroll;
+    font-family: 'Karbon', 'DIN', Helvetica, Sans Serif;
 }
 
 /* Layout */
@@ -97,13 +104,14 @@ nav.navbar {
 }
 
 section.left-pane, section.right-pane {
+    font-size: 16px;
     position: relative;
     float: left;
     width: 300px;
     height: 100%;
     border-right: 5px solid $light-gray;
 
-    max-height: 100%;
+
     overflow-y: auto;
 
     ul.datasets {
@@ -137,7 +145,7 @@ section.left-pane, section.right-pane {
             }
 
             div.title {
-                font-size: 1.5rem;
+                // font-size: 1.5rem;
             }
 
             div.dimensions {
@@ -163,8 +171,8 @@ section.right-pane {
     position: relative;
     float: right;
     width: 300px;
-    height: 100%;
     border-left: 5px solid $light-gray;
+    font-size: 16px;
 }
 
 /* Upload */
@@ -189,7 +197,7 @@ section.upload-dataset {
 
 /* Viewport */
 section.viewport {
-    padding: 20px;
+    // padding: 20px;
     margin-left: 300px;
     margin-right: 300px;
 }
@@ -213,6 +221,11 @@ input {
         outline: none;
         background-color: #C0C0C0;
     }
+}
+
+
+div#viz-container {
+    width: 100%;
 }
 
 
