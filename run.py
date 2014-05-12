@@ -8,6 +8,7 @@ from os import listdir
 from os.path import isfile, join
 from itertools import combinations
 from werkzeug.utils import secure_filename
+import numpy as np
 
 from server.data import DAL
 from server.utility import *
@@ -40,15 +41,15 @@ class upload_file(Resource):
     def get(self):
         file = request.files.get('dataset')
         if file and allowed_file(file.filename):
-    
+
             # save file
             filename = secure_filename(file.filename)
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    
+
             # get sample data
             sample, rows, cols, extension, header  = get_sample_data(path)
-    
+
             # make response
             json_data = json.jsonify({
                                     'status': "success",
@@ -62,7 +63,7 @@ class upload_file(Resource):
             response = make_response(json_data)
             response.set_cookie('file', filename)
             return response
-    
+
         return json.jsonify({'status': "upload failed"})
 
 
@@ -71,9 +72,9 @@ class get_test_datasets(Resource):
     def get(self):
         test_dataset_samples = []
         filenames = [f for f in listdir(app.config['TEST_DATA_FOLDER']) if (isfile(join(app.config['TEST_DATA_FOLDER'], f)) and f[0] is not '.')]
-    
+
         for filename in filenames:
-    
+
             path = os.path.join(app.config['TEST_DATA_FOLDER'], filename)
 
             # TODO Don't try to insert a new one every time
@@ -83,13 +84,13 @@ class get_test_datasets(Resource):
 
             header, columns = read_file(path)
             unique_cols = [detect_unique_list(col) for col in columns]
-    
+
             # make response
             sample, rows, cols, extension, header = get_sample_data(path)
             types = get_column_types(path)
 
             column_attrs = [{'name': header[i], 'type': types[i], 'column_id': i} for i in column_ids]
-    
+
             json_data = {
                             'dataset_id': dataset_id,
                             'column_ids': column_ids,
@@ -102,9 +103,9 @@ class get_test_datasets(Resource):
                             'cols': cols,
                             'filetype': extension,
                         }
-    
+
             test_dataset_samples.append(json_data)
-    
+
         result = json.jsonify({'status': 'success', 'samples': test_dataset_samples})
         return result
 
@@ -146,8 +147,8 @@ class get_treemap_data(Resource):
         result = []
         for row in finalSeries.iteritems():
             result.append({
-                by: row[0], 
-                'count': row[1]
+                by: row[0],
+                'count': np.asscalar(np.int16(row[1]))
             })
         print result
         return {'result': result}
@@ -261,30 +262,30 @@ class get_relationships(Resource):
             headers_dict[dataset_id] = header
             raw_columns_dict[dataset_id] = [list(col) for col in columns]
             unique_columns_dict[dataset_id] = [get_unique(col) for col in columns]
-    
+
             # List of booleans -- is a column composed of unique elements?
             is_unique_dict[dataset_id] = [detect_unique_list(col) for col in columns]
 
         overlaps = {}
         hierarchies = {}
-    
+
         # Pairwise comparison of columns cross datasets
         for dataset_idA, dataset_idB in combinations(dataset_ids.values(), 2):
             raw_colsA = raw_columns_dict[dataset_idA]
             raw_colsB = raw_columns_dict[dataset_idB]
             unique_colsA = unique_columns_dict[dataset_idA]
             unique_colsB = unique_columns_dict[dataset_idB]
-    
+
             overlaps['%s\t%s' % (dataset_idA, dataset_idB)] = {}
             hierarchies['%s\t%s' % (dataset_idA, dataset_idB)] = {}
-    
+
             for indexA, colA in enumerate(raw_colsA):
                 for indexB, colB in enumerate(raw_colsB):
                     h = get_hierarchy(colA, colB)
                     d = get_distance(colA, colB)
                     if d:
                         hierarchies['%s\t%s' % (dataset_idA, dataset_idB)]['%s\t%s' % (indexA, indexB)] = h
-    
+
             for indexA, colA in enumerate(unique_colsA):
                 for indexB, colB in enumerate(unique_colsB):
                     d = get_distance(colA, colB)
