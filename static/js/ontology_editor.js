@@ -11,6 +11,8 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
         },
         link: function(scope, ele, attrs) {
             d3Service.d3().then(function(d3) {
+
+            console.log("LINK SCOPE", scope)
    
             var renderTimeout;
             var margin = parseInt(attrs.margin) || 20,
@@ -33,6 +35,7 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
             });
    
             scope.$watchCollection('[data,overlaps,hierarchies]', function(newData) {
+                console.log(newData);
                 scope.render(newData[0], newData[1], newData[2]);
             }, true);
    

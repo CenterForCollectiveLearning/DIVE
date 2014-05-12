@@ -123,6 +123,7 @@ class get_treemap_data(Resource):
         condition = args.get('condition')
         aggregate = args.get('aggregate')
         by = args.get('groupBy')
+        by_id = by
         query = args.get('query').strip('[').strip(']').split(',')
         aggFn = args.get('aggFn')
 
@@ -147,7 +148,7 @@ class get_treemap_data(Resource):
         result = []
         for row in finalSeries.iteritems():
             result.append({
-                by: row[0],
+                by_id: row[0],
                 'count': np.asscalar(np.int16(row[1]))
             })
         print result

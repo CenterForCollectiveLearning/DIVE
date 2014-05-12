@@ -177,6 +177,7 @@ controllers.controller('CreateVizCtrl', function($scope, $http, DataService, Ove
   $scope.setVizData = function(vizSpec) {
     $scope.vizSpec = vizSpec;
     VizDataService.promise(vizSpec, function(result) {
+      console.log("VIZ DATA", $scope);
       $scope.vizData = result.result;
     })
     console.log("scope", $scope);

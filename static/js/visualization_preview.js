@@ -31,8 +31,8 @@ app.directive('visualizationPreview', ['$window', '$timeout', 'd3Service',
                 scope.render(scope.vizType, scope.vizSpec, scope.vizData);
             });
    
-            scope.$watchCollection('[selected_vizType, vizSpec, vizData]', function(newData) {
-                console.log("NEW DATA", newData)
+            scope.$watchCollection('[vizType,vizSpec,vizData]', function(newData) {
+                console.log(newData);
                 scope.render(newData[0], newData[1], newData[2]);
             }, true);
    
@@ -40,17 +40,18 @@ app.directive('visualizationPreview', ['$window', '$timeout', 'd3Service',
                 console.log("vizType", vizType);
                 console.log("vizSpec", vizSpec);
                 console.log("vizData", vizData);
-                svg.selectAll('*').remove();
      
                 if (!vizData) return;
                 if (renderTimeout) clearTimeout(renderTimeout);
 
+                console.log(vizSpec.by)
+
                 renderTimeout = $timeout(function() {
                    var viz = d3plus.viz()
-                    .container('div#visualization-preview')
+                    .container('div#viz-container')
                     .data(vizData)
                     .type('tree_map')
-                    .id(vizSpec.by)
+                    .id(vizSpec.groupBy)
                     .size('count')
                     .draw()
                 }, 200);
