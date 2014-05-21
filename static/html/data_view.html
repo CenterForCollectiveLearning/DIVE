@@ -13,15 +13,14 @@
     </li>
   </ul>
 
-  <form id="upload-form" method="post" enctype="multipart/form-data">
+<!--   <form id="upload-form" method="post" enctype="multipart/form-data">
     <label for="dataset">Select a dataset to upload</label>
     <input id="data-file" type="file" name="dataset">
     <button id="data-submit">Upload</button>
-  </form>
+  </form> -->
 </section>
 
 <section class="viewport">
-
   <div ng-repeat="dataset in datasets" ng-if="$index==selected_index">
     <div ng-if="dataset.sample">
       <input type="text" ng-model="dataset.title">
@@ -33,7 +32,7 @@
         </tr>
         <tr>
           <td ng-repeat="attr in dataset.column_attrs">
-            <select ng-model="attr.type" ng-options="type for type in types">
+            <select ng-model="attr.type" ng-options="type for type in types" class="type-select">
           </td>
         </tr>
 

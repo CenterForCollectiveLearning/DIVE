@@ -151,7 +151,9 @@ class get_treemap_data(Resource):
                 by_id: row[0],
                 'count': np.asscalar(np.int16(row[1]))
             })
-        print result
+        # print result
+        for r in result:
+            print r['count']
         return {'result': result}
 
 vizFromOntParser = reqparse.RequestParser()
@@ -179,7 +181,6 @@ class get_visualizations_from_ontology(Resource):
             edge_to_type_dict[tuple(source)] = type
             edge_to_type_dict[tuple(target)] = type
 
-
         # SCATTERPLOT
         # ATTR vs ATTR, optional QUERY and GROUP
         # for node in nodes:
@@ -201,6 +202,8 @@ class get_visualizations_from_ontology(Resource):
             if type == 'N1':
                 numOutwardOneToManys[sourceDataset] += 1
 
+        # TODO: Detect if an entity is likely geographic
+
         # TREEMAP
         # CONDITION -> QUERY -> N * GROUP BY
         for node in nodes:
@@ -211,25 +214,47 @@ class get_visualizations_from_ontology(Resource):
                 attrs = node['attrs']
 
                 for attrA, attrB in combinations(attrs, 2):
+                    unique_A = node['unique_cols'][attrs.index(attrA)]
+                    unique_B = node['unique_cols'][attrs.index(attrB)]
+                    type_A = attrA['type']
+                    type_B = attrB['type']
                     column_idA = attrA['column_id']
                     column_idB = attrB['column_id']
+                    name_A = attrA['name']
+                    name_B = attrB['name']
 
                     column_relnA = edge_to_type_dict.get(tuple([dataset_id, column_idA]))
                     column_relnB = edge_to_type_dict.get(tuple([dataset_id, column_idB]))
 
                     # Ensure that the condition and grouping attributes map to second-order objects
+                    # Ensure that the conditioning and grouping variables are not floats
                     # (do we want to do this???)
-                    if column_relnA or column_relnB:
+                    print name_A, column_relnA
+                    if (not column_relnA) and (not unique_A) and (type_A != 'float') and (type_B != 'float') and (type_B != 'int'):
                         treemap_spec = {
+                        'condition': column_idA,
+                        'aggregate': dataset_id,
+                        'groupBy': column_idB,
+                        }
+                        visualizations['treemap'].append(treemap_spec)
+
+                    if (not unique_A) and (name_B == 'countryName'):
+                        geomap_spec = {
                             'condition': column_idA,
                             'aggregate': dataset_id,
                             'groupBy': column_idB,
                         }
-                        visualizations['treemap'].append(treemap_spec)
+                        visualizations['geomap'].append(geomap_spec)
+
+        result = {}
+        for vizType, vizSpecs in visualizations.iteritems():
+            if vizSpecs:
+                result[vizType] = vizSpecs
+
 
         json_data = json.jsonify({
                                 'status': "success",
-                                'visualizations': visualizations,
+                                'visualizations': result,
                                 })
         response = make_response(json_data)
         return response

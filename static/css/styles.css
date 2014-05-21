@@ -137,6 +137,9 @@ section.viewport {
   margin-left: 300px;
   margin-right: 300px; }
 
+select.type-select {
+  width: 100%; }
+
 /* Table */
 tr.ng-scope td {
   padding: 4px; }

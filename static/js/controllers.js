@@ -82,7 +82,8 @@ controllers.controller('CreateVizCtrl', function($scope, $http, DataService, Ove
     var dataset = datasets[i];
     var node = {
       model: dataset.dataset_id,
-      attrs: dataset.column_attrs
+      attrs: dataset.column_attrs,
+      unique_cols: dataset.unique_cols
     }
     nodes.push(node);
   }
@@ -120,11 +121,15 @@ controllers.controller('CreateVizCtrl', function($scope, $http, DataService, Ove
   // TODO Don't be redundant
   $scope.vizType = 'treemap';
   $scope.selected_vizType = 'treemap';
-  $scope.selected_vizType_index = 3;
+  $scope.selected_vizType_index = 1;
   $scope.select_vizType = function(index) {
     $scope.selected_vizType = $scope.vizTypes[index].name;
     $scope.vizType = $scope.vizTypes[index].name;
     $scope.selected_vizType_index = index;
+
+    // TODO: There must be a better way to do pretty much an ng-if on an object
+    $scope.vizSpecs = $scope.allVizSpecs[$scope.selected_vizType];
+    console.log('Selected vizType:', $scope.vizType);
   };
 
   $scope.selected_vizSpec_index = 0;
@@ -169,7 +174,9 @@ controllers.controller('CreateVizCtrl', function($scope, $http, DataService, Ove
         })
       }
       $scope.vizTypes = vizTypes;
-      $scope.vizSpecs = visualizations[visualization];
+      $scope.vizSpecs = visualizations[$scope.selected_vizType];
+      $scope.allVizSpecs = visualizations;
+      console.log("vizSpecs:", $scope.vizSpecs)
     })
   }
   $scope.vizFromOntology()
@@ -177,9 +184,7 @@ controllers.controller('CreateVizCtrl', function($scope, $http, DataService, Ove
   $scope.setVizData = function(vizSpec) {
     $scope.vizSpec = vizSpec;
     VizDataService.promise(vizSpec, function(result) {
-      console.log("VIZ DATA", $scope);
       $scope.vizData = result.result;
     })
-    console.log("scope", $scope);
   }
 });

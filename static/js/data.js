@@ -4,6 +4,10 @@ app.service('DataService', function($http) {
   var myData = [];
 
   var promise = $http.get('get_test_datasets').success(function(data) {
+    // var temp = data.samples[1];
+    // data.samples[1] = data.samples[2];
+    // data.samples[2] = temp;
+
     myData = data.samples;
     })
 
@@ -33,6 +37,7 @@ app.service('OverlapService', function($http) {
 app.service('VizFromOntologyService', function($http) {
   var myData;
 
+  // TODO Pass in vizType parameter
   var promise = function(initNetwork, callback) {
     $.ajax({
       url: 'get_visualizations_from_ontology',

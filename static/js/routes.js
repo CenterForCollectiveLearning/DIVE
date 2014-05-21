@@ -39,6 +39,24 @@ app.config(['$routeProvider', function($routeProvider) {
         }
       }
     }).
+    when('/assemble', {
+      templateUrl: 'static/html/assemble_engine.html',
+      controller: 'AssembleEngineCtrl',
+      resolve: {
+        initialData: function(DataService) {
+          return DataService.promise;
+        },
+        overlapService: function(OverlapService) {
+          return OverlapService.promise;
+        },
+        vizFromOntologyService: function(VizFromOntologyService) {
+          return VizFromOntologyService.promise;
+        },
+        vizDataService: function(VizDataService) {
+          return VizDataService.promise;
+        }
+      }
+    }).
     otherwise({
       redirectTo: '/data_view'
     });

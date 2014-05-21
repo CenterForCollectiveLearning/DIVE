@@ -12,8 +12,6 @@ app.directive('visualizationPreview', ['$window', '$timeout', 'd3Service',
         link: function(scope, ele, attrs) {
             d3Service.d3().then(function(d3) {
 
-            console.log("Link scope:", scope);
-
             var renderTimeout;
             $window.onresize = function() {
                 scope.$apply();
@@ -26,33 +24,50 @@ app.directive('visualizationPreview', ['$window', '$timeout', 'd3Service',
             });
    
             scope.$watchCollection('[vizType,vizSpec,vizData]', function(newData) {
-                console.log(newData);
                 scope.render(newData[0], newData[1], newData[2]);
             }, true);
    
             scope.render = function(vizType, vizSpec, vizData) {
-                console.log("vizType", vizType);
-                console.log("vizSpec", vizSpec);
-                console.log("vizData", vizData);
-     
                 if (!vizData) return;
                 if (renderTimeout) clearTimeout(renderTimeout);
 
-                console.log(vizSpec.by)
-
                 renderTimeout = $timeout(function() {
-                   var viz = d3plus.viz()
-                    .container('div#viz-container')
-                    .data(vizData)
-                    .type('tree_map')
-                    .style({
-                        font: { 
-                            family: 'Karbon'
-                        }
-                    })
-                    .id(vizSpec.groupBy)
-                    .size('count')
-                    .draw()
+                    // TODO Reduce Redundancy in d3Plus calls
+                    if (vizType == 'treemap') {
+                        var viz = d3plus.viz()
+                            .container('div#viz-container')
+                            .data(vizData)
+                            .type('tree_map')
+                            .style({
+                                font: { 
+                                    family: 'Karbon'
+                                }
+                            })
+                            .id(vizSpec.groupBy)
+                            .size('count')
+                            .draw()
+                    }
+
+                    else if (vizType == 'geomap') {
+                        var viz = d3plus.viz()
+                            .container('div#viz-container')
+                            .type('geo_map')
+                            .data(vizData)
+                            .coords('/static/js/countries.json')
+                            .id(vizSpec.groupBy)
+                            .color('count')
+                            .text('name')
+                            .style({
+                                font: { 
+                                    family: 'Karbon'
+                                },
+                                color: {
+                                    "heatmap": ["grey","purple"]
+                                }
+                            })
+                            .draw()
+                    }
+                   
                 }, 200);
             };
         })

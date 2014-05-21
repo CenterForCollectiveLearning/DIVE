@@ -33,11 +33,22 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
             });
    
             scope.$watchCollection('[data,overlaps,hierarchies]', function(newData) {
-                console.log(newData);
                 scope.render(newData[0], newData[1], newData[2]);
             }, true);
    
             scope.render = function(data, overlaps, hierarchies) {
+
+                var idOrders = [0, 2, 1]
+                var reorderedData = []
+                for (var i=0; i<idOrders.length; i++) {
+                    var desiredDatasetID = idOrders[i];
+                    for (var j=0; j<data.length; j++){
+                        if (data[j].dataset_id == desiredDatasetID) {
+                            reorderedData.push(data[j]);
+                        }
+                    }
+                }
+                data = reorderedData;
 
                 svg.selectAll('*').remove();
      
@@ -45,7 +56,7 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                 if (renderTimeout) clearTimeout(renderTimeout);
 
                 // Margins and Positioning
-                var boxWidth = 220;
+                var boxWidth = 200;
                 var margins = {
                     left: 20
                 }
@@ -152,9 +163,9 @@ app.directive('ontologyEditor', ['$window', '$timeout', 'd3Service',
                         var parentTop = parentBBox.y;
 
                         // Final Positions
-                        var finalLeftX = parentLeft + margins.left + 10 - 10;
+                        var finalLeftX = parentLeft + margins.left + 5;
                         var finalLeftY = parentTop + y + boxMargins.y + attributesYOffset + (h/2);
-                        var finalRightX = parentLeft + margins.left + w + 10 + 10;
+                        var finalRightX = parentLeft + margins.left + w;
                         var finalRightY = parentTop + y + boxMargins.y + attributesYOffset + (h/2);
 
                         // // Left Circles
