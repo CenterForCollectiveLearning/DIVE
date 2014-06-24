@@ -153,7 +153,7 @@ class get_treemap_data(Resource):
             })
         # print result
         for r in result:
-            print r['count']
+            print r, r['count']
         return {'result': result}
 
 vizFromOntParser = reqparse.RequestParser()
@@ -238,7 +238,7 @@ class get_visualizations_from_ontology(Resource):
                         }
                         visualizations['treemap'].append(treemap_spec)
 
-                    if (not unique_A) and (name_B == 'countryName'):
+                    if (not unique_A) and (name_B == 'countryCode3'):
                         geomap_spec = {
                             'condition': column_idA,
                             'aggregate': dataset_id,
