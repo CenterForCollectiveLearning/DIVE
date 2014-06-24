@@ -33,6 +33,9 @@ app.directive('visualizationPreview', ['$window', '$timeout', 'd3Service',
 
                 renderTimeout = $timeout(function() {
                     // TODO Reduce Redundancy in d3Plus
+
+                    var groupBy = vizSpec.groupBy.toString();
+
                     if (vizType == 'treemap') {
                         var viz = d3plus.viz()
                             .container('div#viz-container')
@@ -43,7 +46,7 @@ app.directive('visualizationPreview', ['$window', '$timeout', 'd3Service',
                                     family: 'Karbon'
                                 }
                             })
-                            .id(vizSpec.groupBy)
+                            .id(groupBy)
                             .size('count')
                             .draw()
                     }
@@ -54,7 +57,7 @@ app.directive('visualizationPreview', ['$window', '$timeout', 'd3Service',
                             .type('geo_map')
                             .data(vizData)
                             .coords('/static/assets/countries.json')
-                            .id(vizSpec.groupBy)
+                            .id(groupBy)
                             .color('count')
                             .text('name')
                             .style({
