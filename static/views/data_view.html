@@ -1,0 +1,45 @@
+<section class="left-pane">
+  <ul class="datasets">
+    <li ng-repeat="dataset in datasets" class="dataset" ng-click="select_dataset($index)" ng-class="{'selected-dataset':$index==selected_index}">
+      <div class="title">{[{dataset.title}]}</div>
+      <div class="dimensions">
+        <div class="rows">{[{dataset.rows}]} Rows</div>
+        <div class="columns">{[{dataset.cols}]} Columns</div>
+      </div>
+      <div class="type">{[{dataset.filetype}]}</div>
+    </li>
+    <li class="add-dataset">
+      <i class="fa fa-plus-circle"></i>
+    </li>
+  </ul>
+
+<!--   <form id="upload-form" method="post" enctype="multipart/form-data">
+    <label for="dataset">Select a dataset to upload</label>
+    <input id="data-file" type="file" name="dataset">
+    <button id="data-submit">Upload</button>
+  </form> -->
+</section>
+
+<section class="viewport">
+  <div ng-repeat="dataset in datasets" ng-if="$index==selected_index">
+    <div ng-if="dataset.sample">
+      <input type="text" ng-model="dataset.title">
+      <table>
+        <tr>
+          <td ng-repeat="attr in dataset.column_attrs">
+            <input type="text" ng-model="attr.name">
+          </td>
+        </tr>
+        <tr>
+          <td ng-repeat="attr in dataset.column_attrs">
+            <select ng-model="attr.type" ng-options="type for type in types" class="type-select">
+          </td>
+        </tr>
+
+       <tr ng-repeat="(index, row) in dataset.sample">
+          <td ng-repeat="elem in row"> {[{elem}]} </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
