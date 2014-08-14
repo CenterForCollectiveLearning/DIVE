@@ -1,0 +1,19 @@
+<header>
+	<nav class="navbar navbar-default top" role="navigation">
+		<div class="navbar-header">
+			<a class="navbar-brand expand" id="logo" href="#">DIVE</a>
+		</div>
+		<div class="hamburger">
+			<div class="line"></div>
+			<div class="line"></div>
+			<div class="line"></div>
+		</div>
+	</nav>
+	<nav class="navbar navbar-default sections" role="navigation">
+		<ul ng-controller="TabsCtrl">
+			<li ng-class="tabClass(tab)" class="{[{tab.link}]}" ng-repeat="tab in tabs">
+				<a href="#/{[{tab.link}]}" ng-click="setSelectedTab(tab)">{[{tab.label}]}</a>
+			</li>
+		</ul>
+	</nav>
+</header>
