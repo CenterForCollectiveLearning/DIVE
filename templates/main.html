@@ -1,4 +1,4 @@
-<html ng-app="engineApp" lang="en">
+<html ng-app="diveApp" lang="en">
 	<head>
 		<meta charset="utf-8">
 		<title>DIVE</title>
@@ -23,7 +23,6 @@
 		<script src="{{ url_for('static', filename='scripts/libraries/angular-route.min.js')}}" type="text/javascript"></script>
 
 		<!-- Directives -->
-		<script src="{{ url_for('static', filename='scripts/libraries/angular.min.js')}}" type="text/javascript"></script>
 		<!-- Controllers -->
 		<!-- Services -->
 
@@ -37,28 +36,10 @@
 		<script src="{{ url_for('static', filename='scripts/services/d3Plus_service.js')}}" type="text/javascript"></script>
 		<script src="{{ url_for('static', filename='scripts/directives/ontology_editor.js')}}" type="text/javascript"></script>
 		<script src="{{ url_for('static', filename='scripts/directives/visualization_preview.js')}}" type="text/javascript"></script>
-
-
-  </marker>
-</defs>
 	</head>
 
 	<body>
 		<!-- Navigation Bar -->
-		<header>
-			<nav class="navbar navbar-default top" role="navigation">
-				<div class="navbar-header">
-					<a class="navbar-brand expand" id="logo" href="#">DIVE</a>
-				</div>
-			</nav>
-			<nav class="navbar navbar-default sections" role="navigation">
-				<a href="#data_view"><p class="navbar-text navbar-left" ng-class="{'active': $route.current.activetab == 'data_view'}">Manage Dataset</p></a>
-				<a href="#edit_ontology"><p class="navbar-text navbar-left">Edit Ontology</p></a>
-				<a href="#visualize"><p class="navbar-text navbar-left">Select Visualizations</p></a>
-				<a href="#assemble"><p class="navbar-text navbar-left">Assemble Engine</p></a>
-			</nav>
-		</header>
-
 		<div class="wrapper">
     		<div ng-view></div>
     	</div>

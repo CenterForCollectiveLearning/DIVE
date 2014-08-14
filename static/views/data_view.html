@@ -1,5 +1,5 @@
 <section class="left-pane">
-  <ul class="datasets">
+  <ul class="pane-items">
     <li ng-repeat="dataset in datasets" class="dataset" ng-click="select_dataset($index)" ng-class="{'selected-dataset':$index==selected_index}">
       <div class="title">{[{dataset.title}]}</div>
       <div class="dimensions">
@@ -22,11 +22,11 @@
 
 <section class="viewport">
   <div ng-repeat="dataset in datasets" ng-if="$index==selected_index">
-    <div ng-if="dataset.sample">
+    <div class="dataset-preview" ng-if="dataset.sample">
       <input type="text" ng-model="dataset.title">
       <table>
         <tr>
-          <td ng-repeat="attr in dataset.column_attrs">
+          <td ng-repeat="attr in dataset.column_attrs">    
             <input type="text" ng-model="attr.name">
           </td>
         </tr>

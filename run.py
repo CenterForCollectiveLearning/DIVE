@@ -1,6 +1,3 @@
-from flask import Flask, render_template, redirect, url_for, request, make_response, json
-from flask.ext.restful import Resource, Api, reqparse
-
 import os
 import re
 from random import sample
@@ -10,30 +7,139 @@ from itertools import combinations
 from werkzeug.utils import secure_filename
 import numpy as np
 
+from db import MongoInstance
+
+from flask import Flask, render_template, redirect, url_for, request, make_response, json
+from flask.ext.restful import Resource, Api, reqparse
+
 from server.data import DAL
 from server.utility import *
-
-# TODO Get this working
-# from flask.ext.scss import Scss
-# from flask_cake import Cake
 
 TEST_DATA_FOLDER = os.path.join(os.curdir, 'test_data')
 UPLOAD_FOLDER = os.path.join(os.curdir, 'uploads')
 ALLOWED_EXTENSIONS = set(['csv'])
 
+PORT = 8888
 
 app = Flask(__name__, static_path='/static')
 api = Api(app)
-# cake = Cake()
-# cake.init_app(app)
-# Scss(app)
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['TEST_DATA_FOLDER'] = TEST_DATA_FOLDER
 
 
+# Only one server-side route due to AngularJS SPA Routing
 @app.route('/')
 def main():
     return render_template('/main.html')
+
+############################
+# Projects
+############################
+projectGetParser = reqparse.RequestParser()
+projectGetParser.add_argument('pID', type=str, action='append', required=True)
+projectGetParser.add_argument('key', type=str, required=True)
+
+projectPutParser = reqparse.RequestParser()
+projectPutParser.add_argument('pID', type=str, action='append', required=True)
+projectPutParser.add_argument('projectTitle', type=str, action='append', required=True)
+projectPutParser.add_argument('ownerEmail', type=str, action='append', required=True)
+projectPutParser.add_argument('ownerFirstName', type=str, action='append', required=True)
+projectPutParser.add_argument('ownerLastName', type=str, action='append', required=True)
+
+projectPostParser = reqparse.RequestParser()
+projectPostParser.add_argument('projectTitle', type=str, action='append', required=True)
+projectPostParser.add_argument('ownerEmail', type=str, action='append', required=True)
+projectPostParser.add_argument('ownerFirstName', type=str, action='append', required=True)
+projectPostParser.add_argument('ownerLastName', type=str, action='append', required=True)
+
+projectDeleteParser = reqparse.RequestParser()
+projectDeleteParser.add_argument('pID', type=str, action='append', required=True)
+projectDeleteParser.add_argument('key', type=str, required=True)
+
+class Project(Resource):
+    def get(self):
+        args = projectGetParser.parse_args()
+        pIDs = args.get('pID')
+        return [ MongoInstance.getThing(pID, 'projects', []) for pID in pIDs ]
+    def put(self):
+        args = projectPutParser.parse_args()
+        pIDs = args.get('pID')
+        project_titles  = args.get('projectTitle')
+        owner_emails = args.get('ownerEmail')
+        owner_first_names = args.get('ownerFirstName')
+        owner_last_names = args.get('ownerLastName')
+        params = zip(pIDs, project_titles, owner_emails, owner_first_names, owner_last_names)
+        return [ MongoInstance.putThing(pID,'project',project_title=project_title, owner_email=owner_email, owner_first_name=owner_first_name, owner_last_name=owner_last_name) \
+            for (pID, project_title, owner_email, owner_first_name, owner_last_name) in params]
+    def post(self):
+        args = projectPostParser.parse_args()
+        project_titles = args.get('projectTitle')
+        owner_emails = args.get('ownerEmail')
+        owner_first_names = args.get('ownerFirstName')
+        owner_last_names = args.get('ownerLastName')
+        params = zip(project_titles, owner_emails, owner_first_names, owner_last_names)
+        return [ MongoInstance.postThing('','project',project_title=project_title, owner_email=owner_email, owner_first_name=owner_first_name, owner_last_name=owner_last_name) \
+            for (project_title, owner_email, owner_first_name, owner_last_name) in params ]
+    def delete(self):
+        args = projectDeleteParser.parse_args()
+        pIDs = args.get('pID')
+        return [ MongoInstance.deleteThing(pID, 'projects', []) for pID in pIDs]
+    # The way that angular does http requests is slightly different than in python (or maybe it's a CORS thing)
+    # Either way, we need this options to return the following access-control-allow-methods, otherwise delete wasn't working.
+    # Will likely have to include for all classes
+    def options (self): 
+        return {'Allow' : 'PUT, GET, POST, DELETE' }, 200, \
+        { 'Access-Control-Allow-Origin': '*', \
+          'Access-Control-Allow-Methods' : 'PUT,GET, POST, DELETE' }
+
+api.add_resource(Project, '/api/project')
+
+############################
+# Project Owners
+############################
+ownerGetParser = reqparse.RequestParser()
+ownerGetParser.add_argument('owner_data', type=str, required=True)
+
+ownerPutParser = reqparse.RequestParser()
+ownerPutParser.add_argument('uID', type=str, action='append', required=True)
+ownerPutParser.add_argument('owner_data', type=str, action='append', required=True)
+ownerPutParser.add_argument('pID', type=str, required=True)
+
+ownerPostParser = reqparse.RequestParser()
+ownerPostParser.add_argument('owner_data', type=str, required=True)
+
+ownerDeleteParser = reqparse.RequestParser()
+ownerDeleteParser.add_argument('uID', type=str, action='append', required=True)
+ownerDeleteParser.add_argument('pID', type=str, required=True)
+
+
+class Owner(Resource):
+    # Currently used for logging in (maybe should have its own endpoint)
+    def get(self):
+        args = ownerGetParser.parse_args()
+        owner_data = args.get('owner_data')
+        print "GET", owner_data
+
+        return MongoInstance.getThing('', 'owners', owner_data)
+    def put(self):
+        args = userPutParser.parse_args()
+        uIDs = args.get('uID')
+        user_datas = args.get('user_data')
+        pID = args.get('pID')
+        return MongoInstance.postThing(pID, 'owners', uIDs=uIDS, user_data=user_datas)
+    def post(self):
+        args = ownerPostParser.parse_args()
+        owner_data = args.get('owner_data')
+
+        return MongoInstance.postThing('', 'owners', owner_data=owner_data)
+    def delete(self):
+        args = userDeleteParser.parse_args()
+        uIDs = args.get('uID')
+        pID = args.get('pID')
+        return MongoInstance.deleteThing(pID, 'owners', uIDs)
+
+api.add_resource(Owner, '/api/owner')
 
 
 # File upload handler
@@ -156,6 +262,7 @@ class get_treemap_data(Resource):
             print r, r['count']
         return {'result': result}
 
+# TODO Break this up!!!
 vizFromOntParser = reqparse.RequestParser()
 # vizFromOntParser.add_argument('network', type=str, required=True)
 class get_visualizations_from_ontology(Resource):
@@ -203,6 +310,8 @@ class get_visualizations_from_ontology(Resource):
                 numOutwardOneToManys[sourceDataset] += 1
 
         # TODO: Detect if an entity is likely geographic
+
+        # LINE CHART
 
         # TREEMAP
         # CONDITION -> QUERY -> N * GROUP BY
@@ -329,6 +438,10 @@ class tag_data(Resource):
             return '''success'''
         return '''retrive failed'''
 
+# Other end-points
+# POST Dataset changes
+# POST Ontology changes
+# POST Visualization Selections
 
 api.add_resource(upload_file, '/upload')
 api.add_resource(get_test_datasets, '/get_test_datasets')
@@ -339,7 +452,6 @@ api.add_resource(tag_data, '/tag')
 # Visualization Endpoints
 api.add_resource(get_treemap_data, '/get_treemap_data')
 
-
 if __name__ == '__main__':
     app.debug = True
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=PORT)

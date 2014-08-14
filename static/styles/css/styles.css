@@ -1,38 +1,23 @@
-/* styles.sass */
-/* Fonts */
-@font-face {
-  font-family: 'DIN';
-  src: url("DINLight.ttf") format("ttf"), url("DINLight.woff") format("woff"); }
-
-@font-face {
-  font-family: 'Karbon';
-  src: url("karbon-medium-webfont.woff") format("woff"); }
-
-@font-face {
-  font-family: 'Karbon';
-  src: url("karbon-light-webfont.woff") format("woff");
-  font-weight: 300; }
-
-@font-face {
-  font-family: 'Karbon';
-  src: url("karbon-regular-webfont.woff") format("woff");
-  font-weight: normal; }
-
-@font-face {
-  font-family: 'Karbon';
-  src: url("karbon-semibold-webfont.woff") format("woff");
-  font-weight: bold; }
-
-*, *:before, *:after {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box; }
-
 html, body {
   height: 100%;
   max-height: 100%;
   overflow-y: scroll;
   font-family: 'Karbon', 'DIN', Helvetica, Sans Serif; }
+
+section.landing-top {
+  font-family: 'DIN';
+  font-weight: light; }
+  section.landing-top div.dive {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGElEQVQIW2NkYGD4D8SMQAwHKByYKIWCAGagAQanLNDFAAAAAElFTkSuQmCC) repeat;
+    background-color: #1C1D1D;
+    padding: 100px 0; }
+    section.landing-top div.dive div {
+      text-align: center;
+      color: white; }
+    section.landing-top div.dive div.title {
+      font-size: 60px; }
+    section.landing-top div.dive div.subtitle {
+      font-size: 24px; }
 
 /* Layout */
 nav.navbar {
@@ -40,9 +25,36 @@ nav.navbar {
   border: 0; }
   nav.navbar div.navbar-header {
     height: 50px; }
+  nav.navbar div.login {
+    font-size: 16px;
+    color: white;
+    font-weight: normal;
+    line-height: 50px;
+    float: right;
+    margin-right: 20px; }
+  nav.navbar ul {
+    padding-left: 0; }
+    nav.navbar ul li {
+      float: left;
+      padding: 0 20px; }
+      nav.navbar ul li.active.data {
+        background-color: #f8e71c; }
+      nav.navbar ul li.active.ontology {
+        background-color: #4a90e2; }
+      nav.navbar ul li.active.visualize {
+        background-color: #bd10e0; }
+      nav.navbar ul li.active.assemble {
+        background-color: #7ed321; }
+      nav.navbar ul li a {
+        line-height: 49px;
+        color: black;
+        font-size: 16px; }
+        nav.navbar ul li a:hover {
+          position: relative;
+          bottom: 1px; }
   nav.navbar.top {
     background-image: none;
-    background-color: black;
+    background-color: #1c1d1d;
     border-radius: 0; }
     nav.navbar.top a.navbar-brand {
       height: 50px;
@@ -53,15 +65,24 @@ nav.navbar {
       color: white;
       font-weight: normal;
       letter-spacing: 2px; }
+  nav.navbar div.hamburger {
+    float: right;
+    margin-right: 20px;
+    margin-top: 12px;
+    cursor: pointer; }
+    nav.navbar div.hamburger div.line {
+      width: 24px;
+      border-bottom: 3px solid white;
+      padding-bottom: 4px; }
   nav.navbar.sections {
     background-image: none;
     background-color: white;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #1c1d1d;
     border-radius: 0; }
     nav.navbar.sections p.navbar-text {
       font-family: 'Karbon';
       font-weight: normal;
-      color: black;
+      color: #1c1d1d;
       float: left;
       margin-left: 15px;
       margin-right: 15px;
@@ -80,17 +101,33 @@ section.left-pane, section.right-pane {
   height: 100%;
   border-right: 5px solid #e0e5e9;
   overflow-y: auto; }
-  section.left-pane ul.datasets, section.right-pane ul.datasets {
+  section.left-pane ul.pane-items, section.right-pane ul.pane-items {
     padding-left: 0;
     list-style-type: none; }
-    section.left-pane ul.datasets li, section.right-pane ul.datasets li {
+    section.left-pane ul.pane-items li, section.right-pane ul.pane-items li {
+      position: relative;
       list-style-type: none;
       height: 100px;
-      border-bottom: 1px solid #e0e5e9; }
-      section.left-pane ul.datasets li.dataset, section.right-pane ul.datasets li.dataset {
-        cursor: pointer;
-        padding: 15px; }
-      section.left-pane ul.datasets li.add-dataset, section.right-pane ul.datasets li.add-dataset {
+      border-bottom: 1px solid #e0e5e9;
+      cursor: pointer;
+      padding: 15px; }
+      section.left-pane ul.pane-items li div.choose, section.right-pane ul.pane-items li div.choose {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 100px;
+        width: 50px; }
+        section.left-pane ul.pane-items li div.choose div, section.right-pane ul.pane-items li div.choose div {
+          height: 50px; }
+          section.left-pane ul.pane-items li div.choose div i, section.right-pane ul.pane-items li div.choose div i {
+            width: 100%;
+            line-height: 50px;
+            text-align: center; }
+        section.left-pane ul.pane-items li div.choose div.select, section.right-pane ul.pane-items li div.choose div.select {
+          background-color: #7ed321; }
+        section.left-pane ul.pane-items li div.choose div.reject, section.right-pane ul.pane-items li div.choose div.reject {
+          background-color: #d0021b; }
+      section.left-pane ul.pane-items li.add-dataset, section.right-pane ul.pane-items li.add-dataset {
         cursor: pointer;
         width: 100%;
         height: 50px;
@@ -98,15 +135,15 @@ section.left-pane, section.right-pane {
         line-height: 50px;
         text-align: center;
         color: #e0e5e9; }
-        section.left-pane ul.datasets li.add-dataset:hover, section.right-pane ul.datasets li.add-dataset:hover {
+        section.left-pane ul.pane-items li.add-dataset:hover, section.right-pane ul.pane-items li.add-dataset:hover {
           color: #222222; }
-      section.left-pane ul.datasets li.selected-dataset, section.right-pane ul.datasets li.selected-dataset {
-        background-color: #eee; }
-      section.left-pane ul.datasets li div.dimensions, section.right-pane ul.datasets li div.dimensions {
+      section.left-pane ul.pane-items li.selected-dataset, section.right-pane ul.pane-items li.selected-dataset {
+        background-color: #e0e5e9; }
+      section.left-pane ul.pane-items li div.dimensions, section.right-pane ul.pane-items li div.dimensions {
         float: left;
         margin-top: 10px;
         width: 200px; }
-      section.left-pane ul.datasets li div.type, section.right-pane ul.datasets li div.type {
+      section.left-pane ul.pane-items li div.type, section.right-pane ul.pane-items li div.type {
         text-align: right;
         margin-top: 20px; }
   section.left-pane div.drag, section.right-pane div.drag {
@@ -136,6 +173,9 @@ section.upload-dataset {
 section.viewport {
   margin-left: 300px;
   margin-right: 300px; }
+  section.viewport div.dataset-preview {
+    padding-top: 20px;
+    padding-bottom: 20px; }
 
 select.type-select {
   width: 100%; }
@@ -163,3 +203,42 @@ div#viz-container {
 /* Ontology Editor */
 g {
   cursor: default; }
+
+a {
+  text-decoration: none !important; }
+  a:hover {
+    color: black; }
+
+ul {
+  list-style-type: none; }
+  ul li {
+    list-style-type: none; }
+
+/* Fonts */
+@font-face {
+  font-family: 'DIN';
+  src: url("DINLight.ttf") format("ttf"), url("DINLight.woff") format("woff"); }
+
+@font-face {
+  font-family: 'Karbon';
+  src: url("karbon-medium-webfont.woff") format("woff"); }
+
+@font-face {
+  font-family: 'Karbon';
+  src: url("karbon-light-webfont.woff") format("woff");
+  font-weight: 300; }
+
+@font-face {
+  font-family: 'Karbon';
+  src: url("karbon-regular-webfont.woff") format("woff");
+  font-weight: normal; }
+
+@font-face {
+  font-family: 'Karbon';
+  src: url("karbon-semibold-webfont.woff") format("woff");
+  font-weight: bold; }
+
+*, *:before, *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
