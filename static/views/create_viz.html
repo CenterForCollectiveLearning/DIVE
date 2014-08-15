@@ -1,6 +1,6 @@
 <engine-top-bar></engine-top-bar>
 
-<section class="left-pane">
+<section class="left-pane" ng-class="{'closed': leftClosed}">
   <div class="pane-title">
     Visualization Types
   </div>
@@ -12,7 +12,7 @@
   </ul>
 </section>
 
-<section class="right-pane">
+<section class="right-pane" ng-class="{'closed': rightClosed}">
   <div class="pane-title">
     Visualization Specifications
   </div>
@@ -33,8 +33,8 @@
   </ul>
 </section>
 
-<section class="viewport">
+<section class="viewport" ng-class="{'right-closed': rightClosed, 'left-closed': leftClosed}">
+  <pane-toggle></pane-toggle>
   <div id="viz-container"></div>
   <visualization-preview viz-type="vizType" viz-spec="vizSpec" viz-data="vizData"></visualization-preview>
 </section>
-

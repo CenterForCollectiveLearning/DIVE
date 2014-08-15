@@ -53,6 +53,7 @@ section.landing-top {
   font-family: 'DIN';
   font-weight: light; }
   section.landing-top div.dive {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGElEQVQIW2NkYGD4D8SMQAwHKByYKIWCAGagAQanLNDFAAAAAElFTkSuQmCC) repeat;
     background-color: #1C1D1D;
     padding: 100px 0; }
     section.landing-top div.dive div {
@@ -63,9 +64,14 @@ section.landing-top {
     section.landing-top div.dive div.subtitle {
       font-size: 24px; }
   section.landing-top div.user {
+    font-family: "Lato",helvetica,sans-serif;
+    font-size: 9px;
+    letter-spacing: 1px;
+    line-height: 35px;
+    text-transform: uppercase;
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 5px;
+    right: 15px;
     color: white; }
 
 section.landing-projects ul.projects {
@@ -191,7 +197,7 @@ section.left-pane, section.right-pane {
   font-size: 16px;
   position: relative;
   float: left;
-  width: 300px;
+  width: 250px;
   height: 100%;
   overflow-y: auto; }
   section.left-pane.closed, section.right-pane.closed {
@@ -225,12 +231,12 @@ section.left-pane, section.right-pane {
         top: 0px;
         right: 0px;
         height: 100px;
-        width: 50px; }
+        width: 40px; }
         section.left-pane ul.pane-items li div.choose div, section.right-pane ul.pane-items li div.choose div {
-          height: 50px; }
+          height: 40px; }
           section.left-pane ul.pane-items li div.choose div i, section.right-pane ul.pane-items li div.choose div i {
             width: 100%;
-            line-height: 50px;
+            line-height: 40px;
             text-align: center; }
         section.left-pane ul.pane-items li div.choose div.select, section.right-pane ul.pane-items li div.choose div.select {
           background-color: #7ed321; }
@@ -246,7 +252,7 @@ section.left-pane, section.right-pane {
         color: #f1efef; }
         section.left-pane ul.pane-items li.add-dataset:hover, section.right-pane ul.pane-items li.add-dataset:hover {
           color: #666666; }
-      section.left-pane ul.pane-items li.selected-dataset, section.right-pane ul.pane-items li.selected-dataset {
+      section.left-pane ul.pane-items li.selected, section.right-pane ul.pane-items li.selected {
         background-color: #f1efef; }
       section.left-pane ul.pane-items li div.dimensions, section.right-pane ul.pane-items li div.dimensions {
         float: left;
@@ -263,13 +269,16 @@ section.left-pane, section.right-pane {
 
 section.left-pane {
   border-right: 1px solid #1e1e20; }
+  section.left-pane li.selected {
+    border-right: 5px solid #1e1e20; }
 
 section.right-pane {
   position: relative;
   float: right;
-  width: 300px;
   border-left: 1px solid #1e1e20;
   font-size: 16px; }
+  section.right-pane li.selected {
+    border-left: 5px solid #1e1e20; }
 
 /* Upload */
 section.upload-dataset {
@@ -332,14 +341,17 @@ div.toggle-pane {
 section.viewport {
   padding-top: 30px;
   position: relative;
-  margin-left: 300px;
-  margin-right: 300px;
+  margin-left: 250px;
+  margin-right: 250px;
   height: 100%;
   overflow-x: scroll; }
   section.viewport.left-closed {
     margin-left: 0px; }
   section.viewport.right-closed {
     margin-right: 0px; }
+  section.viewport div.dataset-preview {
+    padding-left: 5px;
+    padding-right: 5px; }
 
 select.type-select {
   width: 100%; }

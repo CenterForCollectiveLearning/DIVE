@@ -1,17 +1,17 @@
 <engine-top-bar></engine-top-bar>
 
-<section class="left-pane">
+<section class="left-pane" ng-class="{'closed': leftClosed}">
 	<div class="pane-title">
 		Change Ontology View
 	</div>
 	<ul class="pane-items">
-		<li><div class="title">List</div></li>
-		<li><div class="title">Object Model</div></li>
-		<li><div class="title">Hierarchical</div></li>
+		<li><div class="vertical-center title">List</div></li>
+		<li><div class="vertical-center title">Object</div></li>
+		<li><div class="vertical-center title">Hierarchical</div></li>
 	</ul>
 </section>
 
-<section class="right-pane">
+<section class="right-pane" ng-class="{'closed': rightClosed}">
 	<div class="pane-title">
 		Edit Ontology
 	</div>
@@ -22,6 +22,7 @@
 	</ul>
 </section>
 
-<section class="viewport">
+<section class="viewport" ng-class="{'right-closed': rightClosed, 'left-closed': leftClosed}">
+	<pane-toggle></pane-toggle>
     <ontology-editor data="datasets" overlaps="overlaps" hierarchies="hierarchies"></ontology-editor>
 </section>

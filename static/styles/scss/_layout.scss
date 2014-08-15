@@ -17,6 +17,7 @@ section.landing-top {
     font-weight: light;
 
     div.dive {
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGElEQVQIW2NkYGD4D8SMQAwHKByYKIWCAGagAQanLNDFAAAAAElFTkSuQmCC) repeat;
         background-color: #1C1D1D;
         padding: 100px 0;
         div {
@@ -34,9 +35,10 @@ section.landing-top {
     }
 
     div.user {
+        @include small-caps;
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: 5px;
+        right: 15px;
         color: white;
     }
 }
@@ -207,7 +209,7 @@ section.left-pane, section.right-pane {
     font-size: 16px;
     position: relative;
     float: left;
-    width: 300px;
+    width: 250px;
     height: 100%;
     overflow-y: auto;
 
@@ -248,14 +250,14 @@ section.left-pane, section.right-pane {
                 top: 0px;
                 right: 0px;
                 height: 100px;
-                width: 50px;
+                width: 40px;
 
 
                 div {
-                    height: 50px;
+                    height: 40px;
                     i {
                         width: 100%;
-                        line-height: 50px;
+                        line-height: 40px;
                         text-align: center;
                     }
                 }
@@ -282,7 +284,7 @@ section.left-pane, section.right-pane {
                 }
             }
 
-            &.selected-dataset {
+            &.selected {
               background-color: $light-gray;
             }
 
@@ -311,14 +313,20 @@ section.left-pane, section.right-pane {
 
 section.left-pane {
     border-right: 1px solid $dive-black;
+    li.selected {
+        border-right: 5px solid $dive-black;
+    }
 }
 
 section.right-pane {
     position: relative;
     float: right;
-    width: 300px;
     border-left: 1px solid $dive-black;
     font-size: 16px;
+
+    li.selected {
+        border-left: 5px solid $dive-black;
+    }
 }
 
 /* Upload */
@@ -397,8 +405,8 @@ div.toggle-pane {
 section.viewport {
     padding-top: 30px;
     position: relative;
-    margin-left: 300px;
-    margin-right: 300px;
+    margin-left: 250px;
+    margin-right: 250px;
     height: 100%;
     overflow-x: scroll;
 
@@ -408,6 +416,11 @@ section.viewport {
 
     &.right-closed {
         margin-right: 0px;
+    }
+
+    div.dataset-preview {
+        padding-left: 5px;
+        padding-right: 5px;
     }
 }
 
