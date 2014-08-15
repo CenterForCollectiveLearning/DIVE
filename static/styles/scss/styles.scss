@@ -1,7 +1,9 @@
 // Resource imports and universal styling rules
-$dive-black: #1C1D1D;
+// $dive-black: #1C1D1D;
+$dive-black: #1E1E20;
 $dark-blue: #122e43;
 $light-blue: #a5cdd4;
+
 $light-gray: #e0e5e9;
 $dark-gray: #222222;
 $data-yellow: #F8E71C;
@@ -10,7 +12,11 @@ $visualize-purple: #BD10E0;
 $assemble-green: #7ED321;
 $project-red: #D0021B;
 
-@import 'layout';
+// Reddit colors
+$light-gray: #F1EFEF;
+$gray: #AEAEAE;
+$active-white: #EEEEEE;
+$dark-gray: #666;
 
 // Universal Link Styling
 a {
@@ -26,6 +32,24 @@ ul {
     li {
         list-style-type: none;
     }
+}
+
+@mixin transition($property, $duration, $timing-function) {
+    -webkit-transition: $property $duration $timing-function;
+    -moz-transition: $property $duration $timing-function;
+    -o-transition: $property $duration $timing-function;
+    transition: $property $duration $timing-function;
+}
+
+@mixin border-transition { @include transition(border, 0.1s, ease-in) }
+@mixin background-transition { @include transition(background, 0.1s, ease-in) }
+
+@mixin small-caps {
+    font-family: "Lato",helvetica,sans-serif;
+    font-size: 9px;
+    letter-spacing: 1px;
+    line-height: 35px;
+    text-transform: uppercase;
 }
 
 /* Fonts */
@@ -60,3 +84,6 @@ ul {
 *, *:before, *:after {
     -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
 }
+
+
+@import 'layout';

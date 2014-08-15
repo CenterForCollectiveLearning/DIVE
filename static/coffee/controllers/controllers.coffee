@@ -1,25 +1,59 @@
 controllers = angular.module("engineControllers", [])
 
+# Landing page project list / navigation
+controllers.controller "ProjectListCtrl", ($scope, $http) ->
+  $scope.user = {
+    userName: 'demo-user'
+    displayName: 'Demo User'
+  }
+  $scope.projects = [
+    { title: 'Culture', displayTitle: 'culture' },
+    { title: 'Healthcare', displayTitle: 'healthcare' },
+    { title: 'Consumer Analysis', displayTitle: 'consumer-analysis' },
+  ]   
+
+  $scope.select_project = (id) ->
+    console.log(id)
+
+  $scope.new_project = ->
+    $http(
+      method: 'POST'
+      url: 'http://localhost:8888/api/project'
+      transformRequest: objectToQueryString
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    ).success((data) ->
+      console.log("Successful request")
+    )
+
+controllers.controller "PaneToggleCtrl", ($scope) ->
+  $scope.leftClosed = false
+  $scope.rightClosed = false
+  $scope.toggleLeft = -> $scope.leftClosed = !$scope.leftClosed
+  $scope.toggleRight = -> $scope.rightClosed = !$scope.rightClosed
+
 # Stateful navigation (tabs)
-controllers.controller "TabsCtrl", ($scope, $location) ->
+controllers.controller "TabsCtrl", ($scope, $routeParams) ->
+  $scope.uID = $routeParams.uID
+  $scope.pID = $routeParams.pID
   $scope.tabs = [
     {
       link: "data"
-      label: "Manage Dataset"
+      label: "1. Manage Datasets"
     }
     {
       link: "ontology"
-      label: "Edit Ontology"
+      label: "2. Edit Ontology"
     }
     {
       link: "visualize"
-      label: "Select Visualizations"
+      label: "3. Select Visualizations"
     }
     {
       link: "assemble"
-      label: "Assemble Engine"
+      label: "4. Assemble Engine"
     }
   ]
+  # TODO Tie this into router
   $scope.selectedTab = $scope.tabs[0]
   $scope.setSelectedTab = (tab) ->
     $scope.selectedTab = tab
@@ -99,6 +133,8 @@ controllers.controller "OntologyEditorCtrl", ($scope, $http, DataService, Overla
   $scope.hierarchies = relnData.hierarchies
   return
 
+controllers.controller "AssembleCtrl", ($scope, $http) ->
+  return
 
 # TODO Make this controller thinner!
 controllers.controller "CreateVizCtrl", ($scope, $http, DataService, OverlapService, VizDataService, VizFromOntologyService) ->

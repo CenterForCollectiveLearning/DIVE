@@ -1,7 +1,12 @@
 <section class="landing-projects">
 	<ul class="projects">
-		<li ng-repeat="project in projects" class="project" ng-click="select_project($index)">
-			{[{project.title}]}
+		<li ng-repeat="project in projects" class="project" ng-click="select_project(project.id)">
+			<a href="#/{[{user.userName}]}/{[{project.displayTitle}]}">
+				<div class="title">{[{project.title}]}</div>
+			</a>
+		</li>
+		<li class="project new-project" ng-click="new_project()">
+			<i class="fa fa-plus-circle"></i>
 		</li>
 	</ul>
 </section>

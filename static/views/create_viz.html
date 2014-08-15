@@ -1,4 +1,9 @@
+<engine-top-bar></engine-top-bar>
+
 <section class="left-pane">
+  <div class="pane-title">
+    Visualization Types
+  </div>
   <ul class="pane-items">
     <li ng-repeat="vizType in vizTypes" class="dataset" ng-click="select_vizType($index)" ng-class="{'selected-dataset':$index==selected_vizType_index}">
       <div class="title"><b>{[{vizType.name | capitalize}]}</b></div>
@@ -8,6 +13,9 @@
 </section>
 
 <section class="right-pane">
+  <div class="pane-title">
+    Visualization Specifications
+  </div>
   <ul class="pane-items">
     <li ng-repeat="vizSpec in vizSpecs" ng-click="select_vizSpec($index);setVizData(vizSpec);" ng-class="{'selected-dataset':$index==selected_vizSpec_index}">
       <div>Aggregate <b>{[{getDatasetTitle(vizSpec.aggregate)}]}</b></div>

@@ -77,14 +77,14 @@ engineApp.directive "ontologyEditor", [
               # Box
               rect = g.append("rect").attr("height", 500).attr("width", boxWidth).attr("x", (d, i) ->
                 i * (boxWidth + margins.left)
-              ).attr("rx", 3).attr("ry", 3).attr("stroke", "#000000").attr("stroke-width", 1).attr("fill", (d) ->
+              ).attr("rx", 3).attr("ry", 3).attr("stroke", "#AEAEAE").attr("stroke-width", 1).attr("fill", (d) ->
                 "#FFFFFF"
               )
               
               # Header
               text = g.append("text").attr("fill", "#000000").attr("x", (d, i) ->
                 i * (boxWidth + margins.left) + 10
-              ).attr("y", 20).attr("font-size", 16).attr("font-weight", "bold").text((d) ->
+              ).attr("y", 20).attr("font-size", 14).attr("font-weight", "light").text((d) ->
                 d.title
               )
               
@@ -97,7 +97,7 @@ engineApp.directive "ontologyEditor", [
                 unique_cols = d.unique_cols
                 texts = d3.select(this).selectAll("g text").data(d.column_attrs).enter().append("g").attr("class", "attr").append("text").attr("y", (d, i) ->
                   i * 20
-                ).attr("fill", "#000000").attr("font-size", 14).attr("font-weight", "bold").text((d, i) ->
+                ).attr("fill", "#000000").attr("font-size", 14).attr("font-weight", "light").text((d, i) ->
                   
                   # Add asterisk if column is unique
                   unique = (if unique_cols[i] then "*" else "")

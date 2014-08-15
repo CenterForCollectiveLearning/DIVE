@@ -4,14 +4,17 @@ diveApp.config([
     .when("/",
       templateUrl: "static/views/landing.html"
     )
-    .when("/data",
+    .when("/:uID/:pID",  # TODO Validate permissions first
+      redirectTo: "/:uID/:pID/data"
+    )
+    .when("/:uID/:pID/data",
       templateUrl: "static/views/data_view.html"
       controller: "DatasetListCtrl"
       resolve:
         initialData: (DataService) ->
           DataService.promise
     )
-    .when("/ontology",
+    .when("/:uID/:pID/ontology",
       templateUrl: "static/views/edit_ontology.html"
       controller: "OntologyEditorCtrl"
       resolve:
@@ -21,7 +24,7 @@ diveApp.config([
         overlapService: (OverlapService) ->
           OverlapService.promise
     )
-    .when("/visualize",
+    .when("/:uID/:pID/visualize",
       templateUrl: "static/views/create_viz.html"
       controller: "CreateVizCtrl"
       resolve:
@@ -37,9 +40,9 @@ diveApp.config([
         vizDataService: (VizDataService) ->
           VizDataService.promise
     )
-    .when("/assemble",
+    .when("/:uID/:pID/assemble",
       templateUrl: "static/views/assemble_engine.html"
-      controller: "AssembleEngineCtrl"
+      controller: "AssembleCtrl"
       resolve:
         initialData: (DataService) ->
           DataService.promise

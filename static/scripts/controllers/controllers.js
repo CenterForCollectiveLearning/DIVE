@@ -4,20 +4,67 @@
 
   controllers = angular.module("engineControllers", []);
 
-  controllers.controller("TabsCtrl", function($scope, $location) {
+  controllers.controller("ProjectListCtrl", function($scope, $http) {
+    $scope.user = {
+      userName: 'demo-user',
+      displayName: 'Demo User'
+    };
+    $scope.projects = [
+      {
+        title: 'Culture',
+        displayTitle: 'culture'
+      }, {
+        title: 'Healthcare',
+        displayTitle: 'healthcare'
+      }, {
+        title: 'Consumer Analysis',
+        displayTitle: 'consumer-analysis'
+      }
+    ];
+    $scope.select_project = function(id) {
+      return console.log(id);
+    };
+    return $scope.new_project = function() {
+      return $http({
+        method: 'POST',
+        url: 'http://localhost:8888/api/project',
+        transformRequest: objectToQueryString,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).success(function(data) {
+        return console.log("Successful request");
+      });
+    };
+  });
+
+  controllers.controller("PaneToggleCtrl", function($scope) {
+    $scope.leftClosed = false;
+    $scope.rightClosed = false;
+    $scope.toggleLeft = function() {
+      return $scope.leftClosed = !$scope.leftClosed;
+    };
+    return $scope.toggleRight = function() {
+      return $scope.rightClosed = !$scope.rightClosed;
+    };
+  });
+
+  controllers.controller("TabsCtrl", function($scope, $routeParams) {
+    $scope.uID = $routeParams.uID;
+    $scope.pID = $routeParams.pID;
     $scope.tabs = [
       {
         link: "data",
-        label: "Manage Dataset"
+        label: "1. Manage Datasets"
       }, {
         link: "ontology",
-        label: "Edit Ontology"
+        label: "2. Edit Ontology"
       }, {
         link: "visualize",
-        label: "Select Visualizations"
+        label: "3. Select Visualizations"
       }, {
         link: "assemble",
-        label: "Assemble Engine"
+        label: "4. Assemble Engine"
       }
     ];
     $scope.selectedTab = $scope.tabs[0];
@@ -87,6 +134,8 @@
     $scope.overlaps = relnData.overlaps;
     $scope.hierarchies = relnData.hierarchies;
   });
+
+  controllers.controller("AssembleCtrl", function($scope, $http) {});
 
   controllers.controller("CreateVizCtrl", function($scope, $http, DataService, OverlapService, VizDataService, VizFromOntologyService) {
     var columnPair, columnPairList, d, dataset, datasetPair, datasetPairList, datasets, edge, edges, hierarchy, i, initNetwork, node, nodes, relnData, type;

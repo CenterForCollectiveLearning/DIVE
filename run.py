@@ -271,7 +271,9 @@ class get_visualizations_from_ontology(Resource):
             "treemap": [],
             "geomap": [],
             "barchart": [],
-            "scatterplot": []
+            "scatterplot": [],
+            "linechart": [],
+            "network": []
         }
 
         # TODO Use regular argument parser

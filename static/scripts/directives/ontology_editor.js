@@ -71,12 +71,12 @@
                 g = svg.selectAll("g").data(data).enter().append("g").attr("class", "box").attr("transform", "translate(" + boxMargins.x + "," + boxMargins.y + ")");
                 rect = g.append("rect").attr("height", 500).attr("width", boxWidth).attr("x", function(d, i) {
                   return i * (boxWidth + margins.left);
-                }).attr("rx", 3).attr("ry", 3).attr("stroke", "#000000").attr("stroke-width", 1).attr("fill", function(d) {
+                }).attr("rx", 3).attr("ry", 3).attr("stroke", "#AEAEAE").attr("stroke-width", 1).attr("fill", function(d) {
                   return "#FFFFFF";
                 });
                 text = g.append("text").attr("fill", "#000000").attr("x", function(d, i) {
                   return i * (boxWidth + margins.left) + 10;
-                }).attr("y", 20).attr("font-size", 16).attr("font-weight", "bold").text(function(d) {
+                }).attr("y", 20).attr("font-size", 14).attr("font-weight", "light").text(function(d) {
                   return d.title;
                 });
                 tspan = g.append("g").attr("transform", function(d, i) {
@@ -89,7 +89,7 @@
                   unique_cols = d.unique_cols;
                   texts = d3.select(this).selectAll("g text").data(d.column_attrs).enter().append("g").attr("class", "attr").append("text").attr("y", function(d, i) {
                     return i * 20;
-                  }).attr("fill", "#000000").attr("font-size", 14).attr("font-weight", "bold").text(function(d, i) {
+                  }).attr("fill", "#000000").attr("font-size", 14).attr("font-weight", "light").text(function(d, i) {
                     var unique;
                     unique = (unique_cols[i] ? "*" : "");
                     return d.name + unique + " (" + d.type + ")";

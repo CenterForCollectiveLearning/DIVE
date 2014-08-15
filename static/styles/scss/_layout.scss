@@ -1,8 +1,15 @@
 html, body {
     height: 100%;
     max-height: 100%;
+    min-width: 980px;
     overflow-y: scroll;
     font-family: 'Karbon', 'DIN', Helvetica, Sans Serif;
+}
+
+div.wrapper {
+    max-height: 100%;
+    height: 100%;
+    overflow-y: hidden;
 }
 
 section.landing-top {
@@ -10,12 +17,11 @@ section.landing-top {
     font-weight: light;
 
     div.dive {
-        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGElEQVQIW2NkYGD4D8SMQAwHKByYKIWCAGagAQanLNDFAAAAAElFTkSuQmCC) repeat;
         background-color: #1C1D1D;
         padding: 100px 0;
         div {
             text-align: center;
-            color: white;
+            color: $active-white;
         }
 
         div.title {
@@ -26,22 +32,78 @@ section.landing-top {
             font-size: 24px;
         }
     }
+
+    div.user {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: white;
+    }
+}
+
+section.landing-projects {
+    $block-width: 200px;
+    $block-height: 140px;
+    ul.projects {
+        width: 700px;
+        margin: 10px auto 0 auto;
+        a {
+            color: black;
+        }
+        li.project {
+            @include border-transition();
+            @include background-transition();
+            cursor: pointer;
+            margin-top: 10px;
+            height: $block-height;
+            width: $block-width;
+            background-color: $light-gray;
+            border: 1px solid $light-gray;
+            border-radius: 2px;
+            display: inline-block;
+            margin-right: 10px;
+
+
+            &:hover {
+                // border-color: $dive-black;
+                background-color: $ontology-blue;
+            }
+
+            div.title {
+                font-size: 24px;
+                line-height: $block-height;
+                text-align: center;
+            }
+        }
+
+        li.new-project {
+            i {
+                font-size: 60px;
+                width: 100%;
+                text-align: center;
+                line-height: $block-height;
+            }
+        }
+    }
 }
 
 /* Layout */
 nav.navbar {
     margin: 0;
     border: 0;
+    min-width: 980px;
+    min-height: 35px;
 
     div.navbar-header {
-        height: 50px;
+        height: 35px;
+        float: left;
     }
 
     div.login {
         font-size: 16px;
         color: white;
         font-weight: normal;
-        line-height: 50px;
+        line-height: 35px;
         float: right;
         margin-right: 20px;
     }
@@ -52,6 +114,7 @@ nav.navbar {
         li {
             float: left;
             padding: 0 20px;
+
 
             &.active {
                 &.data { background-color: $data-yellow; }
@@ -64,6 +127,7 @@ nav.navbar {
                 line-height: 49px;
                 color: black;   
                 font-size: 16px;
+                @include small-caps;
 
                 &:hover {
                     position: relative;
@@ -77,18 +141,20 @@ nav.navbar {
         background-image: none;
         // background-color: $dark-blue;
         background-color: $dive-black;
+
         border-radius: 0;
 
         a.navbar-brand {
-            height: 50px;
+            height: 40px;
             font-family: 'Karbon';
             text-transform: uppercase;
             text-shadow: none;
-            font-size: 30px;
+            font-size: 20px;
             // color: $light-blue;
             color: white;
             font-weight: normal;
             letter-spacing: 2px;
+            line-height: 6px;
         }
     }
 
@@ -99,9 +165,9 @@ nav.navbar {
         cursor: pointer;
 
         div.line {
-            width: 24px;
-            border-bottom: 3px solid white;
-            padding-bottom: 4px;
+            width: 14px;
+            border-bottom: 2px solid white;
+            padding-bottom: 3px;
         }
     }
 
@@ -137,13 +203,28 @@ nav.navbar {
 }
 
 section.left-pane, section.right-pane {
+    background-color: white;
     font-size: 16px;
     position: relative;
     float: left;
     width: 300px;
     height: 100%;
-    border-right: 5px solid $light-gray;
     overflow-y: auto;
+
+    &.closed {
+        display: none;
+    }
+
+    div.pane-title {
+        text-align: center;
+        line-height: 35px;
+        // font-weight: bold;
+        border-bottom: 1px solid $dive-black;
+        background-color: $dive-black;
+        color: $active-white;
+
+        @include small-caps;
+    }
 
     ul.pane-items {
         padding-left: 0;
@@ -151,11 +232,16 @@ section.left-pane, section.right-pane {
         li {
             position: relative;
             list-style-type: none;
-            height: 100px;
+            height: 80px;
+            font-size: 14px;
             border-bottom: 1px solid $light-gray;
 
             cursor: pointer;
-            padding: 15px;
+            padding: 12px;
+
+            div.vertical-center {
+                line-height: 56px;
+            }
 
             div.choose {
                 position: absolute;
@@ -206,8 +292,8 @@ section.left-pane, section.right-pane {
 
             div.dimensions {
                 float: left;
-                margin-top: 10px;
                 width: 200px;
+                padding-top: 20px;
             }
             div.type {
                 text-align: right;
@@ -223,11 +309,15 @@ section.left-pane, section.right-pane {
     }
 }
 
+section.left-pane {
+    border-right: 1px solid $dive-black;
+}
+
 section.right-pane {
     position: relative;
     float: right;
     width: 300px;
-    border-left: 5px solid $light-gray;
+    border-left: 1px solid $dive-black;
     font-size: 16px;
 }
 
@@ -251,15 +341,73 @@ section.upload-dataset {
     }
 }
 
+@mixin left-arrow {
+    &::before {
+        margin-top: -5px;
+        margin-left: -7px;
+        border: 5px solid $gray;
+        border-left-color: transparent;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+    }
+}
+
+@mixin right-arrow {
+    &::before {
+        margin-top: -5px;
+        margin-left: -1px;
+        border: 5px solid $gray;
+        border-right-color: transparent;
+        border-top-color: transparent;
+        border-bottom-color: transparent;  
+    } 
+}
+
+div.toggle-pane {
+    width: 20px;
+    height: 20px;
+    border: 1px solid $gray;
+    position: absolute;
+    top: 5px;
+    cursor: pointer;
+
+    &.left { 
+        left: 5px; 
+        @include left-arrow;
+    }
+    &.right { 
+        right: 5px; 
+        @include right-arrow;
+    }
+
+    &.left-closed { @include right-arrow; }
+    &.right-closed { @include left-arrow; }
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+    }
+}
+
 /* Viewport */
 section.viewport {
-    // padding: 20px;
+    padding-top: 30px;
+    position: relative;
     margin-left: 300px;
     margin-right: 300px;
+    height: 100%;
+    overflow-x: scroll;
 
-    div.dataset-preview {
-        padding-top: 20px;
-        padding-bottom: 20px;
+    &.left-closed {
+        margin-left: 0px;
+    }
+
+    &.right-closed {
+        margin-right: 0px;
     }
 }
 
@@ -270,12 +418,13 @@ select.type-select {
 /* Table */
 tr.ng-scope {
     td {
+        font-size: 14px;
         padding: 4px;
+        border: 1px solid $light-gray;
     }
 }
 input {
-    font-family: 'DIN';
-    font-size: 16px;
+    font-size: 14px;
     padding: 4px;
     -webkit-appearance: none;
     border: none;
@@ -288,6 +437,16 @@ input {
     }
 }
 
+// Dropdown styling
+select{
+    font-size: 14px;
+    padding: 4px;
+    background-color: $light-gray;
+    border-radius: 0px;
+    border: 1px solid $light-gray;
+    -webkit-appearance: none;
+    height: 23px;
+}
 
 div#viz-container {
     width: 100%;

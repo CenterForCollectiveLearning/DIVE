@@ -4,7 +4,9 @@
     "$routeProvider", function($routeProvider) {
       return $routeProvider.when("/", {
         templateUrl: "static/views/landing.html"
-      }).when("/data", {
+      }).when("/:uID/:pID", {
+        redirectTo: "/:uID/:pID/data"
+      }).when("/:uID/:pID/data", {
         templateUrl: "static/views/data_view.html",
         controller: "DatasetListCtrl",
         resolve: {
@@ -12,7 +14,7 @@
             return DataService.promise;
           }
         }
-      }).when("/ontology", {
+      }).when("/:uID/:pID/ontology", {
         templateUrl: "static/views/edit_ontology.html",
         controller: "OntologyEditorCtrl",
         resolve: {
@@ -23,7 +25,7 @@
             return OverlapService.promise;
           }
         }
-      }).when("/visualize", {
+      }).when("/:uID/:pID/visualize", {
         templateUrl: "static/views/create_viz.html",
         controller: "CreateVizCtrl",
         resolve: {
@@ -40,9 +42,9 @@
             return VizDataService.promise;
           }
         }
-      }).when("/assemble", {
+      }).when("/:uID/:pID/assemble", {
         templateUrl: "static/views/assemble_engine.html",
-        controller: "AssembleEngineCtrl",
+        controller: "AssembleCtrl",
         resolve: {
           initialData: function(DataService) {
             return DataService.promise;

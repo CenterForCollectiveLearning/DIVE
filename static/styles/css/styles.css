@@ -1,209 +1,3 @@
-html, body {
-  height: 100%;
-  max-height: 100%;
-  overflow-y: scroll;
-  font-family: 'Karbon', 'DIN', Helvetica, Sans Serif; }
-
-section.landing-top {
-  font-family: 'DIN';
-  font-weight: light; }
-  section.landing-top div.dive {
-    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGElEQVQIW2NkYGD4D8SMQAwHKByYKIWCAGagAQanLNDFAAAAAElFTkSuQmCC) repeat;
-    background-color: #1C1D1D;
-    padding: 100px 0; }
-    section.landing-top div.dive div {
-      text-align: center;
-      color: white; }
-    section.landing-top div.dive div.title {
-      font-size: 60px; }
-    section.landing-top div.dive div.subtitle {
-      font-size: 24px; }
-
-/* Layout */
-nav.navbar {
-  margin: 0;
-  border: 0; }
-  nav.navbar div.navbar-header {
-    height: 50px; }
-  nav.navbar div.login {
-    font-size: 16px;
-    color: white;
-    font-weight: normal;
-    line-height: 50px;
-    float: right;
-    margin-right: 20px; }
-  nav.navbar ul {
-    padding-left: 0; }
-    nav.navbar ul li {
-      float: left;
-      padding: 0 20px; }
-      nav.navbar ul li.active.data {
-        background-color: #f8e71c; }
-      nav.navbar ul li.active.ontology {
-        background-color: #4a90e2; }
-      nav.navbar ul li.active.visualize {
-        background-color: #bd10e0; }
-      nav.navbar ul li.active.assemble {
-        background-color: #7ed321; }
-      nav.navbar ul li a {
-        line-height: 49px;
-        color: black;
-        font-size: 16px; }
-        nav.navbar ul li a:hover {
-          position: relative;
-          bottom: 1px; }
-  nav.navbar.top {
-    background-image: none;
-    background-color: #1c1d1d;
-    border-radius: 0; }
-    nav.navbar.top a.navbar-brand {
-      height: 50px;
-      font-family: 'Karbon';
-      text-transform: uppercase;
-      text-shadow: none;
-      font-size: 30px;
-      color: white;
-      font-weight: normal;
-      letter-spacing: 2px; }
-  nav.navbar div.hamburger {
-    float: right;
-    margin-right: 20px;
-    margin-top: 12px;
-    cursor: pointer; }
-    nav.navbar div.hamburger div.line {
-      width: 24px;
-      border-bottom: 3px solid white;
-      padding-bottom: 4px; }
-  nav.navbar.sections {
-    background-image: none;
-    background-color: white;
-    border-bottom: 1px solid #1c1d1d;
-    border-radius: 0; }
-    nav.navbar.sections p.navbar-text {
-      font-family: 'Karbon';
-      font-weight: normal;
-      color: #1c1d1d;
-      float: left;
-      margin-left: 15px;
-      margin-right: 15px;
-      font-size: 16px; }
-      nav.navbar.sections p.navbar-text.active {
-        font-weight: normal; }
-      nav.navbar.sections p.navbar-text:hover {
-        position: relative;
-        bottom: 1px; }
-
-section.left-pane, section.right-pane {
-  font-size: 16px;
-  position: relative;
-  float: left;
-  width: 300px;
-  height: 100%;
-  border-right: 5px solid #e0e5e9;
-  overflow-y: auto; }
-  section.left-pane ul.pane-items, section.right-pane ul.pane-items {
-    padding-left: 0;
-    list-style-type: none; }
-    section.left-pane ul.pane-items li, section.right-pane ul.pane-items li {
-      position: relative;
-      list-style-type: none;
-      height: 100px;
-      border-bottom: 1px solid #e0e5e9;
-      cursor: pointer;
-      padding: 15px; }
-      section.left-pane ul.pane-items li div.choose, section.right-pane ul.pane-items li div.choose {
-        position: absolute;
-        top: 0px;
-        right: 0px;
-        height: 100px;
-        width: 50px; }
-        section.left-pane ul.pane-items li div.choose div, section.right-pane ul.pane-items li div.choose div {
-          height: 50px; }
-          section.left-pane ul.pane-items li div.choose div i, section.right-pane ul.pane-items li div.choose div i {
-            width: 100%;
-            line-height: 50px;
-            text-align: center; }
-        section.left-pane ul.pane-items li div.choose div.select, section.right-pane ul.pane-items li div.choose div.select {
-          background-color: #7ed321; }
-        section.left-pane ul.pane-items li div.choose div.reject, section.right-pane ul.pane-items li div.choose div.reject {
-          background-color: #d0021b; }
-      section.left-pane ul.pane-items li.add-dataset, section.right-pane ul.pane-items li.add-dataset {
-        cursor: pointer;
-        width: 100%;
-        height: 50px;
-        font-size: 30px;
-        line-height: 50px;
-        text-align: center;
-        color: #e0e5e9; }
-        section.left-pane ul.pane-items li.add-dataset:hover, section.right-pane ul.pane-items li.add-dataset:hover {
-          color: #222222; }
-      section.left-pane ul.pane-items li.selected-dataset, section.right-pane ul.pane-items li.selected-dataset {
-        background-color: #e0e5e9; }
-      section.left-pane ul.pane-items li div.dimensions, section.right-pane ul.pane-items li div.dimensions {
-        float: left;
-        margin-top: 10px;
-        width: 200px; }
-      section.left-pane ul.pane-items li div.type, section.right-pane ul.pane-items li div.type {
-        text-align: right;
-        margin-top: 20px; }
-  section.left-pane div.drag, section.right-pane div.drag {
-    position: absolute;
-    top: 500px;
-    width: 100%;
-    text-align: center; }
-
-section.right-pane {
-  position: relative;
-  float: right;
-  width: 300px;
-  border-left: 5px solid #e0e5e9;
-  font-size: 16px; }
-
-/* Upload */
-section.upload-dataset {
-  height: 100%;
-  margin-left: 300px; }
-  section.upload-dataset ul, section.upload-dataset li {
-    padding: 0;
-    list-style-type: none; }
-  section.upload-dataset ul.data-rows li.data-row ul.data-cells li.data-cell {
-    float: left; }
-
-/* Viewport */
-section.viewport {
-  margin-left: 300px;
-  margin-right: 300px; }
-  section.viewport div.dataset-preview {
-    padding-top: 20px;
-    padding-bottom: 20px; }
-
-select.type-select {
-  width: 100%; }
-
-/* Table */
-tr.ng-scope td {
-  padding: 4px; }
-
-input {
-  font-family: 'DIN';
-  font-size: 16px;
-  padding: 4px;
-  -webkit-appearance: none;
-  border: none;
-  background-color: #e0e5e9;
-  width: 100%;
-  min-width: 150px; }
-  input:focus {
-    outline: none;
-    background-color: #C0C0C0; }
-
-div#viz-container {
-  width: 100%; }
-
-/* Ontology Editor */
-g {
-  cursor: default; }
-
 a {
   text-decoration: none !important; }
   a:hover {
@@ -242,3 +36,344 @@ ul {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  max-height: 100%;
+  min-width: 980px;
+  overflow-y: scroll;
+  font-family: 'Karbon', 'DIN', Helvetica, Sans Serif; }
+
+div.wrapper {
+  max-height: 100%;
+  height: 100%;
+  overflow-y: hidden; }
+
+section.landing-top {
+  font-family: 'DIN';
+  font-weight: light; }
+  section.landing-top div.dive {
+    background-color: #1C1D1D;
+    padding: 100px 0; }
+    section.landing-top div.dive div {
+      text-align: center;
+      color: #eeeeee; }
+    section.landing-top div.dive div.title {
+      font-size: 60px; }
+    section.landing-top div.dive div.subtitle {
+      font-size: 24px; }
+  section.landing-top div.user {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white; }
+
+section.landing-projects ul.projects {
+  width: 700px;
+  margin: 10px auto 0 auto; }
+  section.landing-projects ul.projects a {
+    color: black; }
+  section.landing-projects ul.projects li.project {
+    -webkit-transition: border 0.1s ease-in;
+    -moz-transition: border 0.1s ease-in;
+    -o-transition: border 0.1s ease-in;
+    transition: border 0.1s ease-in;
+    -webkit-transition: background 0.1s ease-in;
+    -moz-transition: background 0.1s ease-in;
+    -o-transition: background 0.1s ease-in;
+    transition: background 0.1s ease-in;
+    cursor: pointer;
+    margin-top: 10px;
+    height: 140px;
+    width: 200px;
+    background-color: #f1efef;
+    border: 1px solid #f1efef;
+    border-radius: 2px;
+    display: inline-block;
+    margin-right: 10px; }
+    section.landing-projects ul.projects li.project:hover {
+      background-color: #4a90e2; }
+    section.landing-projects ul.projects li.project div.title {
+      font-size: 24px;
+      line-height: 140px;
+      text-align: center; }
+  section.landing-projects ul.projects li.new-project i {
+    font-size: 60px;
+    width: 100%;
+    text-align: center;
+    line-height: 140px; }
+
+/* Layout */
+nav.navbar {
+  margin: 0;
+  border: 0;
+  min-width: 980px;
+  min-height: 35px; }
+  nav.navbar div.navbar-header {
+    height: 35px;
+    float: left; }
+  nav.navbar div.login {
+    font-size: 16px;
+    color: white;
+    font-weight: normal;
+    line-height: 35px;
+    float: right;
+    margin-right: 20px; }
+  nav.navbar ul {
+    padding-left: 0; }
+    nav.navbar ul li {
+      float: left;
+      padding: 0 20px; }
+      nav.navbar ul li.active.data {
+        background-color: #f8e71c; }
+      nav.navbar ul li.active.ontology {
+        background-color: #4a90e2; }
+      nav.navbar ul li.active.visualize {
+        background-color: #bd10e0; }
+      nav.navbar ul li.active.assemble {
+        background-color: #7ed321; }
+      nav.navbar ul li a {
+        line-height: 49px;
+        color: black;
+        font-size: 16px;
+        font-family: "Lato",helvetica,sans-serif;
+        font-size: 9px;
+        letter-spacing: 1px;
+        line-height: 35px;
+        text-transform: uppercase; }
+        nav.navbar ul li a:hover {
+          position: relative;
+          bottom: 1px; }
+  nav.navbar.top {
+    background-image: none;
+    background-color: #1e1e20;
+    border-radius: 0; }
+    nav.navbar.top a.navbar-brand {
+      height: 40px;
+      font-family: 'Karbon';
+      text-transform: uppercase;
+      text-shadow: none;
+      font-size: 20px;
+      color: white;
+      font-weight: normal;
+      letter-spacing: 2px;
+      line-height: 6px; }
+  nav.navbar div.hamburger {
+    float: right;
+    margin-right: 20px;
+    margin-top: 12px;
+    cursor: pointer; }
+    nav.navbar div.hamburger div.line {
+      width: 14px;
+      border-bottom: 2px solid white;
+      padding-bottom: 3px; }
+  nav.navbar.sections {
+    background-image: none;
+    background-color: white;
+    border-bottom: 1px solid #1e1e20;
+    border-radius: 0; }
+    nav.navbar.sections p.navbar-text {
+      font-family: 'Karbon';
+      font-weight: normal;
+      color: #1e1e20;
+      float: left;
+      margin-left: 15px;
+      margin-right: 15px;
+      font-size: 16px; }
+      nav.navbar.sections p.navbar-text.active {
+        font-weight: normal; }
+      nav.navbar.sections p.navbar-text:hover {
+        position: relative;
+        bottom: 1px; }
+
+section.left-pane, section.right-pane {
+  background-color: white;
+  font-size: 16px;
+  position: relative;
+  float: left;
+  width: 300px;
+  height: 100%;
+  overflow-y: auto; }
+  section.left-pane.closed, section.right-pane.closed {
+    display: none; }
+  section.left-pane div.pane-title, section.right-pane div.pane-title {
+    text-align: center;
+    line-height: 35px;
+    border-bottom: 1px solid #1e1e20;
+    background-color: #1e1e20;
+    color: #eeeeee;
+    font-family: "Lato",helvetica,sans-serif;
+    font-size: 9px;
+    letter-spacing: 1px;
+    line-height: 35px;
+    text-transform: uppercase; }
+  section.left-pane ul.pane-items, section.right-pane ul.pane-items {
+    padding-left: 0;
+    list-style-type: none; }
+    section.left-pane ul.pane-items li, section.right-pane ul.pane-items li {
+      position: relative;
+      list-style-type: none;
+      height: 80px;
+      font-size: 14px;
+      border-bottom: 1px solid #f1efef;
+      cursor: pointer;
+      padding: 12px; }
+      section.left-pane ul.pane-items li div.vertical-center, section.right-pane ul.pane-items li div.vertical-center {
+        line-height: 56px; }
+      section.left-pane ul.pane-items li div.choose, section.right-pane ul.pane-items li div.choose {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 100px;
+        width: 50px; }
+        section.left-pane ul.pane-items li div.choose div, section.right-pane ul.pane-items li div.choose div {
+          height: 50px; }
+          section.left-pane ul.pane-items li div.choose div i, section.right-pane ul.pane-items li div.choose div i {
+            width: 100%;
+            line-height: 50px;
+            text-align: center; }
+        section.left-pane ul.pane-items li div.choose div.select, section.right-pane ul.pane-items li div.choose div.select {
+          background-color: #7ed321; }
+        section.left-pane ul.pane-items li div.choose div.reject, section.right-pane ul.pane-items li div.choose div.reject {
+          background-color: #d0021b; }
+      section.left-pane ul.pane-items li.add-dataset, section.right-pane ul.pane-items li.add-dataset {
+        cursor: pointer;
+        width: 100%;
+        height: 50px;
+        font-size: 30px;
+        line-height: 50px;
+        text-align: center;
+        color: #f1efef; }
+        section.left-pane ul.pane-items li.add-dataset:hover, section.right-pane ul.pane-items li.add-dataset:hover {
+          color: #666666; }
+      section.left-pane ul.pane-items li.selected-dataset, section.right-pane ul.pane-items li.selected-dataset {
+        background-color: #f1efef; }
+      section.left-pane ul.pane-items li div.dimensions, section.right-pane ul.pane-items li div.dimensions {
+        float: left;
+        width: 200px;
+        padding-top: 20px; }
+      section.left-pane ul.pane-items li div.type, section.right-pane ul.pane-items li div.type {
+        text-align: right;
+        margin-top: 20px; }
+  section.left-pane div.drag, section.right-pane div.drag {
+    position: absolute;
+    top: 500px;
+    width: 100%;
+    text-align: center; }
+
+section.left-pane {
+  border-right: 1px solid #1e1e20; }
+
+section.right-pane {
+  position: relative;
+  float: right;
+  width: 300px;
+  border-left: 1px solid #1e1e20;
+  font-size: 16px; }
+
+/* Upload */
+section.upload-dataset {
+  height: 100%;
+  margin-left: 300px; }
+  section.upload-dataset ul, section.upload-dataset li {
+    padding: 0;
+    list-style-type: none; }
+  section.upload-dataset ul.data-rows li.data-row ul.data-cells li.data-cell {
+    float: left; }
+
+div.toggle-pane {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #aeaeae;
+  position: absolute;
+  top: 5px;
+  cursor: pointer; }
+  div.toggle-pane.left {
+    left: 5px; }
+    div.toggle-pane.left::before {
+      margin-top: -5px;
+      margin-left: -7px;
+      border: 5px solid #aeaeae;
+      border-left-color: transparent;
+      border-top-color: transparent;
+      border-bottom-color: transparent; }
+  div.toggle-pane.right {
+    right: 5px; }
+    div.toggle-pane.right::before {
+      margin-top: -5px;
+      margin-left: -1px;
+      border: 5px solid #aeaeae;
+      border-right-color: transparent;
+      border-top-color: transparent;
+      border-bottom-color: transparent; }
+  div.toggle-pane.left-closed::before {
+    margin-top: -5px;
+    margin-left: -1px;
+    border: 5px solid #aeaeae;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent; }
+  div.toggle-pane.right-closed::before {
+    margin-top: -5px;
+    margin-left: -7px;
+    border: 5px solid #aeaeae;
+    border-left-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent; }
+  div.toggle-pane::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0; }
+
+/* Viewport */
+section.viewport {
+  padding-top: 30px;
+  position: relative;
+  margin-left: 300px;
+  margin-right: 300px;
+  height: 100%;
+  overflow-x: scroll; }
+  section.viewport.left-closed {
+    margin-left: 0px; }
+  section.viewport.right-closed {
+    margin-right: 0px; }
+
+select.type-select {
+  width: 100%; }
+
+/* Table */
+tr.ng-scope td {
+  font-size: 14px;
+  padding: 4px;
+  border: 1px solid #f1efef; }
+
+input {
+  font-size: 14px;
+  padding: 4px;
+  -webkit-appearance: none;
+  border: none;
+  background-color: #f1efef;
+  width: 100%;
+  min-width: 150px; }
+  input:focus {
+    outline: none;
+    background-color: #C0C0C0; }
+
+select {
+  font-size: 14px;
+  padding: 4px;
+  background-color: #f1efef;
+  border-radius: 0px;
+  border: 1px solid #f1efef;
+  -webkit-appearance: none;
+  height: 23px; }
+
+div#viz-container {
+  width: 100%; }
+
+/* Ontology Editor */
+g {
+  cursor: default; }

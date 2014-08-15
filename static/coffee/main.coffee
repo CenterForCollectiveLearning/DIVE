@@ -2,10 +2,32 @@
 window.SC = (selector) ->
   angular.element(selector).scope()
 
+window.objectToQueryString = (obj) ->
+	str = []
+	for p of obj
+		str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
+	str.join("&")
+
 # diveApp is top-level encompassing the engineApp
 window.diveApp = angular.module("diveApp", ["ngRoute", "engineApp"])
 window.engineApp = angular.module("engineApp", ["d3", "d3Plus", "ngRoute", "engineControllers"])
 
+engineApp.directive("engineTopBar", ->
+	return {
+		restrict: 'E',
+		templateUrl: '/static/views/engine_top_bar.html'
+	}
+)
+
+engineApp.directive("paneToggle", ->
+	return {
+		restrict: 'E',
+		templateUrl: '/static/views/engine_pane_toggle.html'
+		controller: "PaneToggleCtrl"
+	}
+)
+
+# TODO Refactor top-level directives into another module
 diveApp.directive("landingTop", ->
 	return {
 		restrict: 'E',
@@ -18,12 +40,7 @@ diveApp.directive("landingProjects", ->
 		restrict: 'E',
 		scope: {}
 		# TODO Bind to a call scoped by user
-		controller: ($scope, $element, $attrs) ->
-            $scope.projects = [
-            	{ title: 'Pantheon' },
-            	{ title: 'OEC' },
-            	{ title: 'DataViva' },
-            ]		
+		controller: "ProjectListCtrl"
 		templateUrl: '/static/views/landing_projects.html'
 	}
 )

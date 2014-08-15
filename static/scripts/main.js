@@ -4,9 +4,33 @@
     return angular.element(selector).scope();
   };
 
+  window.objectToQueryString = function(obj) {
+    var p, str;
+    str = [];
+    for (p in obj) {
+      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+    }
+    return str.join("&");
+  };
+
   window.diveApp = angular.module("diveApp", ["ngRoute", "engineApp"]);
 
   window.engineApp = angular.module("engineApp", ["d3", "d3Plus", "ngRoute", "engineControllers"]);
+
+  engineApp.directive("engineTopBar", function() {
+    return {
+      restrict: 'E',
+      templateUrl: '/static/views/engine_top_bar.html'
+    };
+  });
+
+  engineApp.directive("paneToggle", function() {
+    return {
+      restrict: 'E',
+      templateUrl: '/static/views/engine_pane_toggle.html',
+      controller: "PaneToggleCtrl"
+    };
+  });
 
   diveApp.directive("landingTop", function() {
     return {
@@ -19,17 +43,7 @@
     return {
       restrict: 'E',
       scope: {},
-      controller: function($scope, $element, $attrs) {
-        return $scope.projects = [
-          {
-            title: 'Pantheon'
-          }, {
-            title: 'OEC'
-          }, {
-            title: 'DataViva'
-          }
-        ];
-      },
+      controller: "ProjectListCtrl",
       templateUrl: '/static/views/landing_projects.html'
     };
   });
