@@ -63,7 +63,7 @@ section.landing-top {
       font-size: 60px; }
     section.landing-top div.dive div.subtitle {
       font-size: 24px; }
-  section.landing-top div.user {
+  section.landing-top div.user-status {
     font-family: "Lato",helvetica,sans-serif;
     font-size: 9px;
     letter-spacing: 1px;
@@ -73,7 +73,54 @@ section.landing-top {
     top: 5px;
     right: 15px;
     color: white; }
+    section.landing-top div.user-status span.username {
+      border-bottom: 1px dotted #eeeeee; }
 
+section.landing-projects div.new-project {
+  position: relative;
+  width: 600px;
+  padding: 10px;
+  margin: 20px auto 0 auto;
+  background-color: #f1efef;
+  border: 1px solid #f1efef;
+  border-radius: 2px; }
+  section.landing-projects div.new-project div.close {
+    position: absolute;
+    top: 5px;
+    right: 5px; }
+  section.landing-projects div.new-project label {
+    width: 100%;
+    text-align: center;
+    color: black;
+    font-family: "Lato",helvetica,sans-serif;
+    font-size: 9px;
+    letter-spacing: 1px;
+    line-height: 35px;
+    text-transform: uppercase; }
+  section.landing-projects div.new-project input {
+    border: 1px solid #666666;
+    margin-bottom: 10px; }
+  section.landing-projects div.new-project div.create-project {
+    cursor: pointer;
+    background-color: #666666;
+    width: 80px;
+    margin: 10px auto 0 auto;
+    text-align: center;
+    border-radius: 2px;
+    padding: 8px 5px;
+    color: #eeeeee;
+    font-family: "Lato",helvetica,sans-serif;
+    font-size: 9px;
+    letter-spacing: 1px;
+    line-height: 35px;
+    text-transform: uppercase;
+    line-height: 20px; }
+    section.landing-projects div.new-project div.create-project:hover {
+      -webkit-transition: background 0.1s ease-in;
+      -moz-transition: background 0.1s ease-in;
+      -o-transition: background 0.1s ease-in;
+      transition: background 0.1s ease-in;
+      background-color: #4a90e2; }
 section.landing-projects ul.projects {
   width: 700px;
   margin: 10px auto 0 auto; }

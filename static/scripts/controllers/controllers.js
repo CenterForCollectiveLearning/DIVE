@@ -2,9 +2,38 @@
 (function() {
   var controllers;
 
-  controllers = angular.module("engineControllers", []);
+  controllers = angular.module("engineControllers", ['ngAnimate']);
 
-  controllers.controller("ProjectListCtrl", function($scope, $http) {
+  controllers.controller("CreateProjectFormController", function($scope, $http) {
+    return $scope.create_project = function() {
+      var params;
+      params = {
+        title: 'Test Title',
+        description: 'Test Description',
+        user: $scope.user.userName
+      };
+      return $http({
+        method: 'POST',
+        url: 'http://localhost:8888/api/project',
+        data: params,
+        transformRequest: objectToQueryString,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).success(function(data, status) {
+        console.log(data, status);
+        $location.path($scope.user.userName + '/' + params.title);
+        return console.log("Successful request");
+      }).error(function(data, status) {
+        console.log(data, status);
+        return $scope.titleTaken = true;
+      });
+    };
+  });
+
+  controllers.controller("ProjectListCtrl", function($scope, $http, $location) {
+    $scope.newProjectData = {};
+    $scope.newProject = true;
     $scope.user = {
       userName: 'demo-user',
       displayName: 'Demo User'
@@ -24,17 +53,8 @@
     $scope.select_project = function(id) {
       return console.log(id);
     };
-    return $scope.new_project = function() {
-      return $http({
-        method: 'POST',
-        url: 'http://localhost:8888/api/project',
-        transformRequest: objectToQueryString,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      }).success(function(data) {
-        return console.log("Successful request");
-      });
+    return $scope.new_project_toggle = function() {
+      return $scope.newProject = !$scope.newProject;
     };
   });
 

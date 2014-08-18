@@ -1,14 +1,28 @@
 <section class="landing-projects">
-	<ul class="projects">
+	<ul class="projects" ng-if="!newProject">
 		<li ng-repeat="project in projects" class="project" ng-click="select_project(project.id)">
 			<a href="#/{[{user.userName}]}/{[{project.displayTitle}]}">
 				<div class="title">{[{project.title}]}</div>
 			</a>
 		</li>
-		<li class="project new-project" ng-click="new_project()">
-			<a href="#/{[{user.userName}]}/new-project">
-				<i class="fa fa-plus-circle"></i>
-			</a>
+		<li class="project new-project" ng-click="new_project_toggle()" ng-if="!newProject">
+			<i class="fa fa-plus-circle"></i>
 		</li>
 	</ul>
+	<div class="new-project" ng-if="newProject">
+		<div class="close" ng-click="new_project_toggle()"><i class="fa fa-times"></i></div>
+		<label>New Project</label>
+
+		<form name="createProjectForm" ng-controller="CreateProjectFormController as createProject" ng-submit="createProjectForm.$valid && createProject.login()" novalidate>
+
+			<label class="title label" ng-class="{ 'input-error': createProjectForm.title.$invalid && !createProjectForm.title.$pristine && !createProjectForm.email.$focused } ">
+				Project Title
+				<span ng-show="titleTaken">must be unique</span>
+			</label>
+			<input type="text" ng-model="newProjectData.title" placeholder="Chicago Demographic Visualization" required>
+			<label class="description label">Project Description</label>
+			<input type="text" ng-model="newProjectData.description" placeholder="Visualization based on the 2006-2012 ACS">
+			<div class="create-project" ng-click="create_project()">Create</div>
+		</form>
+	</div>
 </section>

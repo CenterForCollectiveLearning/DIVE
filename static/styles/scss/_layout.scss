@@ -34,18 +34,65 @@ section.landing-top {
         }
     }
 
-    div.user {
+    div.user-status {
         @include small-caps;
         position: absolute;
         top: 5px;
         right: 15px;
         color: white;
+        span.username {
+            border-bottom: 1px dotted $active-white;
+        }
     }
 }
 
 section.landing-projects {
     $block-width: 200px;
     $block-height: 140px;
+    div.new-project {
+        position: relative;
+        width: 600px;
+        padding: 10px;
+        margin: 20px auto 0 auto;
+        background-color: $light-gray;
+        border: 1px solid $light-gray;
+        border-radius: 2px;
+
+        div.close {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+
+        label {
+            width: 100%;
+            text-align: center;
+            color: black;
+            @include small-caps;
+        }
+
+        input {
+            border: 1px solid $dark-gray;
+            margin-bottom: 10px;
+        }
+
+        div.create-project {
+            cursor: pointer;
+            background-color: $dark-gray;
+            width: 80px;
+            margin: 10px auto 0 auto;
+            text-align: center;
+            border-radius: 2px;
+            padding: 8px 5px;
+            color: $active-white;
+            @include small-caps;
+            line-height: 20px;
+            &:hover {
+                @include background-transition;
+                background-color: $ontology-blue;
+            }
+        }
+    }
     ul.projects {
         width: 700px;
         margin: 10px auto 0 auto;

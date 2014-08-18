@@ -1,7 +1,31 @@
-controllers = angular.module("engineControllers", [])
+controllers = angular.module("engineControllers", ['ngAnimate'])
+
+controllers.controller "CreateProjectFormController", ($scope, $http) ->
+  $scope.create_project = ->  
+    params = {
+      title: 'Test Title'
+      description: 'Test Description'
+      user: $scope.user.userName
+    }
+    $http(
+      method: 'POST'
+      url: 'http://localhost:8888/api/project'
+      data: params
+      transformRequest: objectToQueryString
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    ).success((data, status) ->
+      console.log( data, status )
+      $location.path($scope.user.userName + '/' + params.title)
+      console.log("Successful request")
+    ).error((data, status) ->
+      console.log( data, status )
+      $scope.titleTaken = true
+      )
 
 # Landing page project list / navigation
-controllers.controller "ProjectListCtrl", ($scope, $http) ->
+controllers.controller "ProjectListCtrl", ($scope, $http, $location) ->
+  $scope.newProjectData = {}
+  $scope.newProject = true
   $scope.user = {
     userName: 'demo-user'
     displayName: 'Demo User'
@@ -15,15 +39,10 @@ controllers.controller "ProjectListCtrl", ($scope, $http) ->
   $scope.select_project = (id) ->
     console.log(id)
 
-  $scope.new_project = ->
-    $http(
-      method: 'POST'
-      url: 'http://localhost:8888/api/project'
-      transformRequest: objectToQueryString
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    ).success((data) ->
-      console.log("Successful request")
-    )
+  $scope.new_project_toggle = ->
+    $scope.newProject = !$scope.newProject
+
+  
 
 controllers.controller "PaneToggleCtrl", ($scope) ->
   $scope.leftClosed = false

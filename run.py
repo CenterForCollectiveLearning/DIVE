@@ -113,34 +113,29 @@ class get_test_datasets(Resource):
 # Projects
 ############################
 projectGetParser = reqparse.RequestParser()
-projectGetParser.add_argument('pID', type=str, action='append', required=True)
 
 projectPostParser = reqparse.RequestParser()
+projectPostParser.add_argument('title', type=str, required=True)
+projectPostParser.add_argument('description', type=str, required=True)
+projectPostParser.add_argument('user', type=str, required=True)
 
 projectDeleteParser = reqparse.RequestParser()
 
+# TODO Return all projects
+# Get information for one project
+
 class Project(Resource):
     def get(self):
-        print "GET REQUEST"
         args = projectGetParser.parse_args()
         pIDs = args.get('pID')
         return [ MongoInstance.getThing(pID, 'projects', []) for pID in pIDs ]
-    def put(self):
-        args = projectPutParser.parse_args()
-        pIDs = args.get('pID')
-        project_titles  = args.get('projectTitle')
-        owner_emails = args.get('ownerEmail')
-        owner_first_names = args.get('ownerFirstName')
-        owner_last_names = args.get('ownerLastName')
-        params = zip(pIDs, project_titles, owner_emails, owner_first_names, owner_last_names)
-        return [ MongoInstance.putThing(pID,'project',project_title=project_title, owner_email=owner_email, owner_first_name=owner_first_name, owner_last_name=owner_last_name) \
-            for (pID, project_title, owner_email, owner_first_name, owner_last_name) in params]
     def post(self):
-        print "POST"
         args = projectPostParser.parse_args()
-        return
-        # return [ MongoInstance.postThing('','project',project_title=project_title, owner_email=owner_email, owner_first_name=owner_first_name, owner_last_name=owner_last_name) \
-        #     for (project_title, owner_email, owner_first_name, owner_last_name) in params ]
+        title = args.get('title')
+        description = args.get('description')
+        user = args.get('user')
+        return MongoInstance.postProject(title, description, user)
+        
     def delete(self):
         args = projectDeleteParser.parse_args()
         pIDs = args.get('pID')
