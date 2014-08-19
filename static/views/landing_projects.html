@@ -1,10 +1,11 @@
 <section class="landing-projects">
 	<ul class="projects" ng-if="!newProject">
-		<li ng-repeat="project in projects" class="project" ng-click="select_project(project.id)">
-			<a href="#/{[{user.userName}]}/{[{project.displayTitle}]}">
+		<a ng-repeat="project in projects" href="#/{[{user.userName}]}/{[{project.formattedTitle}]}" ng-click="select_project(project.id)">
+			<li class="project">
 				<div class="title">{[{project.title}]}</div>
-			</a>
-		</li>
+				<div class="description">{[{project.description}]}</div>
+			</li>
+		</a>
 		<li class="project new-project" ng-click="new_project_toggle()" ng-if="!newProject">
 			<i class="fa fa-plus-circle"></i>
 		</li>

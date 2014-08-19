@@ -113,11 +113,13 @@ class get_test_datasets(Resource):
 # Projects
 ############################
 projectGetParser = reqparse.RequestParser()
+projectGetParser.add_argument('pID', type=str, default='')
+projectGetParser.add_argument('user_name', type=str, required=True)
 
 projectPostParser = reqparse.RequestParser()
 projectPostParser.add_argument('title', type=str, required=True)
 projectPostParser.add_argument('description', type=str, required=True)
-projectPostParser.add_argument('user', type=str, required=True)
+projectPostParser.add_argument('user_name', type=str, required=True)
 
 projectDeleteParser = reqparse.RequestParser()
 
@@ -127,14 +129,18 @@ projectDeleteParser = reqparse.RequestParser()
 class Project(Resource):
     def get(self):
         args = projectGetParser.parse_args()
-        pIDs = args.get('pID')
-        return [ MongoInstance.getThing(pID, 'projects', []) for pID in pIDs ]
+        pID = args.get('pID')
+        user_name = args.get('user_name')
+        print "GET", pID, user_name
+
+        return MongoInstance.getProject(pID, user_name)
     def post(self):
         args = projectPostParser.parse_args()
         title = args.get('title')
         description = args.get('description')
-        user = args.get('user')
-        return MongoInstance.postProject(title, description, user)
+        user_name = args.get('user_name')
+        print "POST"
+        return MongoInstance.postProject(title, description, user_name)
         
     def delete(self):
         args = projectDeleteParser.parse_args()

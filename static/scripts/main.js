@@ -15,7 +15,7 @@
 
   window.diveApp = angular.module("diveApp", ["ngRoute", "engineApp"]);
 
-  window.engineApp = angular.module("engineApp", ["d3", "d3Plus", "ngRoute", "engineControllers"]);
+  window.engineApp = angular.module("engineApp", ["d3", "d3Plus", "ngRoute", "angularFileUpload", "engineControllers"]);
 
   engineApp.directive("engineTopBar", function() {
     return {

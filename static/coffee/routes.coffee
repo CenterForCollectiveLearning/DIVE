@@ -3,6 +3,9 @@ diveApp.config([
     $routeProvider
     .when("/",
       templateUrl: "static/views/landing.html"
+      resolve:
+        allProjectsService: (AllProjectsService) ->
+          AllProjectsService.promise
     )
     .when("/:uID/:pID",  # TODO Validate permissions first
       redirectTo: "/:uID/:pID/data"

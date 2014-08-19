@@ -52,6 +52,26 @@ ul {
     text-transform: uppercase;
 }
 
+@mixin button($width, $hover-color) {
+    cursor: pointer;
+    input {
+        cursor: pointer;
+    }
+    background-color: $dark-gray;
+    width: $width;
+    margin: 10px auto 0 auto;
+    text-align: center;
+    border-radius: 2px;
+    padding: 8px 5px;
+    color: $active-white;
+    @include small-caps;
+    line-height: 20px;
+    &:hover {
+        @include background-transition;
+        background-color: $hover-color;
+    }
+}
+
 /* Fonts */
 @font-face {
     font-family: 'DIN';

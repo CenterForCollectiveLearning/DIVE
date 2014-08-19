@@ -3,7 +3,12 @@
   diveApp.config([
     "$routeProvider", function($routeProvider) {
       return $routeProvider.when("/", {
-        templateUrl: "static/views/landing.html"
+        templateUrl: "static/views/landing.html",
+        resolve: {
+          allProjectsService: function(AllProjectsService) {
+            return AllProjectsService.promise;
+          }
+        }
       }).when("/:uID/:pID", {
         redirectTo: "/:uID/:pID/data"
       }).when("/:uID/:pID/data", {

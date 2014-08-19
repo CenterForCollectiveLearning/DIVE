@@ -1,17 +1,26 @@
 # Container for data services
+diveApp.service "AllProjectsService", ($http) ->
+  myProjects = []
+  promise = (userName, callback) ->
+   $http.get('/api/project',
+      params:
+        user_name: userName
+    ).success((result) -> 
+      console.log(result)
+      callback(result)
+    )
+  promise: promise
+  getProjects: -> myProjects
+
+# Dataset Samples
 engineApp.service "DataService", ($http) ->
   myData = []
   promise = $http.get("get_test_datasets").success((data) ->
-    
-    # var temp = data.samples[1];
-    # data.samples[1] = data.samples[2];
-    # data.samples[2] = temp;
     myData = data.samples
     return
   )
   promise: promise
-  getData: ->
-    myData
+  getData: -> myData
 
 engineApp.service "OverlapService", ($http) ->
   myData = undefined

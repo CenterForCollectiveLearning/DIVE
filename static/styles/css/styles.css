@@ -46,8 +46,7 @@ html, body {
 
 div.wrapper {
   max-height: 100%;
-  height: 100%;
-  overflow-y: hidden; }
+  height: 100%; }
 
 section.landing-top {
   font-family: 'DIN';
@@ -115,6 +114,8 @@ section.landing-projects div.new-project {
     line-height: 35px;
     text-transform: uppercase;
     line-height: 20px; }
+    section.landing-projects div.new-project div.create-project input {
+      cursor: pointer; }
     section.landing-projects div.new-project div.create-project:hover {
       -webkit-transition: background 0.1s ease-in;
       -moz-transition: background 0.1s ease-in;
@@ -148,13 +149,16 @@ section.landing-projects ul.projects {
       background-color: #4a90e2; }
     section.landing-projects ul.projects li.project div.title {
       font-size: 24px;
-      line-height: 140px;
+      line-height: 70px;
+      text-align: center; }
+    section.landing-projects ul.projects li.project div.description {
+      padding: 0 15px;
       text-align: center; }
   section.landing-projects ul.projects li.new-project i {
     font-size: 60px;
     width: 100%;
     text-align: center;
-    line-height: 140px; }
+    line-height: 120px; }
 
 /* Layout */
 nav.navbar {
@@ -273,6 +277,9 @@ section.left-pane, section.right-pane {
       padding: 12px; }
       section.left-pane ul.pane-items li div.vertical-center, section.right-pane ul.pane-items li div.vertical-center {
         line-height: 56px; }
+      section.left-pane ul.pane-items li div.inactive, section.right-pane ul.pane-items li div.inactive {
+        color: #666666;
+        cursor: default; }
       section.left-pane ul.pane-items li div.choose, section.right-pane ul.pane-items li div.choose {
         position: absolute;
         top: 0px;
@@ -399,6 +406,68 @@ section.viewport {
   section.viewport div.dataset-preview {
     padding-left: 5px;
     padding-right: 5px; }
+
+/* Data Upload */
+div.choose-data-set div.file-upload div.button.upload {
+  cursor: pointer;
+  background-color: #666666;
+  width: 200px;
+  margin: 10px auto 0 auto;
+  text-align: center;
+  border-radius: 2px;
+  padding: 8px 5px;
+  color: #eeeeee;
+  font-family: "Lato",helvetica,sans-serif;
+  font-size: 9px;
+  letter-spacing: 1px;
+  line-height: 35px;
+  text-transform: uppercase;
+  line-height: 20px; }
+  div.choose-data-set div.file-upload div.button.upload input {
+    cursor: pointer; }
+  div.choose-data-set div.file-upload div.button.upload:hover {
+    -webkit-transition: background 0.1s ease-in;
+    -moz-transition: background 0.1s ease-in;
+    -o-transition: background 0.1s ease-in;
+    transition: background 0.1s ease-in;
+    background-color: #4a90e2; }
+div.choose-data-set div.file-upload div.button.cancel {
+  cursor: pointer;
+  background-color: #666666;
+  width: 200px;
+  margin: 10px auto 0 auto;
+  text-align: center;
+  border-radius: 2px;
+  padding: 8px 5px;
+  color: #eeeeee;
+  font-family: "Lato",helvetica,sans-serif;
+  font-size: 9px;
+  letter-spacing: 1px;
+  line-height: 35px;
+  text-transform: uppercase;
+  line-height: 20px; }
+  div.choose-data-set div.file-upload div.button.cancel input {
+    cursor: pointer; }
+  div.choose-data-set div.file-upload div.button.cancel:hover {
+    -webkit-transition: background 0.1s ease-in;
+    -moz-transition: background 0.1s ease-in;
+    -o-transition: background 0.1s ease-in;
+    transition: background 0.1s ease-in;
+    background-color: #d0021b; }
+div.choose-data-set div.file-upload div.drop {
+  margin: 20px 0;
+  background-color: #f1efef;
+  text-align: center;
+  font-family: "Lato",helvetica,sans-serif;
+  font-size: 9px;
+  letter-spacing: 1px;
+  line-height: 35px;
+  text-transform: uppercase;
+  line-height: 300px;
+  width: 100%;
+  height: 300px; }
+  div.choose-data-set div.file-upload div.drop.dropped-file {
+    background-color: #4a90e2; }
 
 select.type-select {
   width: 100%; }

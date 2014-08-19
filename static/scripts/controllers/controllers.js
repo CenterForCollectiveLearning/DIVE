@@ -4,13 +4,13 @@
 
   controllers = angular.module("engineControllers", ['ngAnimate']);
 
-  controllers.controller("CreateProjectFormController", function($scope, $http) {
+  controllers.controller("CreateProjectFormController", function($scope, $http, $location) {
     return $scope.create_project = function() {
       var params;
       params = {
-        title: 'Test Title',
-        description: 'Test Description',
-        user: $scope.user.userName
+        title: $scope.newProjectData.title,
+        description: $scope.newProjectData.description,
+        user_name: $scope.user.userName
       };
       return $http({
         method: 'POST',
@@ -21,35 +21,25 @@
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       }).success(function(data, status) {
-        console.log(data, status);
-        $location.path($scope.user.userName + '/' + params.title);
-        return console.log("Successful request");
+        return $location.path($scope.user.userName + '/' + data.formatted_title);
       }).error(function(data, status) {
-        console.log(data, status);
         return $scope.titleTaken = true;
       });
     };
   });
 
-  controllers.controller("ProjectListCtrl", function($scope, $http, $location) {
+  controllers.controller("ChooseDataSourcesCtrl", function($scope) {});
+
+  controllers.controller("ProjectListCtrl", function($scope, $http, $location, AllProjectsService) {
     $scope.newProjectData = {};
-    $scope.newProject = true;
+    $scope.newProject = false;
     $scope.user = {
       userName: 'demo-user',
       displayName: 'Demo User'
     };
-    $scope.projects = [
-      {
-        title: 'Culture',
-        displayTitle: 'culture'
-      }, {
-        title: 'Healthcare',
-        displayTitle: 'healthcare'
-      }, {
-        title: 'Consumer Analysis',
-        displayTitle: 'consumer-analysis'
-      }
-    ];
+    AllProjectsService.promise($scope.user.userName, function(projects) {
+      return $scope.projects = projects;
+    });
     $scope.select_project = function(id) {
       return console.log(id);
     };
@@ -100,48 +90,54 @@
     };
   });
 
-  controllers.controller("DatasetListCtrl", function($scope, $http, DataService) {
-    var files;
-    files = void 0;
-    $("#data-file").on("change", function(event) {
-      files = event.target.files;
-    });
-    $("#data-submit").click(function(event) {
-      var data;
-      data = new FormData();
-      data.append("dataset", files[0]);
-      $.ajax({
-        url: "/upload",
-        type: "POST",
-        data: data,
-        cache: false,
-        processData: false,
-        contentType: false
-      }).success(function(data) {
-        if (data.status === "success") {
-          delete data["status"];
-          $scope.$apply(function() {
-            var i;
-            data.title = data.filename;
-            data.colAttrs = [];
-            i = 0;
-            while (i < data.cols) {
-              data.colAttrs[i] = {
-                name: data.header[i],
-                type: data.types[i]
-              };
-              i++;
-            }
-            delete data["header"];
-            delete data["types"];
-            $scope.datasets.push(data);
-          });
-        }
-      });
-    });
-    $scope.selected_index = 0;
+  controllers.controller("DatasetListCtrl", function($scope, $http, $upload, DataService) {
+    $scope.selectedIndex = 0;
+    $scope.currentPane = 'left';
+    $scope.options = [
+      {
+        label: 'Upload File',
+        inactive: false
+      }, {
+        label: 'Connect to Database',
+        inactive: true
+      }, {
+        label: 'Connect to API',
+        inactive: true
+      }, {
+        label: 'Search DIVE Datasets',
+        inactive: true
+      }
+    ];
+    $scope.onFileSelect = function($files) {
+      var file, i, _results;
+      i = 0;
+      _results = [];
+      while (i < $files.length) {
+        file = $files[i];
+        $scope.upload = $upload.upload({
+          url: "api/upload",
+          data: {
+            myObj: $scope.myModelObj
+          },
+          file: file
+        }).progress(function(evt) {
+          return console.log("percent: " + parseInt(100.0 * evt.loaded / evt.total));
+        }).success(function(data, status, headers, config) {
+          return console.log(data);
+        });
+        _results.push(i++);
+      }
+      return _results;
+    };
+    $scope.select_option = function(index) {
+      $scope.currentPane = 'left';
+      if (!$scope.options[index].inactive) {
+        return $scope.selectedIndex = index;
+      }
+    };
     $scope.select_dataset = function(index) {
-      $scope.selected_index = index;
+      $scope.currentPane = 'right';
+      return $scope.selectedIndex = index;
     };
     $scope.types = ["int", "float", "str"];
     $scope.datasets = DataService.getData();

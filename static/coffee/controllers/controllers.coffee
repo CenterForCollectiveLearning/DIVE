@@ -1,11 +1,11 @@
 controllers = angular.module("engineControllers", ['ngAnimate'])
 
-controllers.controller "CreateProjectFormController", ($scope, $http) ->
+controllers.controller "CreateProjectFormController", ($scope, $http, $location) ->
   $scope.create_project = ->  
     params = {
-      title: 'Test Title'
-      description: 'Test Description'
-      user: $scope.user.userName
+      title: $scope.newProjectData.title
+      description: $scope.newProjectData.description
+      user_name: $scope.user.userName
     }
     $http(
       method: 'POST'
@@ -14,35 +14,31 @@ controllers.controller "CreateProjectFormController", ($scope, $http) ->
       transformRequest: objectToQueryString
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     ).success((data, status) ->
-      console.log( data, status )
-      $location.path($scope.user.userName + '/' + params.title)
-      console.log("Successful request")
+      $location.path($scope.user.userName + '/' + data.formatted_title)
     ).error((data, status) ->
-      console.log( data, status )
+      # TODO Catch other types of errors
       $scope.titleTaken = true
       )
 
+controllers.controller "ChooseDataSourcesCtrl", ($scope) ->
+
+
 # Landing page project list / navigation
-controllers.controller "ProjectListCtrl", ($scope, $http, $location) ->
+controllers.controller "ProjectListCtrl", ($scope, $http, $location, AllProjectsService) ->
   $scope.newProjectData = {}
-  $scope.newProject = true
+  $scope.newProject = false
   $scope.user = {
     userName: 'demo-user'
     displayName: 'Demo User'
   }
-  $scope.projects = [
-    { title: 'Culture', displayTitle: 'culture' },
-    { title: 'Healthcare', displayTitle: 'healthcare' },
-    { title: 'Consumer Analysis', displayTitle: 'consumer-analysis' },
-  ]   
+
+  AllProjectsService.promise($scope.user.userName, (projects) -> $scope.projects = projects)
 
   $scope.select_project = (id) ->
     console.log(id)
 
   $scope.new_project_toggle = ->
     $scope.newProject = !$scope.newProject
-
-  
 
 controllers.controller "PaneToggleCtrl", ($scope) ->
   $scope.leftClosed = false
@@ -81,59 +77,92 @@ controllers.controller "TabsCtrl", ($scope, $routeParams) ->
     if $scope.selectedTab is tab then "active"
     else ""
 
-controllers.controller "DatasetListCtrl", ($scope, $http, DataService) ->
-  files = undefined
-  $("#data-file").on "change", (event) ->
-    files = event.target.files
-    return
+controllers.controller "DatasetListCtrl", ($scope, $http, $upload, DataService) ->
+  $scope.selectedIndex = 0
+  $scope.currentPane = 'left'
 
-  $("#data-submit").click (event) ->
-    data = new FormData()
-    data.append "dataset", files[0]
-    $.ajax(
-      url: "/upload"
-      type: "POST"
-      data: data
-      cache: false
-      processData: false
-      contentType: false
-    ).success (data) ->
-      if data.status is "success"
-        delete data["status"]
+  $scope.options = [
+    {
+      label: 'Upload File'
+      inactive: false
+    },
+    {
+      label: 'Connect to Database'
+      inactive: true
+    },
+    {
+      label: 'Connect to API'
+      inactive: true
+    },
+    {
+      label: 'Search DIVE Datasets'
+      inactive: true
+    }
+  ]
+
+  $scope.onFileSelect = ($files) ->
+    i = 0
+  
+    while i < $files.length
+      file = $files[i]
+      $scope.upload = $upload.upload(
+        url: "api/upload"
+        data:
+          myObj: $scope.myModelObj
+        file: file
+      ).progress((evt) ->
+        console.log("percent: " + parseInt(100.0 * evt.loaded / evt.total))
+      ).success((data, status, headers, config) ->
+        console.log(data)
+      )
+      i++
+
+  # files = undefined
+  # $("#data-file").on "change", (event) ->
+  #   files = event.target.files
+  #   return
+
+  # $("#data-submit").click (event) ->
+  #   data = new FormData()
+  #   data.append "dataset", files[0]
+  #   $.ajax(
+  #     url: "/upload"
+  #     type: "POST"
+  #     data: data
+  #     cache: false
+  #     processData: false
+  #     contentType: false
+  #   ).success (data) ->
+  #     if data.status is "success"
+  #       delete data["status"]
 
         
-        # update model with file data
-        $scope.$apply ->
-          data.title = data.filename
-          data.colAttrs = []
-          i = 0
+  #       # update model with file data
+  #       $scope.$apply ->
+  #         data.title = data.filename
+  #         data.colAttrs = []
+  #         i = 0
 
-          while i < data.cols
-            data.colAttrs[i] =
-              name: data.header[i]
-              type: data.types[i]
-            i++
-          delete data["header"]
+  #         while i < data.cols
+  #           data.colAttrs[i] =
+  #             name: data.header[i]
+  #             type: data.types[i]
+  #           i++
+  #         delete data["header"]
+  #         delete data["types"]
+  #         $scope.datasets.push data
 
-          delete data["types"]
+  $scope.select_option = (index) ->
+    $scope.currentPane = 'left'
+    # Inactive options (for demo purposes)
+    unless $scope.options[index].inactive
+      $scope.selectedIndex = index
 
-          $scope.datasets.push data
-          return
-
-      return
-
-    return
-
-  $scope.selected_index = 0
   $scope.select_dataset = (index) ->
-    $scope.selected_index = index
-    return
+    $scope.currentPane = 'right'
+    $scope.selectedIndex = index
 
-  $scope.types = [
-    "int"
-    "float"
-    "str"
-  ]
+  $scope.types = [ "int", "float", "str" ]
   
   # Initialize datasets
   $scope.datasets = DataService.getData()
