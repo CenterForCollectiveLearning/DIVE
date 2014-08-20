@@ -464,6 +464,19 @@ section.viewport {
     div.dataset-preview {
         padding-left: 5px;
         padding-right: 5px;
+        input {
+            font-size: 14px;
+            padding: 4px;
+            -webkit-appearance: none;
+            border: none;
+            background-color: $light-gray;
+            width: 100%;
+            min-width: 150px;
+            &:focus {
+                outline: none;
+                background-color: #C0C0C0;
+            }
+        }
     }
 }
 
@@ -491,6 +504,9 @@ div.choose-data-set {
                 background-color: $ontology-blue;
             }
         }
+        input {
+            -webkit-appearance: default;
+        }
     }
 }
 
@@ -506,19 +522,7 @@ tr.ng-scope {
         border: 1px solid $light-gray;
     }
 }
-input {
-    font-size: 14px;
-    padding: 4px;
-    -webkit-appearance: none;
-    border: none;
-    background-color: $light-gray;
-    width: 100%;
-    min-width: 150px;
-    &:focus {
-        outline: none;
-        background-color: #C0C0C0;
-    }
-}
+
 
 // Dropdown styling
 select{

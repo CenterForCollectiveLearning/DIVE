@@ -18,7 +18,7 @@ from server.utility import *
 
 TEST_DATA_FOLDER = os.path.join(os.curdir, 'test_data')
 UPLOAD_FOLDER = os.path.join(os.curdir, 'uploads')
-ALLOWED_EXTENSIONS = set(['csv'])
+ALLOWED_EXTENSIONS = set(['txt', 'csv', 'tsv', 'xls'])
 
 PORT = 8888
 
@@ -36,34 +36,43 @@ def main():
 
 
 # File upload handler
-class upload_file(Resource):
-    def get(self):
-        file = request.files.get('dataset')
-        if file and allowed_file(file.filename):
-
-            # save file
-            filename = secure_filename(file.filename)
-            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-            # get sample data
-            sample, rows, cols, extension, header  = get_sample_data(path)
-
-            # make response
-            json_data = json.jsonify({
-                                    'status': "success",
-                                    'filename': filename,
-                                    'header': header,
-                                    'sample': sample,
-                                    'rows': rows,
-                                    'cols': cols,
-                                    'type': extension,
-                                    })
-            response = make_response(json_data)
-            response.set_cookie('file', filename)
-            return response
-
+uploadFileParser = reqparse.RequestParser()
+# uploadFileParser.add_argument('file', type=str, action='append', required=True)
+# uploadFileParser.add_argument('content_type', type=str, action='append', required=True)
+# uploadFileParser.add_argument('content_data', type=str, action='append', required=True)
+class UploadFile(Resource):
+    def post(self):
+        print request.form.keys()
         return json.jsonify({'status': "upload failed"})
+
+        # file = request.files.get('dataset')
+        # if file and allowed_file(file.filename):
+
+        #     # save file
+        #     filename = secure_filename(file.filename)
+        #     path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        #     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        #     # get sample data
+        #     sample, rows, cols, extension, header  = get_sample_data(path)
+
+        #     # make response
+        #     json_data = json.jsonify({
+        #                             'status': "success",
+        #                             'filename': filename,
+        #                             'header': header,
+        #                             'sample': sample,
+        #                             'rows': rows,
+        #                             'cols': cols,
+        #                             'type': extension,
+        #                             })
+        #     response = make_response(json_data)
+        #     response.set_cookie('file', filename)
+        #     return response
+
+        
+
+api.add_resource(UploadFile, '/api/upload')
 
 
 # TODO: Combine with previous function
@@ -73,7 +82,6 @@ class get_test_datasets(Resource):
         filenames = [f for f in listdir(app.config['TEST_DATA_FOLDER']) if (isfile(join(app.config['TEST_DATA_FOLDER'], f)) and f[0] is not '.')]
 
         for filename in filenames:
-
             path = os.path.join(app.config['TEST_DATA_FOLDER'], filename)
 
             # TODO Don't try to insert a new one every time
@@ -431,7 +439,7 @@ class tag_data(Resource):
 # POST Ontology changes
 # POST Visualization Selections
 
-api.add_resource(upload_file, '/upload')
+
 api.add_resource(get_test_datasets, '/get_test_datasets')
 api.add_resource(get_relationships, '/get_relationships')
 api.add_resource(get_visualizations_from_ontology, '/get_visualizations_from_ontology')

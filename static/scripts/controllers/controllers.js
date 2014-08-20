@@ -90,7 +90,7 @@
     };
   });
 
-  controllers.controller("DatasetListCtrl", function($scope, $http, $upload, DataService) {
+  controllers.controller("DatasetListCtrl", function($scope, $http, $upload, $timeout, DataService) {
     $scope.selectedIndex = 0;
     $scope.currentPane = 'left';
     $scope.options = [
@@ -108,27 +108,6 @@
         inactive: true
       }
     ];
-    $scope.onFileSelect = function($files) {
-      var file, i, _results;
-      i = 0;
-      _results = [];
-      while (i < $files.length) {
-        file = $files[i];
-        $scope.upload = $upload.upload({
-          url: "api/upload",
-          data: {
-            myObj: $scope.myModelObj
-          },
-          file: file
-        }).progress(function(evt) {
-          return console.log("percent: " + parseInt(100.0 * evt.loaded / evt.total));
-        }).success(function(data, status, headers, config) {
-          return console.log(data);
-        });
-        _results.push(i++);
-      }
-      return _results;
-    };
     $scope.select_option = function(index) {
       $scope.currentPane = 'left';
       if (!$scope.options[index].inactive) {
@@ -141,6 +120,76 @@
     };
     $scope.types = ["int", "float", "str"];
     $scope.datasets = DataService.getData();
+    $scope.fileReaderSupported = (window.FileReader != null) && ((window.FileAPI == null) || FileAPI.html5 !== false);
+    $scope.uploadRightAway = true;
+    $scope.hasUploader = function(index) {
+      return $scope.upload[index] != null;
+    };
+    $scope.abort = function(index) {
+      $scope.upload[index].abort();
+      return $scope.upload[index] = null;
+    };
+    $scope.selectedFiles = [];
+    $scope.onFileSelect = function($files) {
+      var $file, fileReader, i, _results;
+      $scope.progress = [];
+      if ($scope.upload && $scope.upload.length > 0) {
+        i = 0;
+        while (i < $scope.upload.length) {
+          if ($scope.upload[i] != null) {
+            $scope.upload[i].abort();
+          }
+          i++;
+        }
+      }
+      $scope.upload = [];
+      $scope.uploadResult = [];
+      $scope.selectedFiles = $files;
+      $scope.uploadData = [];
+      i = 0;
+      _results = [];
+      while (i < $files.length) {
+        $file = $files[i];
+        if ($scope.fileReaderSupported) {
+          fileReader = new FileReader();
+          fileReader.readAsDataURL($files[i]);
+          fileReader.onload = function(e) {
+            $scope.uploadData[i] = e.target.result;
+            if ($scope.uploadRightAway) {
+              return $scope.start(i);
+            }
+          };
+        }
+        $scope.progress[i] = -1;
+        _results.push(i++);
+      }
+      return _results;
+    };
+    return $scope.start = function(index) {
+      console.log('Start', index);
+      console.log($scope.uploadData[index], $scope.selectedFiles);
+      $scope.errorMsg = null;
+      $scope.upload[index] = $upload.upload({
+        url: '/api/upload',
+        method: 'POST',
+        data: {
+          data: $scope.uploadData[index]
+        },
+        file: $scope.selectedFiles[index],
+        fileFormDataName: 'file'
+      });
+      return $scope.upload[index].then((function(response) {
+        return $timeout(function() {
+          return $scope.uploadResult.push(response.data);
+        });
+      }), (function(response) {
+        if (response.status > 0) {
+          return $scope.errorMsg = response.status + ": " + response.data;
+        }
+      }), function(evt) {
+        return $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+      });
+    };
   });
 
   controllers.controller("OntologyEditorCtrl", function($scope, $http, DataService, OverlapService) {
