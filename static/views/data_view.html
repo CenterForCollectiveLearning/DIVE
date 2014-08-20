@@ -34,7 +34,12 @@
 
     <!-- File Upload UI -->
     <div class="file-upload" ng-if="selectedIndex==0">
-    <div class="button upload" ng-file-select="onFileSelect($files)" data-multiple="true" title="select file" onclick="this.value = null" class="upload-button">Click here to select file</div>
+      <div class="button upload" ng-file-select="onFileSelect($files)" data-multiple="true" title="select file" onclick="this.value = null" class="upload-button">Click here to select file</div>
+      <div class="button cancel" ng-click="uploadabort()">Cancel Upload</div>
+      <div class="drop" ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files)" ng-file-drop-available="dropSupported=true"
+      ng-file-drag-over-class="dragOverClass($event)" ng-file-drag-over-delay="100">or drop files here</div>
+
+    <!-- <div class="button upload" ng-file-select="onFileSelect($files)" data-multiple="true" title="select file" onclick="this.value = null" class="upload-button">Click here to select file</div>
     <div class="drop" ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files)" ng-file-drop-available="dropSupported=true"
       ng-file-drag-over-class="dragOverClass($event)" ng-file-drag-over-delay="100">or drop files here</div>
     <div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
@@ -66,8 +71,8 @@
           </ul>
           <div data-ng-show="result.requestHeaders" class="reqh">request headers: {[{result.requestHeaders}]}</div>
         </li>
-      </ul>
-    </div>
+      </ul> 
+    </div>-->
 
     </div>
   </div>

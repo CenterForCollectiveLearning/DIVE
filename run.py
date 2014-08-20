@@ -28,6 +28,10 @@ api = Api(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['TEST_DATA_FOLDER'] = TEST_DATA_FOLDER
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
 
 # Only one server-side route due to AngularJS SPA Routing
 @app.route('/')
@@ -42,33 +46,34 @@ uploadFileParser = reqparse.RequestParser()
 # uploadFileParser.add_argument('content_data', type=str, action='append', required=True)
 class UploadFile(Resource):
     def post(self):
-        print request.form.keys()
+
+
+        file = request.files.get('file')
+        if file and allowed_file(file.filename):
+            print file
+        
+            # save file
+            filename = secure_filename(file.filename)
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            # get sample data
+            sample, rows, cols, extension, header  = get_sample_data(path)
+
+            # make response
+            json_data = json.jsonify({
+                                    'status': "success",
+                                    'filename': filename,
+                                    'header': header,
+                                    'sample': sample,
+                                    'rows': rows,
+                                    'cols': cols,
+                                    'type': extension,
+                                    })
+            response = make_response(json_data)
+            response.set_cookie('file', filename)
+            return response
         return json.jsonify({'status': "upload failed"})
-
-        # file = request.files.get('dataset')
-        # if file and allowed_file(file.filename):
-
-        #     # save file
-        #     filename = secure_filename(file.filename)
-        #     path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        #     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-        #     # get sample data
-        #     sample, rows, cols, extension, header  = get_sample_data(path)
-
-        #     # make response
-        #     json_data = json.jsonify({
-        #                             'status': "success",
-        #                             'filename': filename,
-        #                             'header': header,
-        #                             'sample': sample,
-        #                             'rows': rows,
-        #                             'cols': cols,
-        #                             'type': extension,
-        #                             })
-        #     response = make_response(json_data)
-        #     response.set_cookie('file', filename)
-        #     return response
 
         
 

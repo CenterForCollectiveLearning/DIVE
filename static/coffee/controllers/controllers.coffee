@@ -20,9 +20,6 @@ controllers.controller "CreateProjectFormController", ($scope, $http, $location)
       $scope.titleTaken = true
       )
 
-controllers.controller "ChooseDataSourcesCtrl", ($scope) ->
-
-
 # Landing page project list / navigation
 controllers.controller "ProjectListCtrl", ($scope, $http, $location, AllProjectsService) ->
   $scope.newProjectData = {}
@@ -77,7 +74,7 @@ controllers.controller "TabsCtrl", ($scope, $routeParams) ->
     if $scope.selectedTab is tab then "active"
     else ""
 
-controllers.controller "DatasetListCtrl", ($scope, $http, $upload, $timeout, DataService) ->
+controllers.controller "DatasetListCtrl", ($scope, $http, $upload, $timeout, $rootScope, DataService) ->
   $scope.selectedIndex = 0
   $scope.currentPane = 'left'
 
@@ -117,69 +114,24 @@ controllers.controller "DatasetListCtrl", ($scope, $http, $upload, $timeout, Dat
   ###############
   # File Upload
   ###############
-  $scope.fileReaderSupported = window.FileReader? and (not window.FileAPI? or FileAPI.html5 isnt false)
-  $scope.uploadRightAway = true
-
-  $scope.hasUploader = (index) ->
-    $scope.upload[index]?
-    
-  $scope.abort = (index) ->
-    $scope.upload[index].abort()
-    $scope.upload[index] = null
-    
-  $scope.selectedFiles = []
   $scope.onFileSelect = ($files) ->
-    $scope.progress = []
-    if $scope.upload and $scope.upload.length > 0
-      i = 0
-    
-      while i < $scope.upload.length
-        $scope.upload[i].abort()  if $scope.upload[i]?
-        i++
-    $scope.upload = []
-    $scope.uploadResult = []
-    $scope.selectedFiles = $files
-    $scope.uploadData = []
-
+  
     i = 0
     while i < $files.length
-      $file = $files[i]
-      if $scope.fileReaderSupported
-        fileReader = new FileReader()
-        fileReader.readAsDataURL($files[i])
-        # fileReader.readAsText($files[i])
-
-        fileReader.onload = (e) -> 
-          # $timeout(() -> 
-          #   $scope.uploadData[i] = e.target.result
-          # )
-          $scope.uploadData[i] = e.target.result
-          if $scope.uploadRightAway
-            $scope.start(i)
-
-      $scope.progress[i] = -1
+      file = $files[i]
+      $scope.upload = $upload.upload(
+        url: "/api/upload"
+        data:
+          pID: $rootScope.pID
+        file: file
+      ).progress((evt) ->
+        console.log "percent: " + parseInt(100.0 * evt.loaded / evt.total)
+        return
+      ).success((data, status, headers, config) ->
+        # file is uploaded successfully
+        console.log data
+      )
       i++
-
-  $scope.start = (index) ->
-    console.log('Start', index)
-    console.log($scope.uploadData[index], $scope.selectedFiles)
-    $scope.errorMsg = null
-    $scope.upload[index] = $upload.upload(
-      url: '/api/upload'
-      method: 'POST'
-      data:
-        data: $scope.uploadData[index]
-      file: $scope.selectedFiles[index]
-      fileFormDataName: 'file'
-    )
-    $scope.upload[index].then(((response) ->
-      $timeout -> $scope.uploadResult.push(response.data)
-    ), ((response) ->
-      $scope.errorMsg = response.status + ": " + response.data  if response.status > 0
-    ), (evt) ->
-      $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total))
-    )
-    ####################
 
 # TODO Make this controller thin
 controllers.controller "OntologyEditorCtrl", ($scope, $http, DataService, OverlapService) ->
