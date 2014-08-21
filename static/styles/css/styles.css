@@ -97,6 +97,7 @@ section.landing-projects div.new-project {
     line-height: 35px;
     text-transform: uppercase; }
   section.landing-projects div.new-project input {
+    width: 100%;
     border: 1px solid #666666;
     margin-bottom: 10px; }
   section.landing-projects div.new-project div.create-project {
@@ -152,6 +153,11 @@ section.landing-projects ul.projects {
       line-height: 70px;
       text-align: center; }
     section.landing-projects ul.projects li.project div.description {
+      font-family: "Lato",helvetica,sans-serif;
+      font-size: 9px;
+      letter-spacing: 1px;
+      line-height: 35px;
+      text-transform: uppercase;
       padding: 0 15px;
       text-align: center; }
   section.landing-projects ul.projects li.new-project i {

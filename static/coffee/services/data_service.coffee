@@ -6,7 +6,6 @@ diveApp.service "AllProjectsService", ($http) ->
       params:
         user_name: userName
     ).success((result) -> 
-      console.log(result)
       callback(result)
     )
   promise: promise

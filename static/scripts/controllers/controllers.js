@@ -28,7 +28,7 @@
     };
   });
 
-  controllers.controller("ProjectListCtrl", function($scope, $http, $location, AllProjectsService) {
+  controllers.controller("ProjectListCtrl", function($scope, $http, $location, $rootScope, AllProjectsService) {
     $scope.newProjectData = {};
     $scope.newProject = false;
     $scope.user = {
@@ -38,8 +38,8 @@
     AllProjectsService.promise($scope.user.userName, function(projects) {
       return $scope.projects = projects;
     });
-    $scope.select_project = function(id) {
-      return console.log(id);
+    $scope.select_project = function(pID) {
+      return $rootScope.pID = pID;
     };
     return $scope.new_project_toggle = function() {
       return $scope.newProject = !$scope.newProject;
@@ -123,6 +123,7 @@
       i = 0;
       _results = [];
       while (i < $files.length) {
+        console.log($rootScope.pID);
         file = $files[i];
         $scope.upload = $upload.upload({
           url: "/api/upload",

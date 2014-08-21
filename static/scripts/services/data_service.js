@@ -9,7 +9,6 @@
           user_name: userName
         }
       }).success(function(result) {
-        console.log(result);
         return callback(result);
       });
     };

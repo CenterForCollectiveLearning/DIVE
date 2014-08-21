@@ -72,6 +72,7 @@ section.landing-projects {
         }
 
         input {
+            width: 100%;
             border: 1px solid $dark-gray;
             margin-bottom: 10px;
         }
@@ -111,6 +112,7 @@ section.landing-projects {
                 text-align: center;
             }
             div.description {
+                @include small-caps;
                 padding: 0 15px;
                 text-align: center;
             }

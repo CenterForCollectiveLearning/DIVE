@@ -21,7 +21,7 @@ controllers.controller "CreateProjectFormController", ($scope, $http, $location)
       )
 
 # Landing page project list / navigation
-controllers.controller "ProjectListCtrl", ($scope, $http, $location, AllProjectsService) ->
+controllers.controller "ProjectListCtrl", ($scope, $http, $location, $rootScope, AllProjectsService) ->
   $scope.newProjectData = {}
   $scope.newProject = false
   $scope.user = {
@@ -29,10 +29,11 @@ controllers.controller "ProjectListCtrl", ($scope, $http, $location, AllProjects
     displayName: 'Demo User'
   }
 
-  AllProjectsService.promise($scope.user.userName, (projects) -> $scope.projects = projects)
+  AllProjectsService.promise($scope.user.userName, (projects) -> 
+    $scope.projects = projects)
 
-  $scope.select_project = (id) ->
-    console.log(id)
+  $scope.select_project = (pID) ->
+    $rootScope.pID = pID
 
   $scope.new_project_toggle = ->
     $scope.newProject = !$scope.newProject
@@ -118,6 +119,7 @@ controllers.controller "DatasetListCtrl", ($scope, $http, $upload, $timeout, $ro
   
     i = 0
     while i < $files.length
+      console.log($rootScope.pID)
       file = $files[i]
       $scope.upload = $upload.upload(
         url: "/api/upload"

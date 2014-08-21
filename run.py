@@ -16,17 +16,18 @@ from server.data import *
 from server.DAL import DAL
 from server.utility import *
 
-TEST_DATA_FOLDER = os.path.join(os.curdir, 'test_data')
-UPLOAD_FOLDER = os.path.join(os.curdir, 'uploads')
-ALLOWED_EXTENSIONS = set(['txt', 'csv', 'tsv', 'xls'])
-
 PORT = 8888
 
 app = Flask(__name__, static_path='/static')
 api = Api(app)
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+TEST_DATA_FOLDER = os.path.join(os.curdir, 'test_data')
 app.config['TEST_DATA_FOLDER'] = TEST_DATA_FOLDER
+
+UPLOAD_FOLDER = os.path.join(os.curdir, 'uploads')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+ALLOWED_EXTENSIONS = set(['txt', 'csv', 'tsv'])
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -41,26 +42,29 @@ def main():
 
 # File upload handler
 uploadFileParser = reqparse.RequestParser()
-# uploadFileParser.add_argument('file', type=str, action='append', required=True)
+uploadFileParser.add_argument('pID', type=str, required=True)
 # uploadFileParser.add_argument('content_type', type=str, action='append', required=True)
 # uploadFileParser.add_argument('content_data', type=str, action='append', required=True)
 class UploadFile(Resource):
+    # Dataflow: 
+    # 1. Save file in uploads/pID directory
+    # 2. Save file location in project data collection
+    # 3. Return sample
     def post(self):
-
-
+        # TODO Require these parameters
+        pID = request.form.get('pID')
         file = request.files.get('file')
         if file and allowed_file(file.filename):
-            print file
-        
-            # save file
+
+            # Save file
             filename = secure_filename(file.filename)
-            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            path = os.path.join(app.config['UPLOAD_FOLDER'], pID, filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], pID, filename))
 
-            # get sample data
-            sample, rows, cols, extension, header  = get_sample_data(path)
+            # Get sample data
+            sample, rows, cols, extension, header = get_sample_data(path)
 
-            # make response
+            # Make response
             json_data = json.jsonify({
                                     'status': "success",
                                     'filename': filename,
@@ -73,7 +77,7 @@ class UploadFile(Resource):
             response = make_response(json_data)
             response.set_cookie('file', filename)
             return response
-        return json.jsonify({'status': "upload failed"})
+        return json.jsonify({'status': "Upload failed"})
 
         
 
@@ -138,7 +142,6 @@ projectDeleteParser = reqparse.RequestParser()
 
 # TODO Return all projects
 # Get information for one project
-
 class Project(Resource):
     def get(self):
         args = projectGetParser.parse_args()
@@ -147,14 +150,24 @@ class Project(Resource):
         print "GET", pID, user_name
 
         return MongoInstance.getProject(pID, user_name)
+
+    # Create project, initialize directories and collections
     def post(self):
         args = projectPostParser.parse_args()
         title = args.get('title')
         description = args.get('description')
         user_name = args.get('user_name')
-        print "POST"
-        return MongoInstance.postProject(title, description, user_name)
+
+        result = MongoInstance.postProject(title, description, user_name)
+
+        # If successful project creation
+        if result[1] is 200:
+            # Create data upload directory
+            os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], result[0]['pID']))
+
+        return result
         
+    # Delete project and all associated data
     def delete(self):
         args = projectDeleteParser.parse_args()
         pIDs = args.get('pID')
