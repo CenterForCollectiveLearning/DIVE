@@ -75,7 +75,31 @@ section.landing-top {
     section.landing-top div.user-status span.username {
       border-bottom: 1px dotted #eeeeee; }
 
-section.landing-projects div.new-project {
+section.landing-projects div.new-project-button {
+  cursor: pointer;
+  background-color: #666666;
+  width: 675px;
+  margin: 10px auto 0 auto;
+  text-align: center;
+  border-radius: 2px;
+  padding: 8px 5px;
+  color: #eeeeee;
+  font-family: "Lato",helvetica,sans-serif;
+  font-size: 9px;
+  letter-spacing: 1px;
+  line-height: 35px;
+  text-transform: uppercase;
+  line-height: 20px;
+  margin: 30px auto 0 auto; }
+  section.landing-projects div.new-project-button input {
+    cursor: pointer; }
+  section.landing-projects div.new-project-button:hover {
+    -webkit-transition: background 0.1s ease-in;
+    -moz-transition: background 0.1s ease-in;
+    -o-transition: background 0.1s ease-in;
+    transition: background 0.1s ease-in;
+    background-color: #4a90e2; }
+section.landing-projects div.new-project-form {
   position: relative;
   width: 600px;
   padding: 10px;
@@ -83,11 +107,11 @@ section.landing-projects div.new-project {
   background-color: #f1efef;
   border: 1px solid #f1efef;
   border-radius: 2px; }
-  section.landing-projects div.new-project div.close {
+  section.landing-projects div.new-project-form div.close {
     position: absolute;
     top: 5px;
     right: 5px; }
-  section.landing-projects div.new-project label {
+  section.landing-projects div.new-project-form label {
     width: 100%;
     text-align: center;
     color: black;
@@ -96,11 +120,11 @@ section.landing-projects div.new-project {
     letter-spacing: 1px;
     line-height: 35px;
     text-transform: uppercase; }
-  section.landing-projects div.new-project input {
+  section.landing-projects div.new-project-form input {
     width: 100%;
     border: 1px solid #666666;
     margin-bottom: 10px; }
-  section.landing-projects div.new-project div.create-project {
+  section.landing-projects div.new-project-form div.create-project {
     cursor: pointer;
     background-color: #666666;
     width: 80px;
@@ -115,16 +139,17 @@ section.landing-projects div.new-project {
     line-height: 35px;
     text-transform: uppercase;
     line-height: 20px; }
-    section.landing-projects div.new-project div.create-project input {
+    section.landing-projects div.new-project-form div.create-project input {
       cursor: pointer; }
-    section.landing-projects div.new-project div.create-project:hover {
+    section.landing-projects div.new-project-form div.create-project:hover {
       -webkit-transition: background 0.1s ease-in;
       -moz-transition: background 0.1s ease-in;
       -o-transition: background 0.1s ease-in;
       transition: background 0.1s ease-in;
       background-color: #4a90e2; }
 section.landing-projects ul.projects {
-  width: 700px;
+  width: 675px;
+  padding: 0;
   margin: 10px auto 0 auto; }
   section.landing-projects ul.projects a {
     color: black; }
@@ -142,7 +167,6 @@ section.landing-projects ul.projects {
     height: 140px;
     width: 200px;
     background-color: #f1efef;
-    border: 1px solid #f1efef;
     border-radius: 2px;
     display: inline-block;
     margin-right: 10px; }
@@ -160,11 +184,6 @@ section.landing-projects ul.projects {
       text-transform: uppercase;
       padding: 0 15px;
       text-align: center; }
-  section.landing-projects ul.projects li.new-project i {
-    font-size: 60px;
-    width: 100%;
-    text-align: center;
-    line-height: 120px; }
 
 /* Layout */
 nav.navbar {
@@ -424,8 +443,7 @@ section.viewport {
         outline: none;
         background-color: #C0C0C0; }
 
-/* Data Upload */
-div.choose-data-set div.file-upload div.button.upload {
+div.button.upload {
   cursor: pointer;
   background-color: #666666;
   width: 200px;
@@ -440,15 +458,15 @@ div.choose-data-set div.file-upload div.button.upload {
   line-height: 35px;
   text-transform: uppercase;
   line-height: 20px; }
-  div.choose-data-set div.file-upload div.button.upload input {
+  div.button.upload input {
     cursor: pointer; }
-  div.choose-data-set div.file-upload div.button.upload:hover {
+  div.button.upload:hover {
     -webkit-transition: background 0.1s ease-in;
     -moz-transition: background 0.1s ease-in;
     -o-transition: background 0.1s ease-in;
     transition: background 0.1s ease-in;
     background-color: #4a90e2; }
-div.choose-data-set div.file-upload div.button.cancel {
+div.button.cancel, div.button.delete {
   cursor: pointer;
   background-color: #666666;
   width: 200px;
@@ -463,14 +481,16 @@ div.choose-data-set div.file-upload div.button.cancel {
   line-height: 35px;
   text-transform: uppercase;
   line-height: 20px; }
-  div.choose-data-set div.file-upload div.button.cancel input {
+  div.button.cancel input, div.button.delete input {
     cursor: pointer; }
-  div.choose-data-set div.file-upload div.button.cancel:hover {
+  div.button.cancel:hover, div.button.delete:hover {
     -webkit-transition: background 0.1s ease-in;
     -moz-transition: background 0.1s ease-in;
     -o-transition: background 0.1s ease-in;
     transition: background 0.1s ease-in;
     background-color: #d0021b; }
+
+/* Data Upload */
 div.choose-data-set div.file-upload div.drop {
   margin: 20px 0;
   background-color: #f1efef;

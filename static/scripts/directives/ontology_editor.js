@@ -12,9 +12,8 @@
           onClick: "&"
         },
         link: function(scope, ele, attrs) {
-          d3Service.d3().then(function(d3) {
-            var barHeight, barPadding, margin, renderTimeout, svg;
-            renderTimeout = void 0;
+          return d3Service.d3().then(function(d3) {
+            var barHeight, barPadding, margin, svg;
             margin = parseInt(attrs.margin) || 20;
             barHeight = parseInt(attrs.barHeight) || 20;
             barPadding = parseInt(attrs.barPadding) || 5;
@@ -25,28 +24,13 @@
             scope.$watch((function() {
               return angular.element($window)[0].innerWidth;
             }), function() {
-              scope.render(scope.data, scope.overlaps, scope.hierarchies);
+              return scope.render(scope.data, scope.overlaps, scope.hierarchies);
             });
             scope.$watchCollection("[data,overlaps,hierarchies]", (function(newData) {
-              scope.render(newData[0], newData[1], newData[2]);
+              return scope.render(newData[0], newData[1], newData[2]);
             }), true);
-            scope.render = function(data, overlaps, hierarchies) {
-              var attributesYOffset, boxMargins, boxWidth, desiredDatasetID, i, idOrders, j, margins, reorderedData;
-              idOrders = [0, 2, 1];
-              reorderedData = [];
-              i = 0;
-              while (i < idOrders.length) {
-                desiredDatasetID = idOrders[i];
-                j = 0;
-                while (j < data.length) {
-                  if (data[j].dataset_id === desiredDatasetID) {
-                    reorderedData.push(data[j]);
-                  }
-                  j++;
-                }
-                i++;
-              }
-              data = reorderedData;
+            return scope.render = function(data, overlaps, hierarchies) {
+              var attributesYOffset, boxMargins, boxWidth, margins, renderTimeout;
               svg.selectAll("*").remove();
               if (!data) {
                 return;
@@ -63,12 +47,14 @@
                 y: 20
               };
               attributesYOffset = 60;
-              renderTimeout = $timeout(function() {
-                var OVERLAP_THRESHOLD, attrAL, attrAR, attrBL, attrBR, attrPositionsA, attrPositionsB, attributePositions, boxOrderings, colorScale, columnPair, columnPairs, columns, datasetPair, datasets, finalAPos, finalBPos, g, l, link, links, overlap, r, rect, tableL, tableR, text, tspan;
+              return renderTimeout = $timeout(function() {
+                var OVERLAP_THRESHOLD, attributePositions, colorScale, columnPair, columnPairs, columns, datasetPair, datasets, g, i, links, overlap, rect, text, tspan;
                 svg.append("defs").append("marker").attr("id", "arrowhead").attr("refX", 3).attr("refY", 2).attr("markerWidth", 6).attr("markerHeight", 4).attr("orient", "auto").append("path").attr("d", "M 0,0 V 4 L3,3 Z");
                 colorScale = d3.scale.category10();
                 colorScale.domain(Object.keys(overlaps));
-                g = svg.selectAll("g").data(data).enter().append("g").attr("class", "box").attr("transform", "translate(" + boxMargins.x + "," + boxMargins.y + ")");
+                g = svg.selectAll("g").data(data, function(d) {
+                  return d.column_attrs;
+                }).enter().append("g").attr("class", "box").attr("transform", "translate(" + boxMargins.x + "," + boxMargins.y + ")");
                 rect = g.append("rect").attr("height", 500).attr("width", boxWidth).attr("x", function(d, i) {
                   return i * (boxWidth + margins.left);
                 }).attr("rx", 3).attr("ry", 3).attr("stroke", "#AEAEAE").attr("stroke-width", 1).attr("fill", function(d) {
@@ -77,7 +63,7 @@
                 text = g.append("text").attr("fill", "#000000").attr("x", function(d, i) {
                   return i * (boxWidth + margins.left) + 10;
                 }).attr("y", 20).attr("font-size", 14).attr("font-weight", "light").text(function(d) {
-                  return d.title;
+                  return d.filename;
                 });
                 tspan = g.append("g").attr("transform", function(d, i) {
                   var x, y;
@@ -87,12 +73,10 @@
                 }).attr("class", "attributes").each(function(d) {
                   var texts, unique_cols;
                   unique_cols = d.unique_cols;
-                  texts = d3.select(this).selectAll("g text").data(d.column_attrs).enter().append("g").attr("class", "attr").append("text").attr("y", function(d, i) {
+                  return texts = d3.select(this).selectAll("g text").data(d.column_attrs).enter().append("g").attr("class", "attr").append("text").attr("y", function(d, i) {
                     return i * 20;
                   }).attr("fill", "#000000").attr("font-size", 14).attr("font-weight", "light").text(function(d, i) {
-                    var unique;
-                    unique = (unique_cols[i] ? "*" : "");
-                    return d.name + unique + " (" + d.type + ")";
+                    return d.name;
                   });
                 });
                 attributePositions = {};
@@ -133,35 +117,7 @@
                     }
                   }
                 }
-                boxOrderings = {
-                  0: 0,
-                  2: 1,
-                  1: 2
-                };
-                i = 0;
-                while (i < links.length) {
-                  link = links[i];
-                  l = link[0];
-                  r = link[1];
-                  tableL = l[0];
-                  tableR = r[0];
-                  attrPositionsA = attributePositions[l[0]][l[1]];
-                  attrPositionsB = attributePositions[r[0]][r[1]];
-                  if (attrPositionsA && attrPositionsB) {
-                    attrAL = attrPositionsA.l;
-                    attrAR = attrPositionsA.r;
-                    attrBL = attrPositionsB.l;
-                    attrBR = attrPositionsB.r;
-                    finalAPos = attrAR;
-                    finalBPos = attrBL;
-                    if (boxOrderings[tableL] > boxOrderings[tableR]) {
-                      finalAPos = attrAL;
-                      finalBPos = attrBR;
-                    }
-                    svg.append("path").attr("marker-end", "url(#arrowhead)").attr("d", "M" + finalAPos[0] + "," + finalAPos[1] + "L" + finalBPos[0] + "," + finalBPos[1]).attr("stroke", "black").attr("stroke-width", 1);
-                  }
-                  i++;
-                }
+                return i = 0;
               }, 200);
             };
           });

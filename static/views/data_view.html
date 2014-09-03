@@ -18,7 +18,7 @@
   </div>
   <ul class="pane-items">
     <li ng-repeat="dataset in datasets" class="dataset" ng-click="select_dataset($index)" ng-class="{'selected':$index==selectedIndex && currentPane=='right'}">
-      <div class="title">{[{dataset.title}]}</div>
+      <div class="title">{[{dataset.filename}]}</div>
       <div class="dimensions">
         <span class="rows">{[{dataset.rows}]} Rows</span> x <span class="columns">{[{dataset.cols}]} Columns</span>
       </div>
@@ -35,45 +35,9 @@
     <!-- File Upload UI -->
     <div class="file-upload" ng-if="selectedIndex==0">
       <div class="button upload" ng-file-select="onFileSelect($files)" data-multiple="true" title="select file" onclick="this.value = null" class="upload-button">Click here to select file</div>
-      <div class="button cancel" ng-click="uploadabort()">Cancel Upload</div>
+<!--       <div class="button cancel" ng-click="uploadabort()">Cancel Upload</div> -->
       <div class="drop" ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files)" ng-file-drop-available="dropSupported=true"
       ng-file-drag-over-class="dragOverClass($event)" ng-file-drag-over-delay="100">or drop files here</div>
-
-    <!-- <div class="button upload" ng-file-select="onFileSelect($files)" data-multiple="true" title="select file" onclick="this.value = null" class="upload-button">Click here to select file</div>
-    <div class="drop" ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files)" ng-file-drop-available="dropSupported=true"
-      ng-file-drag-over-class="dragOverClass($event)" ng-file-drag-over-delay="100">or drop files here</div>
-    <div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
-    <input type="checkbox" ng-model="uploadRightAway">Upload right away
-    <div class="err" ng-show="errorMsg != null">{{errorMsg}}</div>
-    Progress:
-    <div ng-show="selectedFiles != null">
-      <div class="sel-file" ng-repeat="f in selectedFiles">
-        {[{($index + 1) + '.'}]}
-        <button class="button" ng-click="start($index)" ng-show="progress[$index] < 0">Start</button>
-        <span class="progress" ng-show="progress[$index] >= 0">           
-          <div style="width:{[{progress[$index]}]}%">{[{progress[$index]}]}%</div>
-        </span>       
-        <div class="button cancel" ng-click="abort($index)" ng-show="hasUploader($index) && progress[$index] < 100">Abort</div>
-        {[{f.name}]} - size: {[{f.size}]}B - type: {[{f.type}]}
-      </div>
-    </div>
-    <div class="response" ng-show="uploadResult.length > 0">
-      Server Response:
-      <ul>
-        <li ng-repeat="result in uploadResult">
-          <ul>
-            <li ng-repeat="item in result.result">
-              <div data-ng-show="item.name">file name: {[{item.name}]}</div>
-              <div data-ng-show="item.fieldName">name: {[{item.fieldName}]}</div>
-              <div data-ng-show="item.size">size on the serve: {[{item.size}]}</div>
-              <div data-ng-show="item.value">value: {[{item.value}]}</div>
-            </li>
-          </ul>
-          <div data-ng-show="result.requestHeaders" class="reqh">request headers: {[{result.requestHeaders}]}</div>
-        </li>
-      </ul> 
-    </div>-->
-
     </div>
   </div>
 
@@ -98,5 +62,7 @@
         </tr>
       </table>
     </div>
+    <div class="button delete" ng-click="removeDataset(dataset.dID)">Delete Dataset</div>
   </div>
-</section>
+
+</section> 

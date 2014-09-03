@@ -10,6 +10,9 @@ window.objectToQueryString = (obj) ->
 		str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
 	str.join("&")
 
+window.formatRouteParam = (str) ->
+	str.trim().replace(/"/g, "")
+
 # What's the purpose of two separate applications?
 # diveApp is top-level encompassing the engineApp
 window.diveApp = angular.module("diveApp", ["ngRoute", "engineApp"])

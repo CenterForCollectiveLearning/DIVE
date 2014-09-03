@@ -49,7 +49,12 @@ section.landing-top {
 section.landing-projects {
     $block-width: 200px;
     $block-height: 140px;
-    div.new-project {
+
+    div.new-project-button {
+        @include button(675px, $ontology-blue);
+        margin: 30px auto 0 auto;
+    }
+    div.new-project-form {
         position: relative;
         width: 600px;
         padding: 10px;
@@ -82,7 +87,8 @@ section.landing-projects {
         }
     }
     ul.projects {
-        width: 700px;
+        width: 675px;
+        padding: 0;
         margin: 10px auto 0 auto;
         a {
             color: black;
@@ -95,7 +101,6 @@ section.landing-projects {
             height: $block-height;
             width: $block-width;
             background-color: $light-gray;
-            border: 1px solid $light-gray;
             border-radius: 2px;
             display: inline-block;
             margin-right: 10px;
@@ -115,15 +120,6 @@ section.landing-projects {
                 @include small-caps;
                 padding: 0 15px;
                 text-align: center;
-            }
-        }
-
-        li.new-project {
-            i {
-                font-size: 60px;
-                width: 100%;
-                text-align: center;
-                line-height: $block-height - 20px;
             }
         }
     }
@@ -482,17 +478,19 @@ section.viewport {
     }
 }
 
+div.button {
+    &.upload {
+        @include button(200px, $ontology-blue);                
+    }
+    &.cancel, &.delete {
+        @include button(200px, $project-red);                
+    }
+}
+
 /* Data Upload */
 div.choose-data-set {
     div.file-upload {
-        div.button {
-            &.upload {
-                @include button(200px, $ontology-blue);                
-            }
-            &.cancel {
-                @include button(200px, $project-red);                
-            }
-        }
+
         div.drop {
             margin: 20px 0;
             $height: 300px;

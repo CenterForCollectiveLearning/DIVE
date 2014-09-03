@@ -13,6 +13,10 @@
     return str.join("&");
   };
 
+  window.formatRouteParam = function(str) {
+    return str.trim().replace(/"/g, "");
+  };
+
   window.diveApp = angular.module("diveApp", ["ngRoute", "engineApp"]);
 
   window.engineApp = angular.module("engineApp", ["d3", "d3Plus", "ngRoute", "angularFileUpload", "engineControllers"]);

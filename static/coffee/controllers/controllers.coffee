@@ -45,9 +45,9 @@ controllers.controller "PaneToggleCtrl", ($scope) ->
   $scope.toggleRight = -> $scope.rightClosed = !$scope.rightClosed
 
 # Stateful navigation (tabs)
-controllers.controller "TabsCtrl", ($scope, $routeParams) ->
-  $scope.uID = $routeParams.uID
-  $scope.pID = $routeParams.pID
+controllers.controller "TabsCtrl", ($scope, $routeParams, $rootScope) ->
+  $scope.formattedUserName = $routeParams.formattedUserName
+  $scope.formattedProjectTitle = $routeParams.formattedProjectTitle
   $scope.tabs = [
     {
       link: "data"
@@ -67,9 +67,10 @@ controllers.controller "TabsCtrl", ($scope, $routeParams) ->
     }
   ]
   # TODO Tie this into router
-  $scope.selectedTab = $scope.tabs[0]
+  $scope.selectedTab = $rootScope.selectedTab
   $scope.setSelectedTab = (tab) ->
     $scope.selectedTab = tab
+    $rootScope.selectedTab = tab
 
   $scope.tabClass = (tab) ->
     if $scope.selectedTab is tab then "active"
@@ -110,13 +111,14 @@ controllers.controller "DatasetListCtrl", ($scope, $http, $upload, $timeout, $ro
   $scope.types = [ "int", "float", "str" ]
 
   # Initialize datasets
-  $scope.datasets = DataService.getData()
+  DataService.promise((datasets) -> 
+    $scope.datasets = datasets
+  )
 
   ###############
   # File Upload
   ###############
   $scope.onFileSelect = ($files) ->
-  
     i = 0
     while i < $files.length
       console.log($rootScope.pID)
@@ -127,36 +129,56 @@ controllers.controller "DatasetListCtrl", ($scope, $http, $upload, $timeout, $ro
           pID: $rootScope.pID
         file: file
       ).progress((evt) ->
-        console.log "percent: " + parseInt(100.0 * evt.loaded / evt.total)
+        console.log "Percent loaded: " + parseInt(100.0 * evt.loaded / evt.total)
         return
       ).success((data, status, headers, config) ->
         # file is uploaded successfully
-        console.log data
+        $scope.datasets.push(data)
       )
       i++
+  ###############
+  # File Deletion
+  ###############
+  $scope.removeDataset = (dID) ->
+    console.log('Removing dataset, dID:', dID)
+    $http.delete('/api/data',
+      params:
+        pID: $rootScope.pID
+        dID: dID
+    ).success((result) ->
+      deleted_dIDs = result
+      newDatasets = []
+      for dataset in $scope.datasets
+        unless dataset.dID in deleted_dIDs
+          newDatasets.push(dataset)
+      $scope.datasets = newDatasets
+    )
 
 # TODO Make this controller thin
-controllers.controller "OntologyEditorCtrl", ($scope, $http, DataService, OverlapService) ->
+controllers.controller "OntologyEditorCtrl", ($scope, $http, DataService, PropertyService) ->
   
   # Initialize datasets
-  $scope.datasets = DataService.getData()
-  
-  # Get non-zero overlaps between columns
-  relnData = OverlapService.getData()
-  $scope.overlaps = relnData.overlaps
-  $scope.hierarchies = relnData.hierarchies
-  return
+  DataService.promise((datasets) -> 
+    $scope.datasets = datasets
+    console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'))
+  )
+
+  PropertyService.promise((properties) -> 
+    $scope.properties = properties
+    $scope.overlaps = properties.overlaps
+    $scope.hierarchies = properties.hierarchies
+  )
 
 controllers.controller "AssembleCtrl", ($scope, $http) ->
   return
 
 # TODO Make this controller thinner!
-controllers.controller "CreateVizCtrl", ($scope, $http, DataService, OverlapService, VizDataService, VizFromOntologyService) ->
+controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertyService, VizDataService, VizFromOntologyService) ->
   
   # Initialize datasets
   datasets = DataService.getData()
   $scope.datasets = datasets
-  relnData = OverlapService.getData()
+  relnData = PropertyService.getData()
   
   # TODO Watch changes and propagate changes
   nodes = []

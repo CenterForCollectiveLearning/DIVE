@@ -7,35 +7,41 @@ diveApp.config([
         allProjectsService: (AllProjectsService) ->
           AllProjectsService.promise
     )
-    .when("/:uID/:pID",  # TODO Validate permissions first
-      redirectTo: "/:uID/:pID/data"
+    .when("/:formattedUserName/:formattedProjectTitle",  # TODO Validate permissions first
+      redirectTo: "/:formattedUserName/:formattedProjectTitle/data"
     )
-    .when("/:uID/:pID/data",
+    .when("/:formattedUserName/:formattedProjectTitle/data",
       templateUrl: "static/views/data_view.html"
       controller: "DatasetListCtrl"
       resolve:
-        initialData: (DataService) ->
-          DataService.promise
+        projectIDService: (ProjectIDService) ->
+          ProjectIDService.promise
+        # This is dependent on projectIDService
+        # initialData: (DataService) ->
+        #   DataService.promise
     )
-    .when("/:uID/:pID/ontology",
+    .when("/:formattedUserName/:formattedProjectTitle/ontology",
       templateUrl: "static/views/edit_ontology.html"
       controller: "OntologyEditorCtrl"
       resolve:
+        projectIDService: (ProjectIDService) ->
+          ProjectIDService.promise
+
         initialData: (DataService) ->
           DataService.promise
 
-        overlapService: (OverlapService) ->
-          OverlapService.promise
+        propertyService: (PropertyService) ->
+          PropertyService.promise
     )
-    .when("/:uID/:pID/visualize",
+    .when("/:formattedUserName/:formattedProjectTitle/visualize",
       templateUrl: "static/views/create_viz.html"
       controller: "CreateVizCtrl"
       resolve:
         initialData: (DataService) ->
           DataService.promise
 
-        overlapService: (OverlapService) ->
-          OverlapService.promise
+        propertyService: (PropertyService) ->
+          PropertyService.promise
 
         vizFromOntologyService: (VizFromOntologyService) ->
           VizFromOntologyService.promise
@@ -43,15 +49,15 @@ diveApp.config([
         vizDataService: (VizDataService) ->
           VizDataService.promise
     )
-    .when("/:uID/:pID/assemble",
+    .when("/:formattedUserName/:formattedProjectTitle/assemble",
       templateUrl: "static/views/assemble_engine.html"
       controller: "AssembleCtrl"
       resolve:
         initialData: (DataService) ->
           DataService.promise
 
-        overlapService: (OverlapService) ->
-          OverlapService.promise
+        propertyService: (PropertyService) ->
+          PropertyService.promise
 
         vizFromOntologyService: (VizFromOntologyService) ->
           VizFromOntologyService.promise

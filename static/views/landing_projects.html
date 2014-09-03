@@ -6,11 +6,12 @@
 				<div class="description">{[{project.description}]}</div>
 			</li>
 		</a>
-		<li class="project new-project" ng-click="new_project_toggle()" ng-if="!newProject">
-			<i class="fa fa-plus-circle"></i>
-		</li>
+		<div class="project new-project-button" ng-click="new_project_toggle()" ng-if="!newProject">
+			Create New Project
+		</div>
 	</ul>
-	<div class="new-project" ng-if="newProject">
+	
+	<div class="new-project-form" ng-if="newProject">
 		<div class="close" ng-click="new_project_toggle()"><i class="fa fa-times"></i></div>
 		<label>New Project</label>
 
