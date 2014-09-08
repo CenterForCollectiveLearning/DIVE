@@ -11,9 +11,14 @@
 	</nav>
 	<nav class="navbar navbar-default sections" role="navigation">
 		<ul ng-controller="TabsCtrl">
-			<li ng-class="tabClass(tab)" class="{[{tab.link}]}" ng-repeat="tab in tabs">
-				<a href="#/{[{formattedUserName}]}/{[{formattedProjectTitle}]}/{[{tab.link}]}" ng-click="setSelectedTab(tab)">{[{tab.label}]}</a>
+			<li ui-sref-active="active" ng-repeat="tab in tabs">
+				<a ui-sref="{[{tab.route}]}" select="go(t.route)">{[{tab.label}]}</a>
 			</li>
 		</ul>
+<!-- 		<ul ng-controller="TabsCtrl">
+			<li ng-class="{'active': tab.active}; " ng-repeat="tab in tabs">
+				<a ui-sref="{[{tab.route}]}" select="go(t.route)">{[{tab.label}]}</a>
+			</li>
+		</ul> -->
 	</nav>
 </header>

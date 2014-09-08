@@ -45,38 +45,28 @@ controllers.controller "PaneToggleCtrl", ($scope) ->
   $scope.toggleRight = -> $scope.rightClosed = !$scope.rightClosed
 
 # Stateful navigation (tabs)
-controllers.controller "TabsCtrl", ($scope, $routeParams, $rootScope) ->
-  $scope.formattedUserName = $routeParams.formattedUserName
-  $scope.formattedProjectTitle = $routeParams.formattedProjectTitle
+controllers.controller "TabsCtrl", ($scope, $state, $rootScope, $stateParams) ->
   $scope.tabs = [
     {
-      link: "data"
+      route: "engine.data"
       label: "1. Manage Datasets"
     }
     {
-      link: "ontology"
+      route: "engine.ontology"
       label: "2. Edit Ontology"
     }
     {
-      link: "visualize"
+      route: "engine.visualize"
       label: "3. Select Visualizations"
     }
     {
-      link: "assemble"
+      route: "engine.assemble"
       label: "4. Assemble Engine"
     }
   ]
-  # TODO Tie this into router
-  $scope.selectedTab = $rootScope.selectedTab
-  $scope.setSelectedTab = (tab) ->
-    $scope.selectedTab = tab
-    $rootScope.selectedTab = tab
 
-  $scope.tabClass = (tab) ->
-    if $scope.selectedTab is tab then "active"
-    else ""
-
-controllers.controller "DatasetListCtrl", ($scope, $http, $upload, $timeout, $rootScope, DataService) ->
+controllers.controller "DatasetListCtrl", ($scope, $rootScope, $http, $upload, $timeout, $stateParams, DataService) ->
+  console.log("Datasets", $rootScope.pID)
   $scope.selectedIndex = 0
   $scope.currentPane = 'left'
 
@@ -154,8 +144,45 @@ controllers.controller "DatasetListCtrl", ($scope, $http, $upload, $timeout, $ro
       $scope.datasets = newDatasets
     )
 
-# TODO Make this controller thin
 controllers.controller "OntologyEditorCtrl", ($scope, $http, DataService, PropertyService) ->
+  # Interface elements
+  $scope.selectedLeftIndex = 0
+  $scope.selectedRightIndex = 0
+  $scope.currentPane = 'left'
+  $scope.layoutOptions = [
+    {
+      label: 'Object'
+      inactive: false
+    },
+    {
+      label: 'List'
+      inactive: true
+    },
+    {
+      label: 'Hierarchy'
+      inactive: true
+    }
+  ]
+  $scope.editOptions = [
+    {
+      label: 'Add'
+      inactive: true
+    },
+    {
+      label: 'Edit'
+      inactive: true
+    },
+    {
+      label: 'Delete'
+      inactive: true
+    }
+  ]
+  $scope.select_left_option = (index) ->
+    $scope.selectedLeftIndex = index
+
+  $scope.select_right_option = (index) ->
+    $scope.selectedRightIndex = index
+
   
   # Initialize datasets
   DataService.promise((datasets) -> 

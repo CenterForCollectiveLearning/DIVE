@@ -1,13 +1,11 @@
-<engine-top-bar></engine-top-bar>
-
 <section class="left-pane" ng-class="{'closed': leftClosed}">
 	<div class="pane-title">
 		Change Ontology View
 	</div>
 	<ul class="pane-items">
-		<li><div class="vertical-center title">List</div></li>
-		<li><div class="vertical-center title">Object</div></li>
-		<li><div class="vertical-center title">Hierarchical</div></li>
+		<li ng-repeat="option in layoutOptions" class="option" ng-class="{'selected':$index==selectedLeftIndex && currentPane=='left'}">
+			<div class="vertical-center title" ng-click="select_left_option($index)" ng-class="{'inactive': option.inactive}">{[{option.label}]}</div>
+		</li>
 	</ul>
 </section>
 
@@ -16,9 +14,9 @@
 		Edit Ontology
 	</div>
 	<ul class="pane-items">
-		<li><div class="vertical-center title">Add</div></li>
-		<li><div class="vertical-center title">Edit</div></li>
-		<li><div class="vertical-center title">Delete</div></li>
+		<li ng-repeat="option in editOptions" class="option" ng-class="{'selected':$index==selectedRightIndex && currentPane=='left'}">
+			<div class="vertical-center title" ng-click="select_right_option($index)" ng-class="{'inactive': option.inactive}">{[{option.label}]}</div>
+		</li>
 	</ul>
 </section>
 

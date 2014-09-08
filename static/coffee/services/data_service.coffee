@@ -11,10 +11,11 @@ diveApp.service "AllProjectsService", ($http) ->
   getProjects: -> myProjects
 
 # TODO Eventually deprecate this in favor of real session handling
-engineApp.service "ProjectIDService", ($http, $rootScope, $route) ->
+engineApp.service "ProjectIDService", ($http, $stateParams) ->
+  console.log("ProjectIDService", $stateParams)
   promise: $http.get("/api/getProjectID",
     params:
-      formattedProjectTitle: $route.current.params.formattedProjectTitle
+      formattedProjectTitle: $stateParams.formattedProjectTitle
   ).success((pID) ->
     # TODO Error handling
     $rootScope.pID = pID

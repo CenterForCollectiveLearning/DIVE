@@ -206,14 +206,8 @@ nav.navbar {
     nav.navbar ul li {
       float: left;
       padding: 0 20px; }
-      nav.navbar ul li.active.data {
-        background-color: #f8e71c; }
-      nav.navbar ul li.active.ontology {
+      nav.navbar ul li.active {
         background-color: #4a90e2; }
-      nav.navbar ul li.active.visualize {
-        background-color: #bd10e0; }
-      nav.navbar ul li.active.assemble {
-        background-color: #7ed321; }
       nav.navbar ul li a {
         line-height: 49px;
         color: black;

@@ -17,9 +17,9 @@
     return str.trim().replace(/"/g, "");
   };
 
-  window.diveApp = angular.module("diveApp", ["ngRoute", "engineApp"]);
+  window.diveApp = angular.module("diveApp", ["ui.router", "engineApp"]);
 
-  window.engineApp = angular.module("engineApp", ["d3", "d3Plus", "ngRoute", "angularFileUpload", "engineControllers"]);
+  window.engineApp = angular.module("engineApp", ["d3", "d3Plus", "ui.router", "angularFileUpload", "engineControllers"]);
 
   engineApp.directive("engineTopBar", function() {
     return {

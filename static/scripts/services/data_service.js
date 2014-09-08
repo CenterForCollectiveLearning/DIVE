@@ -19,11 +19,12 @@
     };
   });
 
-  engineApp.service("ProjectIDService", function($http, $rootScope, $route) {
+  engineApp.service("ProjectIDService", function($http, $stateParams) {
+    console.log("ProjectIDService", $stateParams);
     return {
       promise: $http.get("/api/getProjectID", {
         params: {
-          formattedProjectTitle: $route.current.params.formattedProjectTitle
+          formattedProjectTitle: $stateParams.formattedProjectTitle
         }
       }).success(function(pID) {
         return $rootScope.pID = pID;

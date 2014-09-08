@@ -15,8 +15,8 @@ window.formatRouteParam = (str) ->
 
 # What's the purpose of two separate applications?
 # diveApp is top-level encompassing the engineApp
-window.diveApp = angular.module("diveApp", ["ngRoute", "engineApp"])
-window.engineApp = angular.module("engineApp", ["d3", "d3Plus", "ngRoute", "angularFileUpload", "engineControllers"])
+window.diveApp = angular.module("diveApp", ["ui.router", "engineApp"])
+window.engineApp = angular.module("engineApp", ["d3", "d3Plus", "ui.router", "angularFileUpload", "engineControllers"])
 
 engineApp.directive("engineTopBar", ->
 	return {

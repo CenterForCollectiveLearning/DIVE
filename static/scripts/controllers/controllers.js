@@ -58,39 +58,26 @@
     };
   });
 
-  controllers.controller("TabsCtrl", function($scope, $routeParams, $rootScope) {
-    $scope.formattedUserName = $routeParams.formattedUserName;
-    $scope.formattedProjectTitle = $routeParams.formattedProjectTitle;
-    $scope.tabs = [
+  controllers.controller("TabsCtrl", function($scope, $state, $rootScope, $stateParams) {
+    return $scope.tabs = [
       {
-        link: "data",
+        route: "engine.data",
         label: "1. Manage Datasets"
       }, {
-        link: "ontology",
+        route: "engine.ontology",
         label: "2. Edit Ontology"
       }, {
-        link: "visualize",
+        route: "engine.visualize",
         label: "3. Select Visualizations"
       }, {
-        link: "assemble",
+        route: "engine.assemble",
         label: "4. Assemble Engine"
       }
     ];
-    $scope.selectedTab = $rootScope.selectedTab;
-    $scope.setSelectedTab = function(tab) {
-      $scope.selectedTab = tab;
-      return $rootScope.selectedTab = tab;
-    };
-    return $scope.tabClass = function(tab) {
-      if ($scope.selectedTab === tab) {
-        return "active";
-      } else {
-        return "";
-      }
-    };
   });
 
-  controllers.controller("DatasetListCtrl", function($scope, $http, $upload, $timeout, $rootScope, DataService) {
+  controllers.controller("DatasetListCtrl", function($scope, $rootScope, $http, $upload, $timeout, $stateParams, DataService) {
+    console.log("Datasets", $rootScope.pID);
     $scope.selectedIndex = 0;
     $scope.currentPane = 'left';
     $scope.options = [
@@ -168,6 +155,39 @@
   });
 
   controllers.controller("OntologyEditorCtrl", function($scope, $http, DataService, PropertyService) {
+    $scope.selectedLeftIndex = 0;
+    $scope.selectedRightIndex = 0;
+    $scope.currentPane = 'left';
+    $scope.layoutOptions = [
+      {
+        label: 'Object',
+        inactive: false
+      }, {
+        label: 'List',
+        inactive: true
+      }, {
+        label: 'Hierarchy',
+        inactive: true
+      }
+    ];
+    $scope.editOptions = [
+      {
+        label: 'Add',
+        inactive: true
+      }, {
+        label: 'Edit',
+        inactive: true
+      }, {
+        label: 'Delete',
+        inactive: true
+      }
+    ];
+    $scope.select_left_option = function(index) {
+      return $scope.selectedLeftIndex = index;
+    };
+    $scope.select_right_option = function(index) {
+      return $scope.selectedRightIndex = index;
+    };
     DataService.promise(function(datasets) {
       $scope.datasets = datasets;
       return console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'));

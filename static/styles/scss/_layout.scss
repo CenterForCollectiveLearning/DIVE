@@ -153,12 +153,12 @@ nav.navbar {
             float: left;
             padding: 0 20px;
 
-
             &.active {
-                &.data { background-color: $data-yellow; }
-                &.ontology { background-color: $ontology-blue; }
-                &.visualize { background-color: $visualize-purple; }
-                &.assemble { background-color: $assemble-green; }
+                background-color: $ontology-blue;
+                // &.data { background-color: $data-yellow; }
+                // &.ontology { background-color: $ontology-blue; }
+                // &.visualize { background-color: $visualize-purple; }
+                // &.assemble { background-color: $assemble-green; }
             }
 
             a {
