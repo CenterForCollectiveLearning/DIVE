@@ -76,8 +76,7 @@
     ];
   });
 
-  controllers.controller("DatasetListCtrl", function($scope, $rootScope, $http, $upload, $timeout, $stateParams, DataService) {
-    console.log("Datasets", $rootScope.pID);
+  controllers.controller("DatasetListCtrl", function($scope, $rootScope, projectID, $http, $upload, $timeout, $stateParams, DataService) {
     $scope.selectedIndex = 0;
     $scope.currentPane = 'left';
     $scope.options = [
@@ -114,7 +113,6 @@
       i = 0;
       _results = [];
       while (i < $files.length) {
-        console.log($rootScope.pID);
         file = $files[i];
         $scope.upload = $upload.upload({
           url: "/api/upload",
@@ -193,6 +191,7 @@
       return console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'));
     });
     return PropertyService.promise(function(properties) {
+      console.log("In PropertyService", properties);
       $scope.properties = properties;
       $scope.overlaps = properties.overlaps;
       return $scope.hierarchies = properties.hierarchies;
@@ -202,85 +201,15 @@
   controllers.controller("AssembleCtrl", function($scope, $http) {});
 
   controllers.controller("CreateVizCtrl", function($scope, $http, DataService, PropertyService, VizDataService, VizFromOntologyService) {
-    var columnPair, columnPairList, d, dataset, datasetPair, datasetPairList, datasets, edge, edges, hierarchy, i, initNetwork, node, nodes, relnData, type;
-    datasets = DataService.getData();
-    $scope.datasets = datasets;
-    relnData = PropertyService.getData();
-    nodes = [];
-    edges = [];
-    i = 0;
-    while (i < datasets.length) {
-      dataset = datasets[i];
-      node = {
-        model: dataset.dataset_id,
-        attrs: dataset.column_attrs,
-        unique_cols: dataset.unique_cols
-      };
-      nodes.push(node);
-      i++;
-    }
-    for (datasetPair in relnData.hierarchies) {
-      hierarchy = relnData.hierarchies[datasetPair];
-      datasetPairList = datasetPair.split("\t");
-      for (columnPair in hierarchy) {
-        type = hierarchy[columnPair];
-        columnPairList = columnPair.split("\t");
-        d = relnData.overlaps[datasetPair][columnPair];
-        if (d > 0.5) {
-          edge = {
-            source: [parseInt(datasetPairList[0]), parseInt(columnPairList[1])],
-            target: [parseInt(datasetPairList[1]), parseInt(columnPairList[1])],
-            type: type
-          };
-          edges.push(edge);
-        }
-      }
-    }
-    initNetwork = {
-      nodes: nodes,
-      edges: edges
-    };
-    $scope.initNetwork = initNetwork;
-    $scope.vizType = "treemap";
-    $scope.selected_vizType_index = 1;
-    $scope.select_vizType = function(index) {
-      $scope.vizType = $scope.vizTypes[index].name;
-      $scope.selected_vizType_index = index;
-      $scope.vizSpecs = $scope.allVizSpecs[$scope.selected_vizType];
-    };
-    $scope.selected_vizSpec_index = 0;
-    $scope.select_vizSpec = function(index) {
-      $scope.selected_vizSpec_index = index;
-    };
-    $scope.getDatasetTitle = function(dataset_id) {
-      return datasets[dataset_id].title;
-    };
-    $scope.getColumnName = function(dataset_id, column_id) {
-      return datasets[dataset_id].column_attrs[column_id].name;
-    };
-    $scope.vizFromOntology = function() {
-      VizFromOntologyService.promise($scope.initNetwork, function(data) {
-        var visualization, visualizations, vizTypes;
-        visualizations = data.visualizations;
-        vizTypes = [];
-        for (visualization in visualizations) {
-          vizTypes.push({
-            name: visualization,
-            count: visualizations[visualization].length
-          });
-        }
-        $scope.vizTypes = vizTypes;
-        $scope.vizSpecs = visualizations[$scope.vizType];
-        $scope.allVizSpecs = visualizations;
-      });
-    };
-    $scope.vizFromOntology();
-    $scope.setVizData = function(vizSpec) {
-      $scope.vizSpec = vizSpec;
-      VizDataService.promise(vizSpec, function(result) {
-        $scope.vizData = result.result;
-      });
-    };
+    DataService.promise(function(datasets) {
+      console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'));
+      return $scope.datasets = datasets;
+    });
+    return PropertyService.promise(function(properties) {
+      $scope.properties = properties;
+      $scope.overlaps = properties.overlaps;
+      return $scope.hierarchies = properties.hierarchies;
+    });
   });
 
 }).call(this);

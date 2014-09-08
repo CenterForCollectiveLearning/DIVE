@@ -32,7 +32,7 @@
             return scope.render = function(data, overlaps, hierarchies) {
               var attributesYOffset, boxMargins, boxWidth, margins, renderTimeout;
               svg.selectAll("*").remove();
-              if (!data) {
+              if (!(data && overlaps && hierarchies)) {
                 return;
               }
               if (renderTimeout) {

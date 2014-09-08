@@ -12,24 +12,34 @@ diveApp.config(($stateProvider, $urlRouterProvider) ->
       url: '/:formattedUserName/:formattedProjectTitle'
       templateUrl: 'static/views/project.html'
       resolve:
-        formattedUserName: ['$stateParams', ($stateParams) -> $stateParams.formattedUserName]
-        formattedProjectTitle: ['$stateParams', ($stateParams) -> $stateParams.formattedProjectTitle]
-        # projectIDService: (ProjectIDService) -> ProjectIDService.promise
+        formattedUserName: ($stateParams) -> $stateParams.formattedUserName
+        formattedProjectTitle: ($stateParams) -> $stateParams.formattedProjectTitle
+        projectID: ($stateParams, ProjectIDService) -> ProjectIDService.promise($stateParams.formattedProjectTitle)
     )
     .state('engine.data'
       url: '/data'
       templateUrl: 'static/views/data_view.html'
       controller: 'DatasetListCtrl'
+      resolve: 
+        initialData: (DataService) -> DataService.promise
     )
     .state('engine.ontology'
       url: '/ontology'
       templateUrl: 'static/views/edit_ontology.html'
-      controller: 'DatasetListCtrl'
+      controller: 'OntologyEditorCtrl'
+      resolve:
+        initialData: (DataService) -> DataService.promise
+        propertyService: (PropertyService) -> PropertyService.promise
     )
     .state('engine.visualize'
       url: '/visualize'
       templateUrl: 'static/views/create_viz.html'
       controller: 'CreateVizCtrl'
+      resolve:
+        initialData: (DataService) -> DataService.promise
+        propertyService: (PropertyService) -> PropertyService.promise
+        vizFromOntologyService: (VizFromOntologyService) -> VizFromOntologyService.promise
+        vizDataService: (VizDataService) -> VizDataService.promise
     )
     .state('engine.assemble'
       url: '/assemble'

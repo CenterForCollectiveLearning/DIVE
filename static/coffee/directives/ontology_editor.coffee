@@ -32,7 +32,7 @@ engineApp.directive "ontologyEditor", [
           ), true
           scope.render = (data, overlaps, hierarchies) ->
             svg.selectAll("*").remove()
-            unless data
+            unless (data and overlaps and hierarchies)
               return
             if renderTimeout
               clearTimeout(renderTimeout)

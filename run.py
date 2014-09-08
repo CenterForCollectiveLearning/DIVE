@@ -130,7 +130,6 @@ class Data(Resource):
 
                 column_attrs = [{'name': header[i], 'type': types[i], 'column_id': i} for i in range(0, len(columns) - 1)]
 
-
                 # Make response
                 json_data = {
                     'filename': d['filename'],

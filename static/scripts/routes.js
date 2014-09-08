@@ -14,29 +14,55 @@
       url: '/:formattedUserName/:formattedProjectTitle',
       templateUrl: 'static/views/project.html',
       resolve: {
-        formattedUserName: [
-          '$stateParams', function($stateParams) {
-            return $stateParams.formattedUserName;
-          }
-        ],
-        formattedProjectTitle: [
-          '$stateParams', function($stateParams) {
-            return $stateParams.formattedProjectTitle;
-          }
-        ]
+        formattedUserName: function($stateParams) {
+          return $stateParams.formattedUserName;
+        },
+        formattedProjectTitle: function($stateParams) {
+          return $stateParams.formattedProjectTitle;
+        },
+        projectID: function($stateParams, ProjectIDService) {
+          return ProjectIDService.promise($stateParams.formattedProjectTitle);
+        }
       }
     }).state('engine.data', {
       url: '/data',
       templateUrl: 'static/views/data_view.html',
-      controller: 'DatasetListCtrl'
+      controller: 'DatasetListCtrl',
+      resolve: {
+        initialData: function(DataService) {
+          return DataService.promise;
+        }
+      }
     }).state('engine.ontology', {
       url: '/ontology',
       templateUrl: 'static/views/edit_ontology.html',
-      controller: 'DatasetListCtrl'
+      controller: 'OntologyEditorCtrl',
+      resolve: {
+        initialData: function(DataService) {
+          return DataService.promise;
+        },
+        propertyService: function(PropertyService) {
+          return PropertyService.promise;
+        }
+      }
     }).state('engine.visualize', {
       url: '/visualize',
       templateUrl: 'static/views/create_viz.html',
-      controller: 'CreateVizCtrl'
+      controller: 'CreateVizCtrl',
+      resolve: {
+        initialData: function(DataService) {
+          return DataService.promise;
+        },
+        propertyService: function(PropertyService) {
+          return PropertyService.promise;
+        },
+        vizFromOntologyService: function(VizFromOntologyService) {
+          return VizFromOntologyService.promise;
+        },
+        vizDataService: function(VizDataService) {
+          return VizDataService.promise;
+        }
+      }
     }).state('engine.assemble', {
       url: '/assemble',
       templateUrl: 'static/views/assemble_engine.html',

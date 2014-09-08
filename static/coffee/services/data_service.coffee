@@ -1,6 +1,5 @@
 # Container for data services
 diveApp.service "AllProjectsService", ($http) ->
-  myProjects = []
   promise: (userName, callback) ->
    $http.get('/api/project',
       params:
@@ -8,49 +7,39 @@ diveApp.service "AllProjectsService", ($http) ->
     ).success((result) -> 
       callback(result)
     )
-  getProjects: -> myProjects
 
 # TODO Eventually deprecate this in favor of real session handling
-engineApp.service "ProjectIDService", ($http, $stateParams) ->
-  console.log("ProjectIDService", $stateParams)
-  promise: $http.get("/api/getProjectID",
-    params:
-      formattedProjectTitle: $stateParams.formattedProjectTitle
-  ).success((pID) ->
-    # TODO Error handling
-    $rootScope.pID = pID
-  )
+engineApp.service "ProjectIDService", ($http, $stateParams, $rootScope) ->
+  promise: (formattedProjectTitle) ->
+    console.log("Requesting projectID for project title:", formattedProjectTitle)
+    $http.get("/api/getProjectID",
+      params:
+        formattedProjectTitle: formattedProjectTitle
+    ).success((pID) ->
+      $rootScope.pID = pID
+    )
 
 # Dataset Samples
 engineApp.service "DataService", ($http, $rootScope) ->
-  console.log('DataService', $rootScope.pID)
-  myData = []
   promise: (callback) ->
     $http.get("/api/data",
       params:
         pID: $rootScope.pID
         sample: true
     ).success((data) ->
-      callback data.datasets
+      callback(data.datasets)
     )
-  getData: -> myData
 
 engineApp.service "PropertyService", ($http, $rootScope) ->
-  myData = undefined
   promise: (callback) ->
     $http.get("/api/property",
       params:
         pID: $rootScope.pID
     ).success((data) -> 
-      console.log('Property service success!')
-      console.log('Properties', data)
-      callback data
+      callback(data)
     )
-  getData: -> myData
 
 engineApp.service "VizFromOntologyService", ($http) ->
-  myData = undefined
-  
   # TODO Pass in vizType parameter
   promise: (initNetwork, callback) ->
     $.ajax(
@@ -62,15 +51,8 @@ engineApp.service "VizFromOntologyService", ($http) ->
       contentType: false
     ).success (result) ->
       callback result
-      return
-
-    return
-
-  getData: -> myData
 
 engineApp.service "VizDataService", ($http) ->
-  myData = undefined
-  
   # TODO Generalize service for other vizTypes
   promise: (vizSpec, callback) ->
     $http.get("get_treemap_data",
@@ -81,4 +63,3 @@ engineApp.service "VizDataService", ($http) ->
         groupBy: vizSpec.groupBy
     ).success (result) ->
       callback result
-  getData: -> myData

@@ -65,8 +65,7 @@ controllers.controller "TabsCtrl", ($scope, $state, $rootScope, $stateParams) ->
     }
   ]
 
-controllers.controller "DatasetListCtrl", ($scope, $rootScope, $http, $upload, $timeout, $stateParams, DataService) ->
-  console.log("Datasets", $rootScope.pID)
+controllers.controller "DatasetListCtrl", ($scope, $rootScope, projectID, $http, $upload, $timeout, $stateParams, DataService) ->
   $scope.selectedIndex = 0
   $scope.currentPane = 'left'
 
@@ -90,7 +89,7 @@ controllers.controller "DatasetListCtrl", ($scope, $rootScope, $http, $upload, $
   ]
   $scope.select_option = (index) ->
     $scope.currentPane = 'left'
-      # Inactive options (for demo purposes)
+    # Inactive options (for demo purposes)
     unless $scope.options[index].inactive
       $scope.selectedIndex = index
 
@@ -111,7 +110,6 @@ controllers.controller "DatasetListCtrl", ($scope, $rootScope, $http, $upload, $
   $scope.onFileSelect = ($files) ->
     i = 0
     while i < $files.length
-      console.log($rootScope.pID)
       file = $files[i]
       $scope.upload = $upload.upload(
         url: "/api/upload"
@@ -191,6 +189,7 @@ controllers.controller "OntologyEditorCtrl", ($scope, $http, DataService, Proper
   )
 
   PropertyService.promise((properties) -> 
+    console.log("In PropertyService", properties)
     $scope.properties = properties
     $scope.overlaps = properties.overlaps
     $scope.hierarchies = properties.hierarchies
@@ -203,106 +202,107 @@ controllers.controller "AssembleCtrl", ($scope, $http) ->
 controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertyService, VizDataService, VizFromOntologyService) ->
   
   # Initialize datasets
-  datasets = DataService.getData()
-  $scope.datasets = datasets
-  relnData = PropertyService.getData()
-  
-  # TODO Watch changes and propagate changes
-  nodes = []
-  edges = []
-  
-  # Populate nodes
-  i = 0
+  DataService.promise((datasets) -> 
+    console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'))
+    $scope.datasets = datasets
+  )
 
-  while i < datasets.length
-    dataset = datasets[i]
-    node =
-      model: dataset.dataset_id
-      attrs: dataset.column_attrs
-      unique_cols: dataset.unique_cols
+  PropertyService.promise((properties) -> 
+    $scope.properties = properties
+    $scope.overlaps = properties.overlaps
+    $scope.hierarchies = properties.hierarchies
+  )
 
-    nodes.push node
-    i++
-  for datasetPair of relnData.hierarchies
-    hierarchy = relnData.hierarchies[datasetPair]
-    datasetPairList = datasetPair.split("\t")
-    for columnPair of hierarchy
-      type = hierarchy[columnPair]
-      columnPairList = columnPair.split("\t")
-      d = relnData.overlaps[datasetPair][columnPair]
-      if d > 0.5
+  # # TODO Watch changes and propagate changes
+  # nodes = []
+  # edges = []
+  
+  # # Populate nodes
+  # i = 0
+
+  # while i < datasets.length
+  #   dataset = datasets[i]
+  #   node =
+  #     model: dataset.dataset_id
+  #     attrs: dataset.column_attrs
+  #     unique_cols: dataset.unique_cols
+
+  #   nodes.push node
+  #   i++
+  # for datasetPair of relnData.hierarchies
+  #   hierarchy = relnData.hierarchies[datasetPair]
+  #   datasetPairList = datasetPair.split("\t")
+  #   for columnPair of hierarchy
+  #     type = hierarchy[columnPair]
+  #     columnPairList = columnPair.split("\t")
+  #     d = relnData.overlaps[datasetPair][columnPair]
+  #     if d > 0.5
         
-        # Only add edge if overlap
-        edge =
-          source: [
-            parseInt(datasetPairList[0])
-            parseInt(columnPairList[1])
-          ]
-          target: [
-            parseInt(datasetPairList[1])
-            parseInt(columnPairList[1])
-          ]
-          type: type
+  #       # Only add edge if overlap
+  #       edge =
+  #         source: [
+  #           parseInt(datasetPairList[0])
+  #           parseInt(columnPairList[1])
+  #         ]
+  #         target: [
+  #           parseInt(datasetPairList[1])
+  #           parseInt(columnPairList[1])
+  #         ]
+  #         type: type
 
-        edges.push edge
-  initNetwork =
-    nodes: nodes
-    edges: edges
+  #       edges.push edge
+  # initNetwork =
+  #   nodes: nodes
+  #   edges: edges
 
   
-  # TODO Pare down this UI stuff
-  $scope.initNetwork = initNetwork
+  # # TODO Pare down this UI stuff
+  # $scope.initNetwork = initNetwork
   
-  # TODO Don't be redundant
-  $scope.vizType = "treemap"
-  $scope.selected_vizType_index = 1
-  $scope.select_vizType = (index) ->
-    $scope.vizType = $scope.vizTypes[index].name
-    $scope.selected_vizType_index = index
+  # # TODO Don't be redundant
+  # $scope.vizType = "treemap"
+  # $scope.selected_vizType_index = 1
+  # $scope.select_vizType = (index) ->
+  #   $scope.vizType = $scope.vizTypes[index].name
+  #   $scope.selected_vizType_index = index
     
-    # TODO: There must be a better way to do pretty much an ng-if on an object
-    $scope.vizSpecs = $scope.allVizSpecs[$scope.selected_vizType]
-    return
+  #   # TODO: There must be a better way to do pretty much an ng-if on an object
+  #   $scope.vizSpecs = $scope.allVizSpecs[$scope.selected_vizType]
+  #   return
 
-  $scope.selected_vizSpec_index = 0
-  $scope.select_vizSpec = (index) ->
-    $scope.selected_vizSpec_index = index
-    return
+  # $scope.selected_vizSpec_index = 0
+  # $scope.select_vizSpec = (index) ->
+  #   $scope.selected_vizSpec_index = index
+  #   return
   
-  # TODO Abstract these to a global client-side ID reference
-  $scope.getDatasetTitle = (dataset_id) ->
-    datasets[dataset_id].title
+  # # TODO Abstract these to a global client-side ID reference
+  # $scope.getDatasetTitle = (dataset_id) ->
+  #   datasets[dataset_id].title
 
-  $scope.getColumnName = (dataset_id, column_id) ->
-    datasets[dataset_id].column_attrs[column_id].name
+  # $scope.getColumnName = (dataset_id, column_id) ->
+  #   datasets[dataset_id].column_attrs[column_id].name
 
-  
-  # Correct way to handle argument passing to async service
-  $scope.vizFromOntology = ->
+  # # Correct way to handle argument passing to async service
+  # $scope.vizFromOntology = ->
     
-    # TODO Move parsing logic to server side...or just have it in the correct format anyways
-    VizFromOntologyService.promise $scope.initNetwork, (data) ->
-      visualizations = data.visualizations
-      vizTypes = []
-      for visualization of visualizations
-        vizTypes.push
-          name: visualization
-          count: visualizations[visualization].length
+  #   # TODO Move parsing logic to server side...or just have it in the correct format anyways
+  #   VizFromOntologyService.promise $scope.initNetwork, (data) ->
+  #     visualizations = data.visualizations
+  #     vizTypes = []
+  #     for visualization of visualizations
+  #       vizTypes.push
+  #         name: visualization
+  #         count: visualizations[visualization].length
 
-      $scope.vizTypes = vizTypes
-      $scope.vizSpecs = visualizations[$scope.vizType]
-      $scope.allVizSpecs = visualizations
-      return
+  #     $scope.vizTypes = vizTypes
+  #     $scope.vizSpecs = visualizations[$scope.vizType]
+  #     $scope.allVizSpecs = visualizations
+  #     return
 
-    return
+  #   return
 
-  $scope.vizFromOntology()
-  $scope.setVizData = (vizSpec) ->
-    $scope.vizSpec = vizSpec
-    VizDataService.promise vizSpec, (result) ->
-      $scope.vizData = result.result
-      return
-
-    return
-
-  return
+  # $scope.vizFromOntology()
+  # $scope.setVizData = (vizSpec) ->
+  #   $scope.vizSpec = vizSpec
+  #   VizDataService.promise vizSpec, (result) ->
+  #     $scope.vizData = result.result
