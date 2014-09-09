@@ -16,6 +16,7 @@ engineApp.service "ProjectIDService", ($http, $stateParams, $rootScope) ->
       params:
         formattedProjectTitle: formattedProjectTitle
     ).success((pID) ->
+      console.log("Resolved projectID:", pID)
       $rootScope.pID = pID
     )
 
@@ -38,6 +39,16 @@ engineApp.service "PropertyService", ($http, $rootScope) ->
     ).success((data) -> 
       callback(data)
     )
+
+engineApp.service "SpecificationService", ($http, $rootScope) ->
+  promise: (callback) ->
+    $http.get("/api/specification",
+      params:
+        pID: $rootScope.pID
+    ).success((data) -> 
+      callback(data)
+    )
+
 
 engineApp.service "VizFromOntologyService", ($http) ->
   # TODO Pass in vizType parameter

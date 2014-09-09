@@ -23,6 +23,7 @@
             formattedProjectTitle: formattedProjectTitle
           }
         }).success(function(pID) {
+          console.log("Resolved projectID:", pID);
           return $rootScope.pID = pID;
         });
       }
@@ -48,6 +49,20 @@
     return {
       promise: function(callback) {
         return $http.get("/api/property", {
+          params: {
+            pID: $rootScope.pID
+          }
+        }).success(function(data) {
+          return callback(data);
+        });
+      }
+    };
+  });
+
+  engineApp.service("SpecificationService", function($http, $rootScope) {
+    return {
+      promise: function(callback) {
+        return $http.get("/api/specification", {
           params: {
             pID: $rootScope.pID
           }

@@ -23,11 +23,8 @@ class mongoInstance(object):
         return str(MongoInstance.client[pID].datasets.insert({'filename': fileStorage.filename}))
 
     # Dataset Retrieval
-    def getData(self, dID, pID):
-        if dID:
-            return formatObjectIDs('dataset', [ d for d in MongoInstance.client[pID].datasets.find({'_id': dID}) ])
-        else:
-            return formatObjectIDs('dataset', [ d for d in MongoInstance.client[pID].datasets.find() ])
+    def getData(self, find_doc, pID):
+        return formatObjectIDs('dataset', [ d for d in MongoInstance.client[pID].datasets.find(find_doc) ])
 
     # Dataset Deletion
     def deleteData(self, dID, pID):
@@ -38,15 +35,40 @@ class mongoInstance(object):
     # Project Editing
     def getProject(self, pID, user):
         projects_collection = MongoInstance.client['dive'].projects
-        if pID:
-            return formatObjectIDs('project', [ p for p in projects_collection.find({'user': user, '_id': ObjectId(pID)})])
+        doc = {
+            'user': user
+        }
+        if pID: doc['_id'] = ObjectId(pID)
+        return formatObjectIDs('project', [ p for p in projects_collection.find(doc)])
+
+    def upsertProperty(self, dID, pID, properties):
+        info = MongoInstance.client[pID].properties.find_and_modify({'dID': dID}, {'$set': properties}, upsert=True, new=True)
+        tID = str(info['_id'])
+        return tID
+
+    def getProperty(self, find_doc, pID):
+        return formatObjectIDs('t', [ t for t in MongoInstance.client[pID].properties.find(find_doc) ])
+
+    def getOntology(self, find_doc, pID):
+        return formatObjectIDs('ontology', [ o for o in MongoInstance.client[pID].ontologies.find(find_doc) ])
+
+    def upsertOntology(self, pID, ontology):
+        o = ontology
+        find_doc = {
+            'source_dID': o['source_dID'],
+            'target_dID': o['target_dID'],
+            'source_index': o['source_index'],
+            'target_index': o['target_index']
+        }
+        info = MongoInstance.client[pID].ontologies.find_and_modify(find_doc, {'$set': ontology}, upsert=True, new=True)
+        if info:
+            oID = str(info['_id'])
+            return oID
         else:
-            # return projects_collection.find({'user': user})
-            return formatObjectIDs('project', [ p for p in projects_collection.find({'user': user})])
+            print o
 
     # Project Creation
     def postProject(self, title, description, user):
-        print title, description, user
         formatted_title = title.replace(" ", "-").lower()
 
         projects_collection = MongoInstance.client['dive'].projects
@@ -55,14 +77,21 @@ class mongoInstance(object):
             print "Project Already Exists"
             return str(existing_project['_id']), 409
         else:
-            db = MongoInstance.client[formatted_title]
-            db['users'].insert({'userName': user, 'uID': ''})
+            # Insert project into DIVE project collections
+            pID = str(projects_collection.insert({'formattedTitle': formatted_title, 'title': title, 'description': description, 'user': user}))
+
+            # Create user
+            # TODO Tie into projects
+            MongoInstance.client['dive'].users.insert({'userName': user})
+
+            # Create project DB
+            db = MongoInstance.client[pID]
             db.create_collection('datasets')
             db.create_collection('visualizations')
             db.create_collection('properties')
             db.create_collection('ontologies')
             print "Creating new project"
-            return {'formatted_title': formatted_title, 'pID': str(projects_collection.insert({'formattedTitle': formatted_title, 'title': title, 'description': description, 'user': user}))}, 200
+            return {'formatted_title': formatted_title, 'pID': pID}, 200
 
     # Client corresponding to a single connection
     @property

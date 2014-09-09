@@ -199,7 +199,7 @@ controllers.controller "AssembleCtrl", ($scope, $http) ->
   return
 
 # TODO Make this controller thinner!
-controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertyService, VizDataService, VizFromOntologyService) ->
+controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertyService, VizDataService, SpecificationService) ->
   
   # Initialize datasets
   DataService.promise((datasets) -> 
@@ -211,6 +211,10 @@ controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertySer
     $scope.properties = properties
     $scope.overlaps = properties.overlaps
     $scope.hierarchies = properties.hierarchies
+  )
+
+  SpecificationService.promise((specifications) -> 
+    console.log('Specs:', specifications)
   )
 
   # # TODO Watch changes and propagate changes

@@ -38,7 +38,7 @@ diveApp.config(($stateProvider, $urlRouterProvider) ->
       resolve:
         initialData: (DataService) -> DataService.promise
         propertyService: (PropertyService) -> PropertyService.promise
-        vizFromOntologyService: (VizFromOntologyService) -> VizFromOntologyService.promise
+        specificationService: (SpecificationService) -> SpecificationService.promise
         vizDataService: (VizDataService) -> VizDataService.promise
     )
     .state('engine.assemble'

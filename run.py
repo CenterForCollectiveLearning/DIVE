@@ -66,6 +66,8 @@ class UploadFile(Resource):
             sample, rows, cols, extension, header = get_sample_data(path)
             types = get_column_types(path)
 
+            header, columns = read_file(path)
+
             # Make response
             column_attrs = [{'name': header[i], 'type': types[i], 'column_id': i} for i in range(0, len(columns) - 1)]
             json_data = json.jsonify({
@@ -109,12 +111,12 @@ class Data(Resource):
         # Specific dIDs
         if dIDs:
             print "Requested specific dIDs:", dIDs
-            dataLocations = [ MongoInstance.getData(dID, pID) for dID in dIDs ] 
+            dataLocations = [ MongoInstance.getData({'_id': dID}, pID) for dID in dIDs ] 
 
         # All datasets
         else:
             print "Did not request specific dID. Returning all datasets"
-            datasets = MongoInstance.getData(None, pID)
+            datasets = MongoInstance.getData({}, pID)
             data_list = []
             for d in datasets:
                 path = os.path.join(app.config['UPLOAD_FOLDER'], pID, d['filename'])
@@ -230,6 +232,8 @@ api.add_resource(Project, '/api/project')
 ############################
 # Property (begins processing on first client API call)
 # Determine: types, hierarchies, uniqueness (subset of distributions), ontology, distributions
+# INPUT: pID
+# OUTPUT: {types: types_dict, uniques: is_unique_dict, overlaps: overlaps, hierarchies: hierarchies}
 ############################
 propertyGetParser = reqparse.RequestParser()
 propertyGetParser.add_argument('pID', type=str, required=True)
@@ -260,17 +264,25 @@ class Property(Resource):
             uniqued_columns_dict[dID] = [get_unique(col) for col in columns]
 
             # List of booleans -- is a column composed of unique elements?
-            is_unique_dict[dID] = [detect_unique_list(col) for col in columns]
+            is_unique = [detect_unique_list(col) for col in columns]
+            is_unique_dict[dID] = is_unique
 
             types = get_column_types(path)
             types_dict[dID] = types
+
+            # Save properties into collection
+            dataset_properties = {
+                'types': types,
+                'uniques': is_unique
+            }
+            tID = MongoInstance.upsertProperty(dID, pID, dataset_properties)
 
         overlaps = {}
         hierarchies = {}
         # Compute cross-dataset overlaps
         # TODO Create a tighter loop to avoid double computes
+        # TODO Make agnostic to ordering of pair
         for dID_a, dID_b in combinations(dIDs, 2):
-            print dID_a, dID_b
             raw_cols_a = raw_columns_dict[dID_a]
             raw_cols_b = raw_columns_dict[dID_b]
             uniqued_cols_a = uniqued_columns_dict[dID_a]
@@ -286,18 +298,79 @@ class Property(Resource):
                         overlaps['%s\t%s' % (dID_a, dID_b)]['%s\t%s' % (index_a, index_b)] = d
                         hierarchies['%s\t%s' % (dID_a, dID_b)]['%s\t%s' % (index_a, index_b)] = h
 
-        return json.jsonify({'types': types_dict, 'uniques': is_unique_dict, 'overlaps': overlaps, 'hierarchies': hierarchies})
+                        # TODO How do you store this?
+                        ontology = {
+                            'source_dID': dID_a,
+                            'target_dID': dID_b,
+                            'source_index': index_a,
+                            'target_index': index_b,
+                            'distance': d,
+                            'hierarchy': h
+                        }
+                        oID = MongoInstance.upsertOntology(pID, ontology)
 
+        all_properties = {
+            'types': types_dict, 
+            'uniques': is_unique_dict, 
+            'overlaps': overlaps, 
+            'hierarchies': hierarchies
+        }
 
-        # 1. Get data (or samples of data if size is above certain threshold)
-        # TYPES
-        # HIERARCHY
-        # UNIQUE Get unique columns
-        # ONTOLOGY Pairwise comparison of columns across datasets
-        # DISTRIBUTION
-
+        return json.jsonify(all_properties)
 api.add_resource(Property, '/api/property')
 
+
+#####################################################################
+# 1. GROUP every entity by a non-unique attribute (for factors, group by factors but score by number of distinct. For continuous, discretize the range) 
+#   1b. If attribute represents another object, also add aggregation by that object's attributes
+# 2. AGGREGATE by some function (could be count)
+# 3. QUERY by another non-unique attribute
+#####################################################################
+def getTreemapSpecs(properties, ontologies):
+    return
+
+
+#####################################################################
+# Endpoint returning all inferred visualization specifications for a specific project
+# INPUT: pID, uID
+# OUTPUT: {visualizationType: [visualizationSpecification]}
+#####################################################################
+specificationDataGetParser = reqparse.RequestParser()
+specificationDataGetParser.add_argument('pID', type=str, required=True)
+specificationDataGetParser.add_argument('sID', type=str, action='append')
+class Specification(Resource):
+    def get(self):
+        args = specificationDataGetParser.parse_args()
+        pID = args.get('pID').strip().strip('"')
+
+        p = MongoInstance.getProperty(None, pID)
+        o = MongoInstance.getOntology(None, pID)
+
+        viz_types = {
+            "treemap": getTreemapSpecs(d, p, o),
+            # "geomap": getGeomapSpecs(p, o),
+            # "barchart": getBarchartSpecs(p, o),
+            # "scatterplot": getScatterplotSpecs(p, o),
+            # "linechart": getLineChartSpecs(p, o),
+            # "network": getNetworkSpecs(p, o)
+        }
+
+        
+        print 'Properties:', properties
+        print 'Ontologies:', ontologies
+        return 'test'
+api.add_resource(Specification, '/api/specification')
+
+#####################################################################
+# Endpoint returning aggregated visualization data given a specification ID
+# INPUT: sID, pID, uID
+# OUTPUT: {nested visualization data}
+#####################################################################
+visualizationDataParser = reqparse.RequestParser()
+class Visualization_Data(Resource):
+    def get(self):
+        return
+api.add_resource(Visualization_Data, '/api/visualization_data')
 
 # treemapDataParser = reqparse.RequestParser()
 # treemapDataParser.add_argument('condition', type=int, required=True)

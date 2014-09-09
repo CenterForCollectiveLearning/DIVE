@@ -200,15 +200,18 @@
 
   controllers.controller("AssembleCtrl", function($scope, $http) {});
 
-  controllers.controller("CreateVizCtrl", function($scope, $http, DataService, PropertyService, VizDataService, VizFromOntologyService) {
+  controllers.controller("CreateVizCtrl", function($scope, $http, DataService, PropertyService, VizDataService, SpecificationService) {
     DataService.promise(function(datasets) {
       console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'));
       return $scope.datasets = datasets;
     });
-    return PropertyService.promise(function(properties) {
+    PropertyService.promise(function(properties) {
       $scope.properties = properties;
       $scope.overlaps = properties.overlaps;
       return $scope.hierarchies = properties.hierarchies;
+    });
+    return SpecificationService.promise(function(specifications) {
+      return console.log('Specs:', specifications);
     });
   });
 

@@ -56,8 +56,8 @@
         propertyService: function(PropertyService) {
           return PropertyService.promise;
         },
-        vizFromOntologyService: function(VizFromOntologyService) {
-          return VizFromOntologyService.promise;
+        specificationService: function(SpecificationService) {
+          return SpecificationService.promise;
         },
         vizDataService: function(VizDataService) {
           return VizDataService.promise;
