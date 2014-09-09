@@ -1,0 +1,1 @@
+coffee --compile --watch --output static/scripts/ static/coffee/

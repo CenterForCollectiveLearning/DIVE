@@ -1,7 +1,7 @@
 <header>
 	<nav class="navbar navbar-default top" role="navigation">
 		<div class="navbar-header">
-			<a class="navbar-brand expand" id="logo" href="#">DIVE</a>
+			<a class="navbar-brand expand" id="logo" href="#">DIVE:</a> <a class="navbar-brand project-title" ui-sref="engine.overview">{[{projectTitle}]}</a>
 		</div>
 		<div class="hamburger">
 			<div class="line"></div>
@@ -15,10 +15,5 @@
 				<a ui-sref="{[{tab.route}]}" select="go(t.route)">{[{tab.label}]}</a>
 			</li>
 		</ul>
-<!-- 		<ul ng-controller="TabsCtrl">
-			<li ng-class="{'active': tab.active}; " ng-repeat="tab in tabs">
-				<a ui-sref="{[{tab.route}]}" select="go(t.route)">{[{tab.label}]}</a>
-			</li>
-		</ul> -->
 	</nav>
 </header>

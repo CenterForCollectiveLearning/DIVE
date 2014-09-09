@@ -13,6 +13,10 @@
     }).state('engine', {
       url: '/:formattedUserName/:formattedProjectTitle',
       templateUrl: 'static/views/project.html',
+      controller: function($scope, $state, $stateParams) {
+        $scope.projectTitle = $stateParams.formattedProjectTitle;
+        return $state.go('engine.overview');
+      },
       resolve: {
         formattedUserName: function($stateParams) {
           return $stateParams.formattedUserName;
@@ -24,6 +28,10 @@
           return ProjectIDService.promise($stateParams.formattedProjectTitle);
         }
       }
+    }).state('engine.overview', {
+      url: '/overview',
+      templateUrl: 'static/views/project_overview.html',
+      controller: 'DatasetListCtrl'
     }).state('engine.data', {
       url: '/data',
       templateUrl: 'static/views/data_view.html',
@@ -50,15 +58,6 @@
       templateUrl: 'static/views/create_viz.html',
       controller: 'CreateVizCtrl',
       resolve: {
-        initialData: function(DataService) {
-          return DataService.promise;
-        },
-        propertyService: function(PropertyService) {
-          return PropertyService.promise;
-        },
-        specificationService: function(SpecificationService) {
-          return SpecificationService.promise;
-        },
         vizDataService: function(VizDataService) {
           return VizDataService.promise;
         }

@@ -6,8 +6,9 @@ from os.path import isfile, join
 from itertools import combinations
 from werkzeug.utils import secure_filename
 import numpy as np
+import pandas as pd
 
-from db import MongoInstance
+from db import MongoInstance as MI
 
 from flask import Flask, render_template, redirect, url_for, request, make_response, json
 from flask.ext.restful import Resource, Api, reqparse
@@ -60,7 +61,7 @@ class UploadFile(Resource):
             file.save(path)
 
             # Insert into project's datasets collection
-            dID = MongoInstance.insertDataset(pID, file)
+            dID = MI.insertDataset(pID, file)
 
             # Get sample data
             sample, rows, cols, extension, header = get_sample_data(path)
@@ -111,12 +112,12 @@ class Data(Resource):
         # Specific dIDs
         if dIDs:
             print "Requested specific dIDs:", dIDs
-            dataLocations = [ MongoInstance.getData({'_id': dID}, pID) for dID in dIDs ] 
+            dataLocations = [ MI.getData({'_id': dID}, pID) for dID in dIDs ] 
 
         # All datasets
         else:
             print "Did not request specific dID. Returning all datasets"
-            datasets = MongoInstance.getData({}, pID)
+            datasets = MI.getData({}, pID)
             data_list = []
             for d in datasets:
                 path = os.path.join(app.config['UPLOAD_FOLDER'], pID, d['filename'])
@@ -154,7 +155,7 @@ class Data(Resource):
         pIDs = [ pID.strip().strip('"') for pID in pIDs ]
         dIDs = [ dID.strip().strip('"') for dID in dIDs ]
         params = zip(dIDs, pIDs)
-        deleted_dIDs = [ MongoInstance.deleteData(dID, pID) for (dID, pID) in params ]
+        deleted_dIDs = [ MI.deleteData(dID, pID) for (dID, pID) in params ]
         return deleted_dIDs
 
 api.add_resource(Data, '/api/data')
@@ -162,14 +163,13 @@ api.add_resource(Data, '/api/data')
 ############################
 # Get Project ID from Title
 ############################
-
 projectIDGetParser = reqparse.RequestParser()
 projectIDGetParser.add_argument('formattedProjectTitle', type=str, required=True)
 class GetProjectID(Resource):
     def get(self):
         args = projectIDGetParser.parse_args()
         formattedProjectTitle = args.get('formattedProjectTitle')
-        return MongoInstance.getProjectID(formattedProjectTitle)
+        return MI.getProjectID(formattedProjectTitle)
 api.add_resource(GetProjectID, '/api/getProjectID')
 
 ############################
@@ -195,7 +195,7 @@ class Project(Resource):
         user_name = args.get('user_name')
         print "GET", pID, user_name
 
-        return MongoInstance.getProject(pID, user_name)
+        return MI.getProject(pID, user_name)
 
     # Create project, initialize directories and collections
     def post(self):
@@ -204,7 +204,7 @@ class Project(Resource):
         description = args.get('description')
         user_name = args.get('user_name')
 
-        result = MongoInstance.postProject(title, description, user_name)
+        result = MI.postProject(title, description, user_name)
 
         # If successful project creation
         if result[1] is 200:
@@ -218,7 +218,7 @@ class Project(Resource):
     def delete(self):
         args = projectDeleteParser.parse_args()
         pIDs = args.get('pID')
-        return [ MongoInstance.deleteThing(pID, 'projects', []) for pID in pIDs]
+        return [ MI.deleteThing(pID, 'projects', []) for pID in pIDs]
     # The way that angular does http requests is slightly different than in python (or maybe it's a CORS thing)
     # Either way, we need this options to return the following access-control-allow-methods, otherwise delete wasn't working.
     # Will likely have to include for all classes
@@ -242,7 +242,7 @@ class Property(Resource):
         print "[GET] Properties"
         args = propertyGetParser.parse_args()
         pID = args.get('pID').strip().strip('"')
-        datasets = MongoInstance.getData(None, pID)
+        datasets = MI.getData(None, pID)
         dIDs = [d['dID'] for d in datasets]
 
         types_dict = {}
@@ -257,11 +257,18 @@ class Property(Resource):
             filename = dataset['filename']
             path = os.path.join(app.config['UPLOAD_FOLDER'], pID, filename)
             header, columns = read_file(path)
+            delim = get_delimiter(path)
             is_unique_dict[dID] = [detect_unique_list(col) for col in columns]
 
             headers_dict[dID] = header
             raw_columns_dict[dID] = [list(col) for col in columns]
             uniqued_columns_dict[dID] = [get_unique(col) for col in columns]
+
+            # Statistical properties
+            df = pd.read_table(path, sep=delim)
+            print df, df.describe()
+            # entropy 
+            # gini
 
             # List of booleans -- is a column composed of unique elements?
             is_unique = [detect_unique_list(col) for col in columns]
@@ -275,7 +282,7 @@ class Property(Resource):
                 'types': types,
                 'uniques': is_unique
             }
-            tID = MongoInstance.upsertProperty(dID, pID, dataset_properties)
+            tID = MI.upsertProperty(dID, pID, dataset_properties)
 
         overlaps = {}
         hierarchies = {}
@@ -307,7 +314,7 @@ class Property(Resource):
                             'distance': d,
                             'hierarchy': h
                         }
-                        oID = MongoInstance.upsertOntology(pID, ontology)
+                        oID = MI.upsertOntology(pID, ontology)
 
         all_properties = {
             'types': types_dict, 
@@ -326,7 +333,18 @@ api.add_resource(Property, '/api/property')
 # 2. AGGREGATE by some function (could be count)
 # 3. QUERY by another non-unique attribute
 #####################################################################
-def getTreemapSpecs(properties, ontologies):
+def getTreemapSpecs(datasets, properties, ontologies):
+    print ontologies
+    for p in properties:
+        dID = p['dID']
+
+        # TODO Perform this as a database query with a specific document?
+        relevant_ontologies = [ o for o in ontologies if ((o['source_dID'] == dID) or (o['target_dID'] == dID))]
+        types = p['types']
+        uniques = p['uniques']
+        non_unique_indices = dict([(i, types[i]) for (i, unique) in enumerate(uniques) if not unique])
+        print non_unique_indices
+        print relevant_ontologies
     return
 
 
@@ -343,8 +361,9 @@ class Specification(Resource):
         args = specificationDataGetParser.parse_args()
         pID = args.get('pID').strip().strip('"')
 
-        p = MongoInstance.getProperty(None, pID)
-        o = MongoInstance.getOntology(None, pID)
+        d = MI.getData(None, pID)
+        p = MI.getProperty(None, pID)
+        o = MI.getOntology(None, pID)
 
         viz_types = {
             "treemap": getTreemapSpecs(d, p, o),
@@ -356,8 +375,8 @@ class Specification(Resource):
         }
 
         
-        print 'Properties:', properties
-        print 'Ontologies:', ontologies
+        # print 'Properties:', properties
+        # print 'Ontologies:', ontologies
         return 'test'
 api.add_resource(Specification, '/api/specification')
 
