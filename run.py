@@ -280,7 +280,8 @@ class Property(Resource):
             # Save properties into collection
             dataset_properties = {
                 'types': types,
-                'uniques': is_unique
+                'uniques': is_unique,
+                'headers': header
             }
             tID = MI.upsertProperty(dID, pID, dataset_properties)
 
@@ -326,6 +327,10 @@ class Property(Resource):
         return json.jsonify(all_properties)
 api.add_resource(Property, '/api/property')
 
+def is_numeric(x):
+    if (x == 'int') or (x == 'float'):
+        return True
+    return False
 
 #####################################################################
 # 1. GROUP every entity by a non-unique attribute (for factors, group by factors but score by number of distinct. For continuous, discretize the range) 
@@ -333,20 +338,32 @@ api.add_resource(Property, '/api/property')
 # 2. AGGREGATE by some function (could be count)
 # 3. QUERY by another non-unique attribute
 #####################################################################
+
+# TODO Incorporate ontologies
 def getTreemapSpecs(datasets, properties, ontologies):
-    print ontologies
+    specs = []
+    dataset_titles = dict([(d['dID'], d['filename']) for d in datasets])
+
     for p in properties:
         dID = p['dID']
-
         # TODO Perform this as a database query with a specific document?
         relevant_ontologies = [ o for o in ontologies if ((o['source_dID'] == dID) or (o['target_dID'] == dID))]
+
         types = p['types']
         uniques = p['uniques']
-        non_unique_indices = dict([(i, types[i]) for (i, unique) in enumerate(uniques) if not unique])
-        print non_unique_indices
-        print relevant_ontologies
-    return
+        headers = p['headers']
+        non_uniques = [i for (i, unique) in enumerate(uniques) if not unique]
 
+        for (index_a, index_b) in combinations(non_uniques, 2):
+            type_a = types[index_a]
+            type_b = types[index_b]
+            if not (is_numeric(type_a) or is_numeric(type_b)):
+                specs.append({
+                    'condition': {'index': index_a, 'title': headers[index_a]},
+                    'aggregate': {'dID': dID, 'title': dataset_titles[dID]},
+                    'groupBy': {'index': index_b, 'title': headers[index_b]},
+                })
+    return specs
 
 #####################################################################
 # Endpoint returning all inferred visualization specifications for a specific project
@@ -377,7 +394,7 @@ class Specification(Resource):
         
         # print 'Properties:', properties
         # print 'Ontologies:', ontologies
-        return 'test'
+        return viz_types
 api.add_resource(Specification, '/api/specification')
 
 #####################################################################

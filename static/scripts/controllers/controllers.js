@@ -190,8 +190,9 @@
       $scope.datasets = datasets;
       return console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'));
     });
+    $scope.loading = true;
     return PropertyService.promise(function(properties) {
-      console.log("In PropertyService", properties);
+      $scope.loading = false;
       $scope.properties = properties;
       $scope.overlaps = properties.overlaps;
       return $scope.hierarchies = properties.hierarchies;
@@ -201,6 +202,7 @@
   controllers.controller("AssembleCtrl", function($scope, $http) {});
 
   controllers.controller("CreateVizCtrl", function($scope, $http, DataService, PropertyService, VizDataService, SpecificationService) {
+    var type_name_from_index;
     DataService.promise(function(datasets) {
       console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'));
       return $scope.datasets = datasets;
@@ -210,9 +212,35 @@
       $scope.overlaps = properties.overlaps;
       return $scope.hierarchies = properties.hierarchies;
     });
-    return SpecificationService.promise(function(specifications) {
-      return console.log('Specs:', specifications);
+    $scope.selected_type = 0;
+    $scope.selected_spec = 0;
+    SpecificationService.promise(function(specs) {
+      var k, v;
+      $scope.types = (function() {
+        var _results;
+        _results = [];
+        for (k in specs) {
+          v = specs[k];
+          _results.push({
+            'name': k,
+            'length': v.length
+          });
+        }
+        return _results;
+      })();
+      $scope.allSpecs = specs;
+      return $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type].name];
     });
+    type_name_from_index = function(index) {
+      return $scope.types[index].name;
+    };
+    $scope.select_type = function(index) {
+      $scope.selected_type = index;
+      return $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type].name];
+    };
+    return $scope.select_spec = function(index) {
+      return $scope.selected_spec = index;
+    };
   });
 
 }).call(this);

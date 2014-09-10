@@ -188,8 +188,10 @@ controllers.controller "OntologyEditorCtrl", ($scope, $http, DataService, Proper
     console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'))
   )
 
+  $scope.loading = true
+
   PropertyService.promise((properties) -> 
-    console.log("In PropertyService", properties)
+    $scope.loading = false
     $scope.properties = properties
     $scope.overlaps = properties.overlaps
     $scope.hierarchies = properties.hierarchies
@@ -213,81 +215,23 @@ controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertySer
     $scope.hierarchies = properties.hierarchies
   )
 
-  SpecificationService.promise((specifications) -> 
-    console.log('Specs:', specifications)
+  $scope.selected_type = 0
+  $scope.selected_spec = 0
+  SpecificationService.promise((specs) -> 
+    $scope.types = ({'name': k, 'length': v.length} for k, v of specs)
+    $scope.allSpecs = specs
+    $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type].name]
   )
 
-  # # TODO Watch changes and propagate changes
-  # nodes = []
-  # edges = []
+  type_name_from_index = (index) ->
+    $scope.types[index].name
   
-  # # Populate nodes
-  # i = 0
+  $scope.select_type = (index) ->
+    $scope.selected_type = index
+    $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type].name]
 
-  # while i < datasets.length
-  #   dataset = datasets[i]
-  #   node =
-  #     model: dataset.dataset_id
-  #     attrs: dataset.column_attrs
-  #     unique_cols: dataset.unique_cols
-
-  #   nodes.push node
-  #   i++
-  # for datasetPair of relnData.hierarchies
-  #   hierarchy = relnData.hierarchies[datasetPair]
-  #   datasetPairList = datasetPair.split("\t")
-  #   for columnPair of hierarchy
-  #     type = hierarchy[columnPair]
-  #     columnPairList = columnPair.split("\t")
-  #     d = relnData.overlaps[datasetPair][columnPair]
-  #     if d > 0.5
-        
-  #       # Only add edge if overlap
-  #       edge =
-  #         source: [
-  #           parseInt(datasetPairList[0])
-  #           parseInt(columnPairList[1])
-  #         ]
-  #         target: [
-  #           parseInt(datasetPairList[1])
-  #           parseInt(columnPairList[1])
-  #         ]
-  #         type: type
-
-  #       edges.push edge
-  # initNetwork =
-  #   nodes: nodes
-  #   edges: edges
-
-  
-  # # TODO Pare down this UI stuff
-  # $scope.initNetwork = initNetwork
-  
-  # # TODO Don't be redundant
-  # $scope.vizType = "treemap"
-  # $scope.selected_vizType_index = 1
-  # $scope.select_vizType = (index) ->
-  #   $scope.vizType = $scope.vizTypes[index].name
-  #   $scope.selected_vizType_index = index
-    
-  #   # TODO: There must be a better way to do pretty much an ng-if on an object
-  #   $scope.vizSpecs = $scope.allVizSpecs[$scope.selected_vizType]
-  #   return
-
-  # $scope.selected_vizSpec_index = 0
-  # $scope.select_vizSpec = (index) ->
-  #   $scope.selected_vizSpec_index = index
-  #   return
-  
-  # # TODO Abstract these to a global client-side ID reference
-  # $scope.getDatasetTitle = (dataset_id) ->
-  #   datasets[dataset_id].title
-
-  # $scope.getColumnName = (dataset_id, column_id) ->
-  #   datasets[dataset_id].column_attrs[column_id].name
-
-  # # Correct way to handle argument passing to async service
-  # $scope.vizFromOntology = ->
+  $scope.select_spec = (index) ->
+    $scope.selected_spec = index
     
   #   # TODO Move parsing logic to server side...or just have it in the correct format anyways
   #   VizFromOntologyService.promise $scope.initNetwork, (data) ->

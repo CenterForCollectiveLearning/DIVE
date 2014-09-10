@@ -28,6 +28,13 @@
     };
   });
 
+  engineApp.directive("loader", function() {
+    return {
+      restrict: 'E',
+      templateUrl: '/static/views/loader.html'
+    };
+  });
+
   engineApp.directive("paneToggle", function() {
     return {
       restrict: 'E',

@@ -20,7 +20,7 @@ class mongoInstance(object):
 
     # Dataset Insertion
     def insertDataset(self, pID, fileStorage):
-        return str(MongoInstance.client[pID].datasets.insert({'filename': fileStorage.filename}))
+        return str(MongoInstance.client[pID].datasets.insert({'filename': fileStorage.filename, 'title': fileStorage.filename}))
 
     # Dataset Retrieval
     def getData(self, find_doc, pID):

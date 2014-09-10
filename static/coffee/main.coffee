@@ -25,6 +25,13 @@ engineApp.directive("engineTopBar", ->
 	}
 )
 
+engineApp.directive("loader", ->
+	return {
+		restrict: 'E',
+		templateUrl: '/static/views/loader.html'
+	}
+)
+
 engineApp.directive("paneToggle", ->
 	return {
 		restrict: 'E',
