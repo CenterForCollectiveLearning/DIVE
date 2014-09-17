@@ -211,7 +211,7 @@ controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertySer
   DataService.promise((datasets) ->
     console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'))
     $scope.datasets = datasets
-  )#
+  )
 
   PropertyService.promise((properties) ->
     $scope.properties = properties

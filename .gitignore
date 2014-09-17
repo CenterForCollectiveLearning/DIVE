@@ -27,7 +27,6 @@ virt_env/
 
 # Directories
 test_data
-uploads
 design
 node_modules
 
