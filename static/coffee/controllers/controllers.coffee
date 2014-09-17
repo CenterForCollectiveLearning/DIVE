@@ -116,7 +116,7 @@ controllers.controller "DatasetListCtrl", ($scope, $rootScope, projectID, $http,
     while i < $files.length
       file = $files[i]
       $scope.upload = $upload.upload(
-        url: "/api/upload"
+        url: "http://localhost:8888/api/upload"
         data:
           pID: $rootScope.pID
         file: file
@@ -133,7 +133,7 @@ controllers.controller "DatasetListCtrl", ($scope, $rootScope, projectID, $http,
   ###############
   $scope.removeDataset = (dID) ->
     console.log('Removing dataset, dID:', dID)
-    $http.delete('/api/data',
+    $http.delete('http://localhost:8888/api/data',
       params:
         pID: $rootScope.pID
         dID: dID

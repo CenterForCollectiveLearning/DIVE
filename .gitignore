@@ -31,5 +31,5 @@ design
 node_modules
 
 # Compiled Files
-static/scripts/js
+static/scripts
 static/styles/css
