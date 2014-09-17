@@ -1,8 +1,5 @@
 # Utility Functions
-window.user = 
-
-window.SC = (selector) ->
-  angular.element(selector).scope()
+window.SC = (selector) -> angular.element(selector).scope()
 
 window.objectToQueryString = (obj) ->
 	str = []

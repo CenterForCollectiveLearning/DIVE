@@ -1,5 +1,6 @@
 import os
 import re
+import json
 from random import sample
 from os import listdir
 from os.path import isfile, join
@@ -29,17 +30,46 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 ALLOWED_EXTENSIONS = set(['txt', 'csv', 'tsv'])
 
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+@app.before_request
+def option_autoreply():
+    """ Always reply 200 on OPTIONS request """
 
-# Only one server-side route due to AngularJS SPA Routing
-@app.route('/')
-def main():
-    return render_template('/main.html')
+    if request.method == 'OPTIONS':
+        resp = app.make_default_options_response()
 
+        headers = None
+        if 'ACCESS_CONTROL_REQUEST_HEADERS' in request.headers:
+            headers = request.headers['ACCESS_CONTROL_REQUEST_HEADERS']
+
+        h = resp.headers
+
+        # Allow the origin which made the XHR
+        h['Access-Control-Allow-Origin'] = request.headers['Origin']
+        # Allow the actual method
+        h['Access-Control-Allow-Methods'] = request.headers['Access-Control-Request-Method']
+        # Allow for 10 seconds
+        h['Access-Control-Max-Age'] = "10"
+
+        # We also keep current headers
+        if headers is not None:
+            h['Access-Control-Allow-Headers'] = headers
+
+        return resp
+
+@app.after_request
+def set_allow_origin(resp):
+    """ Set origin for GET, POST, PUT, DELETE requests """
+
+    h = resp.headers
+
+    # Allow crossdomain for other HTTP Verbs
+    if request.method != 'OPTIONS' and 'Origin' in request.headers:
+        h['Access-Control-Allow-Origin'] = request.headers['Origin']
+    return resp
 
 # TODO Look into Flask WTForms
 # File upload handler
@@ -397,14 +427,36 @@ class Specification(Resource):
         return viz_types
 api.add_resource(Specification, '/api/specification')
 
+vizToRequiredParams = {
+    'treemap': ['aggregate', 'condition', 'groupBy']
+}
+
+# Utility function to make sure all fields needed to create visualization type are passed
+def requiredParams(type, spec):
+    return set(spec.keys()) == set(vizToRequiredParams[type])
+
+def getTreemapData(spec, pID):
+    return
+
 #####################################################################
 # Endpoint returning aggregated visualization data given a specification ID
 # INPUT: sID, pID, uID
 # OUTPUT: {nested visualization data}
 #####################################################################
-visualizationDataParser = reqparse.RequestParser()
+visualizationDataGetParser = reqparse.RequestParser()
+visualizationDataGetParser.add_argument('pID', type=str, required=True)
+visualizationDataGetParser.add_argument('type', type=str, required=True)
+visualizationDataGetParser.add_argument('spec', type=str, required=True)
 class Visualization_Data(Resource):
     def get(self):
+        args = visualizationDataGetParser.parse_args()
+        pID = args.get('pID').strip().strip('"')
+        type = args.get('type')
+        spec = json.loads(args.get('spec'))
+        print spec
+        print requiredParams(type, spec)
+        if requiredParams(type, spec):
+            return getTreemapData(spec, pID)
         return
 api.add_resource(Visualization_Data, '/api/visualization_data')
 

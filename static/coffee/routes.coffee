@@ -13,6 +13,8 @@ diveApp.config(($stateProvider, $urlRouterProvider) ->
       templateUrl: 'static/views/project.html'
       controller: ($scope, $state, $stateParams) ->
         $scope.projectTitle = $stateParams.formattedProjectTitle
+
+        # TODO Only redirect if exact URL match
         # $state.go('engine.overview')
       resolve:
         formattedUserName: ($stateParams) -> $stateParams.formattedUserName
@@ -22,13 +24,14 @@ diveApp.config(($stateProvider, $urlRouterProvider) ->
     .state('engine.overview'
       url: '/overview'
       templateUrl: 'static/views/project_overview.html'
+      controller: 'OverviewCtrl'
       controller: 'DatasetListCtrl'
     )
     .state('engine.data'
       url: '/data'
       templateUrl: 'static/views/data_view.html'
       controller: 'DatasetListCtrl'
-      resolve: 
+      resolve:
         initialData: (DataService) -> DataService.promise
     )
     .state('engine.ontology'

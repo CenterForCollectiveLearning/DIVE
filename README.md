@@ -1,18 +1,14 @@
 Data Integration and Visualization Engine (DIVE)
-=================
+=================================================
 
-Codebase for Engine of Engines Project
+# Build Process
+1) Run 'npm install'
+2) Run 'gulp' (if gulp install globally) else ./node_modules/.bin/gulp
 
-Coffee Compilation
-`coffee --compile --watch --output static/js static/coffee`
-
-Sass Compilation
-`sass --watch static/styles/scss/:static/styles/css/`
-
-Using Virtual Env
+# Using Virtual Env
 + Installation
 See [this tutorial](http://simononsoftware.com/virtualenv-tutorial/)
-+ Freezing virtual env packages¢
++ Freezing virtual env packages
 `pip freeze > requirements.txt`
 + Starting virtual env
 `source virt_env/venv1/bin/activate`

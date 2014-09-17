@@ -1,7 +1,7 @@
 controllers = angular.module("engineControllers", ['ngAnimate'])
 
 controllers.controller "CreateProjectFormController", ($scope, $http, $location) ->
-  $scope.create_project = ->  
+  $scope.create_project = ->
     params = {
       title: $scope.newProjectData.title
       description: $scope.newProjectData.description
@@ -29,7 +29,7 @@ controllers.controller "ProjectListCtrl", ($scope, $http, $location, $rootScope,
     displayName: 'Demo User'
   }
 
-  AllProjectsService.promise($scope.user.userName, (projects) -> 
+  AllProjectsService.promise($scope.user.userName, (projects) ->
     $scope.projects = projects)
 
   $scope.select_project = (pID) ->
@@ -37,6 +37,10 @@ controllers.controller "ProjectListCtrl", ($scope, $http, $location, $rootScope,
 
   $scope.new_project_toggle = ->
     $scope.newProject = !$scope.newProject
+
+controllers.controller "OverviewCtrl", ($scope, $rootScope) ->
+  # TODO: How to deal with same method?
+  DeleteProjectService
 
 controllers.controller "PaneToggleCtrl", ($scope) ->
   $scope.leftClosed = false
@@ -100,7 +104,7 @@ controllers.controller "DatasetListCtrl", ($scope, $rootScope, projectID, $http,
   $scope.types = [ "int", "float", "str" ]
 
   # Initialize datasets
-  DataService.promise((datasets) -> 
+  DataService.promise((datasets) ->
     $scope.datasets = datasets
   )
 
@@ -181,16 +185,16 @@ controllers.controller "OntologyEditorCtrl", ($scope, $http, DataService, Proper
   $scope.select_right_option = (index) ->
     $scope.selectedRightIndex = index
 
-  
+
   # Initialize datasets
-  DataService.promise((datasets) -> 
+  DataService.promise((datasets) ->
     $scope.datasets = datasets
     console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'))
   )
 
   $scope.loading = true
 
-  PropertyService.promise((properties) -> 
+  PropertyService.promise((properties) ->
     $scope.loading = false
     $scope.properties = properties
     $scope.overlaps = properties.overlaps
@@ -202,14 +206,14 @@ controllers.controller "AssembleCtrl", ($scope, $http) ->
 
 # TODO Make this controller thinner!
 controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertyService, VizDataService, SpecificationService) ->
-  
+
   # Initialize datasets
-  DataService.promise((datasets) -> 
+  DataService.promise((datasets) ->
     console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'))
     $scope.datasets = datasets
-  )
+  )#
 
-  PropertyService.promise((properties) -> 
+  PropertyService.promise((properties) ->
     $scope.properties = properties
     $scope.overlaps = properties.overlaps
     $scope.hierarchies = properties.hierarchies
@@ -217,7 +221,7 @@ controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertySer
 
   $scope.selected_type = 0
   $scope.selected_spec = 0
-  SpecificationService.promise((specs) -> 
+  SpecificationService.promise((specs) ->
     $scope.types = ({'name': k, 'length': v.length} for k, v of specs)
     $scope.allSpecs = specs
     $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type].name]
@@ -225,14 +229,20 @@ controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertySer
 
   type_name_from_index = (index) ->
     $scope.types[index].name
-  
+
   $scope.select_type = (index) ->
     $scope.selected_type = index
     $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type].name]
 
   $scope.select_spec = (index) ->
     $scope.selected_spec = index
-    
+    spec = $scope.specs[index]
+    type = $scope.types[$scope.selected_type].name
+    console.log("Selected vizspec", spec)
+    VizDataService.promise(type, spec, (result) ->
+      $scope.vizData = result
+    )
+
   #   # TODO Move parsing logic to server side...or just have it in the correct format anyways
   #   VizFromOntologyService.promise $scope.initNetwork, (data) ->
   #     visualizations = data.visualizations

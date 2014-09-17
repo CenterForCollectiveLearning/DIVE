@@ -1,7 +1,7 @@
 # Container for data services
-diveApp.service "AllProjectsService", ($http) ->
+diveApp.service "AllProjectsService", ($http, $rootScope) ->
   promise: (userName, callback) ->
-   $http.get('/api/project',
+   $http.get('http://localhost:8888/api/project',
       params:
         user_name: userName
     ).success((result) -> 
@@ -12,7 +12,7 @@ diveApp.service "AllProjectsService", ($http) ->
 engineApp.service "ProjectIDService", ($http, $stateParams, $rootScope) ->
   promise: (formattedProjectTitle) ->
     console.log("Requesting projectID for project title:", formattedProjectTitle)
-    $http.get("/api/getProjectID",
+    $http.get("http://localhost:8888/api/getProjectID",
       params:
         formattedProjectTitle: formattedProjectTitle
     ).success((pID) ->
@@ -23,7 +23,7 @@ engineApp.service "ProjectIDService", ($http, $stateParams, $rootScope) ->
 # Dataset Samples
 engineApp.service "DataService", ($http, $rootScope) ->
   promise: (callback) ->
-    $http.get("/api/data",
+    $http.get("http://localhost:8888/api/data",
       params:
         pID: $rootScope.pID
         sample: true
@@ -33,7 +33,7 @@ engineApp.service "DataService", ($http, $rootScope) ->
 
 engineApp.service "PropertyService", ($http, $rootScope) ->
   promise: (callback) ->
-    $http.get("/api/property",
+    $http.get("http://localhost:8888/api/property",
       params:
         pID: $rootScope.pID
     ).success((data) -> 
@@ -42,35 +42,22 @@ engineApp.service "PropertyService", ($http, $rootScope) ->
 
 engineApp.service "SpecificationService", ($http, $rootScope) ->
   promise: (callback) ->
-    $http.get("/api/specification",
+    $http.get("http://localhost:8888/api/specification",
       params:
         pID: $rootScope.pID
     ).success((data) -> 
       callback(data)
     )
 
-
-engineApp.service "VizFromOntologyService", ($http) ->
-  # TODO Pass in vizType parameter
-  promise: (initNetwork, callback) ->
-    $.ajax(
-      url: "get_visualizations_from_ontology"
-      type: "POST"
-      data: JSON.stringify(initNetwork)
-      cache: false
-      processData: false
-      contentType: false
-    ).success (result) ->
-      callback result
-
-engineApp.service "VizDataService", ($http) ->
+engineApp.service "VizDataService", ($http, $rootScope) ->
   # TODO Generalize service for other vizTypes
-  promise: (vizSpec, callback) ->
-    $http.get("get_treemap_data",
+  promise: (type, spec, callback) ->
+    console.log('In VizDataService', type, spec)
+    $http.get("http://localhost:8888/api/visualization_data",
       params:
-        condition: vizSpec.condition
-        aggregate: vizSpec.aggregate
-        query: "*"
-        groupBy: vizSpec.groupBy
-    ).success (result) ->
-      callback result
+        pID: $rootScope.pID
+        type: type
+        spec: spec
+    ).success((result) ->
+      callback(result)
+    )

@@ -24,3 +24,13 @@ var/
 *.sass-cache
 uploads/
 virt_env/
+
+# Directories
+test_data
+uploads
+design
+node_modules
+
+# Compiled Files
+static/scripts/js
+static/styles/css

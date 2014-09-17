@@ -23,7 +23,7 @@ engineApp.directive "ontologyEditor", [
             return
 
           scope.$watch (->
-            angular.element($window)[0].innerWidth
+            angular.element($window)
           ), ->
             scope.render scope.data, scope.overlaps, scope.hierarchies
 

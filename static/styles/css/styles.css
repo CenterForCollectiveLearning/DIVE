@@ -11,30 +11,29 @@ ul {
 /* Fonts */
 @font-face {
   font-family: 'DIN';
-  src: url("DINLight.ttf") format("ttf"), url("DINLight.woff") format("woff"); }
+  src: url('DINLight.ttf') format('ttf'), url('DINLight.woff') format('woff'); }
 
 @font-face {
   font-family: 'Karbon';
-  src: url("karbon-medium-webfont.woff") format("woff"); }
+  src: url('karbon-medium-webfont.woff') format('woff'); }
 
 @font-face {
   font-family: 'Karbon';
-  src: url("karbon-light-webfont.woff") format("woff");
+  src: url('karbon-light-webfont.woff') format('woff');
   font-weight: 300; }
 
 @font-face {
   font-family: 'Karbon';
-  src: url("karbon-regular-webfont.woff") format("woff");
+  src: url('karbon-regular-webfont.woff') format('woff');
   font-weight: normal; }
 
 @font-face {
   font-family: 'Karbon';
-  src: url("karbon-semibold-webfont.woff") format("woff");
+  src: url('karbon-semibold-webfont.woff') format('woff');
   font-weight: bold; }
 
 *, *:before, *:after {
   -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box; }
 
 html, body {
@@ -57,13 +56,13 @@ section.landing-top {
     padding: 100px 0; }
     section.landing-top div.dive div {
       text-align: center;
-      color: #eeeeee; }
+      color: #EEEEEE; }
     section.landing-top div.dive div.title {
       font-size: 60px; }
     section.landing-top div.dive div.subtitle {
       font-size: 24px; }
   section.landing-top div.user-status {
-    font-family: "Lato",helvetica,sans-serif;
+    font-family: "Lato", helvetica, sans-serif;
     font-size: 9px;
     letter-spacing: 1px;
     line-height: 35px;
@@ -73,18 +72,18 @@ section.landing-top {
     right: 15px;
     color: white; }
     section.landing-top div.user-status span.username {
-      border-bottom: 1px dotted #eeeeee; }
+      border-bottom: 1px dotted #EEEEEE; }
 
 section.landing-projects div.new-project-button {
   cursor: pointer;
-  background-color: #666666;
+  background-color: #666;
   width: 675px;
   margin: 10px auto 0 auto;
   text-align: center;
   border-radius: 2px;
   padding: 8px 5px;
-  color: #eeeeee;
-  font-family: "Lato",helvetica,sans-serif;
+  color: #EEEEEE;
+  font-family: "Lato", helvetica, sans-serif;
   font-size: 9px;
   letter-spacing: 1px;
   line-height: 35px;
@@ -95,17 +94,15 @@ section.landing-projects div.new-project-button {
     cursor: pointer; }
   section.landing-projects div.new-project-button:hover {
     -webkit-transition: background 0.1s ease-in;
-    -moz-transition: background 0.1s ease-in;
-    -o-transition: background 0.1s ease-in;
     transition: background 0.1s ease-in;
-    background-color: #4a90e2; }
+    background-color: #4A90E2; }
 section.landing-projects div.new-project-form {
   position: relative;
   width: 600px;
   padding: 10px;
   margin: 20px auto 0 auto;
-  background-color: #f1efef;
-  border: 1px solid #f1efef;
+  background-color: #F1EFEF;
+  border: 1px solid #F1EFEF;
   border-radius: 2px; }
   section.landing-projects div.new-project-form div.close {
     position: absolute;
@@ -115,25 +112,25 @@ section.landing-projects div.new-project-form {
     width: 100%;
     text-align: center;
     color: black;
-    font-family: "Lato",helvetica,sans-serif;
+    font-family: "Lato", helvetica, sans-serif;
     font-size: 9px;
     letter-spacing: 1px;
     line-height: 35px;
     text-transform: uppercase; }
   section.landing-projects div.new-project-form input {
     width: 100%;
-    border: 1px solid #666666;
+    border: 1px solid #666;
     margin-bottom: 10px; }
   section.landing-projects div.new-project-form div.create-project {
     cursor: pointer;
-    background-color: #666666;
+    background-color: #666;
     width: 80px;
     margin: 10px auto 0 auto;
     text-align: center;
     border-radius: 2px;
     padding: 8px 5px;
-    color: #eeeeee;
-    font-family: "Lato",helvetica,sans-serif;
+    color: #EEEEEE;
+    font-family: "Lato", helvetica, sans-serif;
     font-size: 9px;
     letter-spacing: 1px;
     line-height: 35px;
@@ -143,10 +140,8 @@ section.landing-projects div.new-project-form {
       cursor: pointer; }
     section.landing-projects div.new-project-form div.create-project:hover {
       -webkit-transition: background 0.1s ease-in;
-      -moz-transition: background 0.1s ease-in;
-      -o-transition: background 0.1s ease-in;
       transition: background 0.1s ease-in;
-      background-color: #4a90e2; }
+      background-color: #4A90E2; }
 section.landing-projects ul.projects {
   width: 675px;
   padding: 0;
@@ -155,29 +150,25 @@ section.landing-projects ul.projects {
     color: black; }
   section.landing-projects ul.projects li.project {
     -webkit-transition: border 0.1s ease-in;
-    -moz-transition: border 0.1s ease-in;
-    -o-transition: border 0.1s ease-in;
     transition: border 0.1s ease-in;
     -webkit-transition: background 0.1s ease-in;
-    -moz-transition: background 0.1s ease-in;
-    -o-transition: background 0.1s ease-in;
     transition: background 0.1s ease-in;
     cursor: pointer;
     margin-top: 10px;
     height: 140px;
     width: 200px;
-    background-color: #f1efef;
+    background-color: #F1EFEF;
     border-radius: 2px;
     display: inline-block;
     margin-right: 10px; }
     section.landing-projects ul.projects li.project:hover {
-      background-color: #4a90e2; }
+      background-color: #4A90E2; }
     section.landing-projects ul.projects li.project div.title {
       font-size: 24px;
       line-height: 75px;
       text-align: center; }
     section.landing-projects ul.projects li.project div.description {
-      font-family: "Lato",helvetica,sans-serif;
+      font-family: "Lato", helvetica, sans-serif;
       font-size: 9px;
       letter-spacing: 1px;
       line-height: 35px;
@@ -209,12 +200,12 @@ nav.navbar {
       float: left;
       padding: 0 20px; }
       nav.navbar ul li.active {
-        background-color: #4a90e2; }
+        background-color: #4A90E2; }
       nav.navbar ul li a {
         line-height: 49px;
         color: black;
         font-size: 16px;
-        font-family: "Lato",helvetica,sans-serif;
+        font-family: "Lato", helvetica, sans-serif;
         font-size: 9px;
         letter-spacing: 1px;
         line-height: 35px;
@@ -224,7 +215,7 @@ nav.navbar {
           bottom: 1px; }
   nav.navbar.top {
     background-image: none;
-    background-color: #1e1e20;
+    background-color: #1E1E20;
     border-radius: 0; }
     nav.navbar.top a.navbar-brand {
       height: 40px;
@@ -254,12 +245,12 @@ nav.navbar {
   nav.navbar.sections {
     background-image: none;
     background-color: white;
-    border-bottom: 1px solid #1e1e20;
+    border-bottom: 1px solid #1E1E20;
     border-radius: 0; }
     nav.navbar.sections p.navbar-text {
       font-family: 'Karbon';
       font-weight: normal;
-      color: #1e1e20;
+      color: #1E1E20;
       float: left;
       margin-left: 15px;
       margin-right: 15px;
@@ -283,10 +274,10 @@ section.left-pane, section.right-pane {
   section.left-pane div.pane-title, section.right-pane div.pane-title {
     text-align: center;
     line-height: 35px;
-    border-bottom: 1px solid #1e1e20;
-    background-color: #1e1e20;
-    color: #eeeeee;
-    font-family: "Lato",helvetica,sans-serif;
+    border-bottom: 1px solid #1E1E20;
+    background-color: #1E1E20;
+    color: #EEEEEE;
+    font-family: "Lato", helvetica, sans-serif;
     font-size: 9px;
     letter-spacing: 1px;
     line-height: 35px;
@@ -299,13 +290,13 @@ section.left-pane, section.right-pane {
       list-style-type: none;
       height: 80px;
       font-size: 14px;
-      border-bottom: 1px solid #f1efef;
+      border-bottom: 1px solid #F1EFEF;
       cursor: pointer;
       padding: 12px; }
       section.left-pane ul.pane-items li div.vertical-center, section.right-pane ul.pane-items li div.vertical-center {
         line-height: 56px; }
       section.left-pane ul.pane-items li div.inactive, section.right-pane ul.pane-items li div.inactive {
-        color: #666666;
+        color: #666;
         cursor: default; }
       section.left-pane ul.pane-items li div.choose, section.right-pane ul.pane-items li div.choose {
         position: absolute;
@@ -320,9 +311,9 @@ section.left-pane, section.right-pane {
             line-height: 40px;
             text-align: center; }
         section.left-pane ul.pane-items li div.choose div.select, section.right-pane ul.pane-items li div.choose div.select {
-          background-color: #7ed321; }
+          background-color: #7ED321; }
         section.left-pane ul.pane-items li div.choose div.reject, section.right-pane ul.pane-items li div.choose div.reject {
-          background-color: #d0021b; }
+          background-color: #D0021B; }
       section.left-pane ul.pane-items li.add-dataset, section.right-pane ul.pane-items li.add-dataset {
         cursor: pointer;
         width: 100%;
@@ -330,11 +321,11 @@ section.left-pane, section.right-pane {
         font-size: 30px;
         line-height: 50px;
         text-align: center;
-        color: #f1efef; }
+        color: #F1EFEF; }
         section.left-pane ul.pane-items li.add-dataset:hover, section.right-pane ul.pane-items li.add-dataset:hover {
-          color: #666666; }
+          color: #666; }
       section.left-pane ul.pane-items li.selected, section.right-pane ul.pane-items li.selected {
-        background-color: #f1efef; }
+        background-color: #F1EFEF; }
       section.left-pane ul.pane-items li div.dimensions, section.right-pane ul.pane-items li div.dimensions {
         float: left;
         width: 200px;
@@ -349,17 +340,17 @@ section.left-pane, section.right-pane {
     text-align: center; }
 
 section.left-pane {
-  border-right: 1px solid #1e1e20; }
+  border-right: 1px solid #1E1E20; }
   section.left-pane li.selected {
-    border-right: 5px solid #1e1e20; }
+    border-right: 5px solid #1E1E20; }
 
 section.right-pane {
   position: relative;
   float: right;
-  border-left: 1px solid #1e1e20;
+  border-left: 1px solid #1E1E20;
   font-size: 16px; }
   section.right-pane li.selected {
-    border-left: 5px solid #1e1e20; }
+    border-left: 5px solid #1E1E20; }
 
 /* Upload */
 section.upload-dataset {
@@ -374,7 +365,7 @@ section.upload-dataset {
 div.toggle-pane {
   width: 20px;
   height: 20px;
-  border: 1px solid #aeaeae;
+  border: 1px solid #AEAEAE;
   position: absolute;
   top: 5px;
   cursor: pointer; }
@@ -383,7 +374,7 @@ div.toggle-pane {
     div.toggle-pane.left::before {
       margin-top: -5px;
       margin-left: -7px;
-      border: 5px solid #aeaeae;
+      border: 5px solid #AEAEAE;
       border-left-color: transparent;
       border-top-color: transparent;
       border-bottom-color: transparent; }
@@ -392,21 +383,21 @@ div.toggle-pane {
     div.toggle-pane.right::before {
       margin-top: -5px;
       margin-left: -1px;
-      border: 5px solid #aeaeae;
+      border: 5px solid #AEAEAE;
       border-right-color: transparent;
       border-top-color: transparent;
       border-bottom-color: transparent; }
   div.toggle-pane.left-closed::before {
     margin-top: -5px;
     margin-left: -1px;
-    border: 5px solid #aeaeae;
+    border: 5px solid #AEAEAE;
     border-right-color: transparent;
     border-top-color: transparent;
     border-bottom-color: transparent; }
   div.toggle-pane.right-closed::before {
     margin-top: -5px;
     margin-left: -7px;
-    border: 5px solid #aeaeae;
+    border: 5px solid #AEAEAE;
     border-left-color: transparent;
     border-top-color: transparent;
     border-bottom-color: transparent; }
@@ -438,7 +429,7 @@ section.viewport {
       padding: 4px;
       -webkit-appearance: none;
       border: none;
-      background-color: #f1efef;
+      background-color: #F1EFEF;
       width: 100%;
       min-width: 150px; }
       section.viewport div.dataset-preview input:focus {
@@ -447,14 +438,14 @@ section.viewport {
 
 div.button.upload {
   cursor: pointer;
-  background-color: #666666;
+  background-color: #666;
   width: 200px;
   margin: 10px auto 0 auto;
   text-align: center;
   border-radius: 2px;
   padding: 8px 5px;
-  color: #eeeeee;
-  font-family: "Lato",helvetica,sans-serif;
+  color: #EEEEEE;
+  font-family: "Lato", helvetica, sans-serif;
   font-size: 9px;
   letter-spacing: 1px;
   line-height: 35px;
@@ -464,20 +455,18 @@ div.button.upload {
     cursor: pointer; }
   div.button.upload:hover {
     -webkit-transition: background 0.1s ease-in;
-    -moz-transition: background 0.1s ease-in;
-    -o-transition: background 0.1s ease-in;
     transition: background 0.1s ease-in;
-    background-color: #4a90e2; }
+    background-color: #4A90E2; }
 div.button.cancel, div.button.delete {
   cursor: pointer;
-  background-color: #666666;
+  background-color: #666;
   width: 200px;
   margin: 10px auto 0 auto;
   text-align: center;
   border-radius: 2px;
   padding: 8px 5px;
-  color: #eeeeee;
-  font-family: "Lato",helvetica,sans-serif;
+  color: #EEEEEE;
+  font-family: "Lato", helvetica, sans-serif;
   font-size: 9px;
   letter-spacing: 1px;
   line-height: 35px;
@@ -487,17 +476,15 @@ div.button.cancel, div.button.delete {
     cursor: pointer; }
   div.button.cancel:hover, div.button.delete:hover {
     -webkit-transition: background 0.1s ease-in;
-    -moz-transition: background 0.1s ease-in;
-    -o-transition: background 0.1s ease-in;
     transition: background 0.1s ease-in;
-    background-color: #d0021b; }
+    background-color: #D0021B; }
 
 /* Data Upload */
 div.choose-data-set div.file-upload div.drop {
   margin: 20px 0;
-  background-color: #f1efef;
+  background-color: #F1EFEF;
   text-align: center;
-  font-family: "Lato",helvetica,sans-serif;
+  font-family: "Lato", helvetica, sans-serif;
   font-size: 9px;
   letter-spacing: 1px;
   line-height: 35px;
@@ -506,7 +493,7 @@ div.choose-data-set div.file-upload div.drop {
   width: 100%;
   height: 300px; }
   div.choose-data-set div.file-upload div.drop.dropped-file {
-    background-color: #4a90e2; }
+    background-color: #4A90E2; }
 div.choose-data-set div.file-upload input {
   -webkit-appearance: default; }
 
@@ -517,7 +504,7 @@ select.type-select {
 tr.ng-scope td {
   font-size: 14px;
   padding: 4px;
-  border: 1px solid #f1efef; }
+  border: 1px solid #F1EFEF; }
 
 #loader {
   height: 20px;
@@ -527,33 +514,29 @@ tr.ng-scope td {
   margin-left: -30px; }
 
 @-webkit-keyframes load1 {
-  0%,
-  80%,
-  100% {
-    box-shadow: 0 0 #666666;
+  0%, 80%, 100% {
+    box-shadow: 0 0 #666;
     height: 4em; }
 
   40% {
-    box-shadow: 0 -2em #666666;
+    box-shadow: 0 -2em #666;
     height: 5em; } }
 
 @keyframes load1 {
-  0%,
-  80%,
-  100% {
-    box-shadow: 0 0 #666666;
+  0%, 80%, 100% {
+    box-shadow: 0 0 #666;
     height: 4em; }
 
   40% {
-    box-shadow: 0 -2em #666666;
+    box-shadow: 0 -2em #666;
     height: 5em; } }
 
 select {
   font-size: 14px;
   padding: 4px;
-  background-color: #f1efef;
+  background-color: #F1EFEF;
   border-radius: 0px;
-  border: 1px solid #f1efef;
+  border: 1px solid #F1EFEF;
   -webkit-appearance: none;
   height: 23px; }
 
