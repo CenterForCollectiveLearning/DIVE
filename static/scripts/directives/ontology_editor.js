@@ -20,7 +20,7 @@ engineApp.directive("ontologyEditor", [
             scope.$apply();
           };
           scope.$watch((function() {
-            return angular.element($window);
+            return angular.element($window)[0].innerWidth;
           }), function() {
             return scope.render(scope.data, scope.overlaps, scope.hierarchies);
           });

@@ -1,7 +1,8 @@
 # Container for data services
 diveApp.service "AllProjectsService", ($http, $rootScope) ->
   promise: (userName, callback) ->
-   $http.get('http://localhost:8888/api/project',
+    console.log("[REQUEST] all projects for user:", userName)
+    $http.get('http://localhost:8888/api/project',
       params:
         user_name: userName
     ).success((result) -> 
@@ -16,7 +17,7 @@ engineApp.service "ProjectIDService", ($http, $stateParams, $rootScope) ->
       params:
         formattedProjectTitle: formattedProjectTitle
     ).success((pID) ->
-      console.log("Resolved projectID:", pID)
+      console.log("[DATA] projectID:", pID)
       $rootScope.pID = pID
     )
 
@@ -29,6 +30,7 @@ engineApp.service "DataService", ($http, $rootScope) ->
         pID: $rootScope.pID
         sample: true
     ).success((data) ->
+      console.log("[DATA] datasets:", data) 
       callback(data.datasets)
     )
 
@@ -38,7 +40,8 @@ engineApp.service "PropertyService", ($http, $rootScope) ->
     $http.get("http://localhost:8888/api/property",
       params:
         pID: $rootScope.pID
-    ).success((data) -> 
+    ).success((data) ->
+      console.log("[DATA] properties:", data) 
       callback(data)
     )
 
@@ -49,6 +52,7 @@ engineApp.service "SpecificationService", ($http, $rootScope) ->
       params:
         pID: $rootScope.pID
     ).success((data) -> 
+      console.log("[DATA] specifications:", data) 
       callback(data)
     )
 

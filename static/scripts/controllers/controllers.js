@@ -46,8 +46,18 @@ controllers.controller("ProjectListCtrl", function($scope, $http, $location, $ro
   };
 });
 
-controllers.controller("OverviewCtrl", function($scope, $rootScope) {
-  return console.log("[CONTROLLER] Overview");
+controllers.controller("OverviewCtrl", function($scope, $http, $state) {
+  console.log("[CONTROLLER] Overview");
+  return $scope.removeProject = function(pID) {
+    console.log('Removing project, pID:', pID);
+    return $http["delete"]('http://localhost:8888/api/project', {
+      params: {
+        pID: pID
+      }
+    }).success(function(result) {
+      return $state.go('landing');
+    });
+  };
 });
 
 controllers.controller("PaneToggleCtrl", function($scope) {

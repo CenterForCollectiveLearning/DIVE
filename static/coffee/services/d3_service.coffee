@@ -1,10 +1,6 @@
 # Dependency injection
 # http://www.ng-newsletter.com/posts/d3-on-angular.html
-angular.module("d3", []).factory "d3Service", [
-  "$document"
-  "$window"
-  "$q"
-  "$rootScope"
+angular.module("d3", []).factory("d3Service", ["$document", "$window", "$q", "$rootScope",
   ($document, $window, $q, $rootScope) ->
     onScriptLoad = ->
       
@@ -30,4 +26,4 @@ angular.module("d3", []).factory "d3Service", [
     s = $document[0].getElementsByTagName("body")[0]
     s.appendChild scriptTag
     return d3service
-]
+])

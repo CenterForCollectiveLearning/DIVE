@@ -1,7 +1,4 @@
-engineApp.directive "ontologyEditor", [
-  "$window"
-  "$timeout"
-  "d3Service"
+engineApp.directive("ontologyEditor", ["$window", "$timeout", "d3Service",
   ($window, $timeout, d3Service) ->
     return (
       restrict: "EA"
@@ -23,7 +20,7 @@ engineApp.directive "ontologyEditor", [
             return
 
           scope.$watch (->
-            angular.element($window)
+            angular.element($window)[0].innerWidth
           ), ->
             scope.render scope.data, scope.overlaps, scope.hierarchies
 
@@ -195,4 +192,4 @@ engineApp.directive "ontologyEditor", [
               #   i++
             , 200)
     )
-]
+])

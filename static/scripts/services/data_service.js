@@ -1,6 +1,7 @@
 diveApp.service("AllProjectsService", function($http, $rootScope) {
   return {
     promise: function(userName, callback) {
+      console.log("[REQUEST] all projects for user:", userName);
       return $http.get('http://localhost:8888/api/project', {
         params: {
           user_name: userName
@@ -21,7 +22,7 @@ engineApp.service("ProjectIDService", function($http, $stateParams, $rootScope) 
           formattedProjectTitle: formattedProjectTitle
         }
       }).success(function(pID) {
-        console.log("Resolved projectID:", pID);
+        console.log("[DATA] projectID:", pID);
         return $rootScope.pID = pID;
       });
     }
@@ -38,6 +39,7 @@ engineApp.service("DataService", function($http, $rootScope) {
           sample: true
         }
       }).success(function(data) {
+        console.log("[DATA] datasets:", data);
         return callback(data.datasets);
       });
     }
@@ -53,6 +55,7 @@ engineApp.service("PropertyService", function($http, $rootScope) {
           pID: $rootScope.pID
         }
       }).success(function(data) {
+        console.log("[DATA] properties:", data);
         return callback(data);
       });
     }
@@ -68,6 +71,7 @@ engineApp.service("SpecificationService", function($http, $rootScope) {
           pID: $rootScope.pID
         }
       }).success(function(data) {
+        console.log("[DATA] specifications:", data);
         return callback(data);
       });
     }

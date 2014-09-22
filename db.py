@@ -41,6 +41,16 @@ class mongoInstance(object):
         if pID: doc['_id'] = ObjectId(pID)
         return formatObjectIDs('project', [ p for p in projects_collection.find(doc)])
 
+    def deleteProject(self, pID):
+        print "In deleteProject", pID
+        # Drop top-level DB
+        MongoInstance.client.drop_database(pID)
+
+        # Drop DB document in DIVE DB
+        MongoInstance.client['dive'].projects.remove({'_id': ObjectId(pID)})
+
+        return
+
     def upsertProperty(self, dID, pID, properties):
         info = MongoInstance.client[pID].properties.find_and_modify({'dID': dID}, {'$set': properties}, upsert=True, new=True)
         tID = str(info['_id'])

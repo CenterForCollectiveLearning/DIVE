@@ -56,6 +56,9 @@ diveApp.config(function($stateProvider, $urlRouterProvider) {
     templateUrl: 'static/views/create_viz.html',
     controller: 'CreateVizCtrl',
     resolve: {
+      specificationService: function(SpecificationService) {
+        return SpecificationService.promise;
+      },
       vizDataService: function(VizDataService) {
         return VizDataService.promise;
       }

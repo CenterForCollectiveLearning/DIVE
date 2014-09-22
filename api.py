@@ -215,13 +215,14 @@ projectPostParser.add_argument('description', type=str, required=True)
 projectPostParser.add_argument('user_name', type=str, required=True)
 
 projectDeleteParser = reqparse.RequestParser()
+projectDeleteParser.add_argument('pID', type=str, default='')
 
 # TODO Return all projects
 # Get information for one project
 class Project(Resource):
     def get(self):
         args = projectGetParser.parse_args()
-        pID = args.get('pID')
+        pID = args.get('pID').strip().strip('"')
         user_name = args.get('user_name')
         print "GET", pID, user_name
 
@@ -247,15 +248,11 @@ class Project(Resource):
     # Delete project and all associated data
     def delete(self):
         args = projectDeleteParser.parse_args()
-        pIDs = args.get('pID')
-        return [ MI.deleteThing(pID, 'projects', []) for pID in pIDs]
-    # The way that angular does http requests is slightly different than in python (or maybe it's a CORS thing)
-    # Either way, we need this options to return the following access-control-allow-methods, otherwise delete wasn't working.
-    # Will likely have to include for all classes
-    def options (self): 
-        return {'Allow' : 'PUT, GET, POST, DELETE' }, 200, \
-        { 'Access-Control-Allow-Origin': '*', \
-          'Access-Control-Allow-Methods' : 'PUT,GET, POST, DELETE' }
+        pID = args.get('pID').strip().strip('"')
+        print "DELETE", pID
+
+        MI.deleteProject(pID)
+        return
 
 api.add_resource(Project, '/api/project')
 
@@ -296,7 +293,7 @@ class Property(Resource):
 
             # Statistical properties
             df = pd.read_table(path, sep=delim)
-            print df, df.describe()
+            # print df, df.describe()
             # entropy 
             # gini
 
@@ -372,6 +369,7 @@ def is_numeric(x):
 # TODO Incorporate ontologies
 def getTreemapSpecs(datasets, properties, ontologies):
     specs = []
+    print datasets
     dataset_titles = dict([(d['dID'], d['filename']) for d in datasets])
 
     for p in properties:
