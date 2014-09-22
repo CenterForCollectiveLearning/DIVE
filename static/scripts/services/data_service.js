@@ -15,7 +15,7 @@ diveApp.service("AllProjectsService", function($http, $rootScope) {
 engineApp.service("ProjectIDService", function($http, $stateParams, $rootScope) {
   return {
     promise: function(formattedProjectTitle) {
-      console.log("Requesting projectID for project title:", formattedProjectTitle);
+      console.log("[REQUEST] projectID for project title:", formattedProjectTitle);
       return $http.get("http://localhost:8888/api/getProjectID", {
         params: {
           formattedProjectTitle: formattedProjectTitle
@@ -31,6 +31,7 @@ engineApp.service("ProjectIDService", function($http, $stateParams, $rootScope) 
 engineApp.service("DataService", function($http, $rootScope) {
   return {
     promise: function(callback) {
+      console.log("[REQUEST] data for pID", $rootScope.pID);
       return $http.get("http://localhost:8888/api/data", {
         params: {
           pID: $rootScope.pID,
@@ -46,6 +47,7 @@ engineApp.service("DataService", function($http, $rootScope) {
 engineApp.service("PropertyService", function($http, $rootScope) {
   return {
     promise: function(callback) {
+      console.log("[REQUEST] properties for pID", $rootScope.pID);
       return $http.get("http://localhost:8888/api/property", {
         params: {
           pID: $rootScope.pID
@@ -60,6 +62,7 @@ engineApp.service("PropertyService", function($http, $rootScope) {
 engineApp.service("SpecificationService", function($http, $rootScope) {
   return {
     promise: function(callback) {
+      console.log("[REQUEST] specifications for pID", $rootScope.pID);
       return $http.get("http://localhost:8888/api/specification", {
         params: {
           pID: $rootScope.pID

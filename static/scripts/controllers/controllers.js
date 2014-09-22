@@ -28,6 +28,7 @@ controllers.controller("CreateProjectFormController", function($scope, $http, $l
 });
 
 controllers.controller("ProjectListCtrl", function($scope, $http, $location, $rootScope, AllProjectsService) {
+  console.log("[CONTROLLER] Project List");
   $scope.newProjectData = {};
   $scope.newProject = false;
   $scope.user = {
@@ -46,7 +47,7 @@ controllers.controller("ProjectListCtrl", function($scope, $http, $location, $ro
 });
 
 controllers.controller("OverviewCtrl", function($scope, $rootScope) {
-  return DeleteProjectService;
+  return console.log("[CONTROLLER] Overview");
 });
 
 controllers.controller("PaneToggleCtrl", function($scope) {

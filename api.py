@@ -137,7 +137,7 @@ class Data(Resource):
         args = dataGetParser.parse_args()
         pID = args.get('pID').strip().strip('"')
         dIDs = args.get('dID')
-        print "Get Data", pID, dIDs
+        print "[GET] Data", pID, dIDs
 
         # Specific dIDs
         if dIDs:

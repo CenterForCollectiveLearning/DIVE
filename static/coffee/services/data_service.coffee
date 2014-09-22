@@ -11,7 +11,7 @@ diveApp.service "AllProjectsService", ($http, $rootScope) ->
 # TODO Eventually deprecate this in favor of real session handling
 engineApp.service "ProjectIDService", ($http, $stateParams, $rootScope) ->
   promise: (formattedProjectTitle) ->
-    console.log("Requesting projectID for project title:", formattedProjectTitle)
+    console.log("[REQUEST] projectID for project title:", formattedProjectTitle)
     $http.get("http://localhost:8888/api/getProjectID",
       params:
         formattedProjectTitle: formattedProjectTitle
@@ -23,6 +23,7 @@ engineApp.service "ProjectIDService", ($http, $stateParams, $rootScope) ->
 # Dataset Samples
 engineApp.service "DataService", ($http, $rootScope) ->
   promise: (callback) ->
+    console.log("[REQUEST] data for pID", $rootScope.pID)
     $http.get("http://localhost:8888/api/data",
       params:
         pID: $rootScope.pID
@@ -33,6 +34,7 @@ engineApp.service "DataService", ($http, $rootScope) ->
 
 engineApp.service "PropertyService", ($http, $rootScope) ->
   promise: (callback) ->
+    console.log("[REQUEST] properties for pID", $rootScope.pID)
     $http.get("http://localhost:8888/api/property",
       params:
         pID: $rootScope.pID
@@ -42,6 +44,7 @@ engineApp.service "PropertyService", ($http, $rootScope) ->
 
 engineApp.service "SpecificationService", ($http, $rootScope) ->
   promise: (callback) ->
+    console.log("[REQUEST] specifications for pID", $rootScope.pID)
     $http.get("http://localhost:8888/api/specification",
       params:
         pID: $rootScope.pID

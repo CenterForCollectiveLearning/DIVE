@@ -22,6 +22,7 @@ controllers.controller "CreateProjectFormController", ($scope, $http, $location)
 
 # Landing page project list / navigation
 controllers.controller "ProjectListCtrl", ($scope, $http, $location, $rootScope, AllProjectsService) ->
+  console.log("[CONTROLLER] Project List")
   $scope.newProjectData = {}
   $scope.newProject = false
   $scope.user = {
@@ -39,8 +40,9 @@ controllers.controller "ProjectListCtrl", ($scope, $http, $location, $rootScope,
     $scope.newProject = !$scope.newProject
 
 controllers.controller "OverviewCtrl", ($scope, $rootScope) ->
+  console.log("[CONTROLLER] Overview")
   # TODO: How to deal with same method?
-  DeleteProjectService
+  # DeleteProjectService
 
 controllers.controller "PaneToggleCtrl", ($scope) ->
   $scope.leftClosed = false

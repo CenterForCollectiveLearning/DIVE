@@ -12,7 +12,8 @@ diveApp.config(function($stateProvider, $urlRouterProvider) {
     url: '/:formattedUserName/:formattedProjectTitle',
     templateUrl: 'static/views/project.html',
     controller: function($scope, $state, $stateParams) {
-      return $scope.projectTitle = $stateParams.formattedProjectTitle;
+      $scope.projectTitle = $stateParams.formattedProjectTitle;
+      return $state.go('engine.overview');
     },
     resolve: {
       formattedUserName: function($stateParams) {
@@ -28,8 +29,7 @@ diveApp.config(function($stateProvider, $urlRouterProvider) {
   }).state('engine.overview', {
     url: '/overview',
     templateUrl: 'static/views/project_overview.html',
-    controller: 'OverviewCtrl',
-    controller: 'DatasetListCtrl'
+    controller: 'OverviewCtrl'
   }).state('engine.data', {
     url: '/data',
     templateUrl: 'static/views/data_view.html',
