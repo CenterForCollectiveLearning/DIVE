@@ -200,7 +200,10 @@ class GetProjectID(Resource):
     def get(self):
         args = projectIDGetParser.parse_args()
         formattedProjectTitle = args.get('formattedProjectTitle')
-        return MI.getProjectID(formattedProjectTitle)
+        print "GET projectID", formattedProjectTitle
+        res = MI.getProjectID(formattedProjectTitle)
+        print "projectID result", res
+        return res
 api.add_resource(GetProjectID, '/api/getProjectID')
 
 ############################
