@@ -28,6 +28,7 @@ class mongoInstance(object):
 
     # Dataset Deletion
     def deleteData(self, dID, pID):
+        MongoInstance.client[pID].properties.remove({'dID': dID})
         resp = MongoInstance.client[pID].datasets.remove({'_id': ObjectId(dID)})
         if resp['n'] and resp['ok']:
             return dID

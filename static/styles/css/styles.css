@@ -11,25 +11,25 @@ ul {
 /* Fonts */
 @font-face {
   font-family: 'DIN';
-  src: url('DINLight.ttf') format('ttf'), url('DINLight.woff') format('woff'); }
+  src: url('../fonts/DINLight.ttf') format('ttf'), url('../fonts/DINLight.woff') format('woff'); }
 
 @font-face {
   font-family: 'Karbon';
-  src: url('karbon-medium-webfont.woff') format('woff'); }
+  src: url('../fonts/karbon-medium-webfont.woff') format('woff'); }
 
 @font-face {
   font-family: 'Karbon';
-  src: url('karbon-light-webfont.woff') format('woff');
+  src: url('../fonts/karbon-light-webfont.woff') format('woff');
   font-weight: 300; }
 
 @font-face {
   font-family: 'Karbon';
-  src: url('karbon-regular-webfont.woff') format('woff');
+  src: url('../fonts/karbon-regular-webfont.woff') format('woff');
   font-weight: normal; }
 
 @font-face {
   font-family: 'Karbon';
-  src: url('karbon-semibold-webfont.woff') format('woff');
+  src: url('../fonts/karbon-semibold-webfont.woff') format('woff');
   font-weight: bold; }
 
 *, *:before, *:after {
@@ -417,6 +417,9 @@ section.viewport {
   margin-right: 250px;
   height: 100%;
   overflow-x: scroll; }
+  section.viewport div.title {
+    text-align: center;
+    font-size: 20px; }
   section.viewport.left-closed {
     margin-left: 0px; }
   section.viewport.right-closed {

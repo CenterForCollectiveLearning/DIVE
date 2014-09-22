@@ -48,6 +48,7 @@ def option_autoreply():
         h = resp.headers
 
         # Allow the origin which made the XHR
+        print request.headers
         h['Access-Control-Allow-Origin'] = request.headers['Origin']
         # Allow the actual method
         h['Access-Control-Allow-Methods'] = request.headers['Access-Control-Request-Method']
