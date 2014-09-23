@@ -81,15 +81,16 @@ engineApp.service("SpecificationService", function($http, $rootScope) {
 engineApp.service("VizDataService", function($http, $rootScope) {
   return {
     promise: function(type, spec, callback) {
-      console.log('In VizDataService', type, spec);
+      console.log('[REQUEST] Viz Data for Type', type, 'and Specification ', spec);
       return $http.get("http://localhost:8888/api/visualization_data", {
         params: {
           pID: $rootScope.pID,
           type: type,
           spec: spec
         }
-      }).success(function(result) {
-        return callback(result);
+      }).success(function(data) {
+        console.log("[DATA] Viz Data:", data);
+        return callback(data);
       });
     }
   };

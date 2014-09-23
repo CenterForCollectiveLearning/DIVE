@@ -1,7 +1,4 @@
-engineApp.directive "visualizationPreview", [
-  "$window"
-  "$timeout"
-  "d3Service"
+engineApp.directive "visualizationPreview", ["$window", "$timeout", "d3Service",
   ($window, $timeout, d3Service) ->
     return (
       restrict: "EA"
@@ -30,12 +27,15 @@ engineApp.directive "visualizationPreview", [
             return
           ), true
           scope.render = (vizType, vizSpec, vizData) ->
-            return  unless vizData
-            clearTimeout renderTimeout  if renderTimeout
+            console.log(vizType, vizSpec, vizData)
+            unless (vizData and vizSpec and vizType)
+              return
+            clearTimeout renderTimeout if renderTimeout
             renderTimeout = $timeout(->
               
+              console.log(vizData, vizSpec)
               # TODO Reduce Redundancy in d3Plus
-              groupBy = vizSpec.groupBy.toString()
+              groupBy = vizSpec.groupBy.title.toString()
               selectData = [
                 {
                   value: "ar"
@@ -64,7 +64,15 @@ engineApp.directive "visualizationPreview", [
                 }
               ]
               if vizType is "treemap"
-                viz = d3plus.viz().container("div#viz-container").data(vizData).type("tree_map").font(family: "Karbon").id(groupBy).size("count").draw()
+                console.log('drawing treemap')
+                viz = d3plus.viz()
+                  .container("div#viz-container")
+                  .data(vizData)
+                  .type("tree_map")
+                  .font(family: "Karbon")
+                  .id(groupBy)
+                  .size("count")
+                  .draw()
                 
                 # https://github.com/alexandersimoes/d3plus/wiki/Forms
                 dropdown = d3plus.form().container("div#viz-container").data(selectData).title("Select Options").draw()

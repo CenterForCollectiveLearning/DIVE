@@ -6,6 +6,7 @@ from os import listdir
 from os.path import isfile, join
 from itertools import combinations
 from werkzeug.utils import secure_filename
+from bson.objectid import ObjectId
 import numpy as np
 import pandas as pd
 
@@ -143,7 +144,7 @@ class Data(Resource):
         # Specific dIDs
         if dIDs:
             print "Requested specific dIDs:", dIDs
-            dataLocations = [ MI.getData({'_id': dID}, pID) for dID in dIDs ] 
+            dataLocations = [ MI.getData({'_id': ObjectId(dID)}, pID) for dID in dIDs ] 
 
         # All datasets
         else:
@@ -438,6 +439,40 @@ def requiredParams(type, spec):
     return set(spec.keys()) == set(vizToRequiredParams[type])
 
 def getTreemapData(spec, pID):
+    # Parse specification
+    condition = spec['condition']['title']
+    groupby = spec['groupBy']['title']
+    dID = spec['aggregate']['dID']
+    aggFn = 'sum'  # TODO: get this from an argument
+
+    # Load dataset (GENERALIZE THIS)
+    filename = MI.getData({'_id': ObjectId(dID)}, pID)[0]['filename']
+    path = os.path.join(app.config['UPLOAD_FOLDER'], pID, filename)
+    delim = get_delimiter(path)
+    df = pd.read_table(path, sep=delim)
+
+    cond_df = df
+    group_obj = cond_df.groupby(groupby)
+    finalSeries = group_obj.size()
+
+    result = []
+    for row in finalSeries.iteritems():
+        result.append({
+            groupby: row[0],
+            'count': np.asscalar(np.int16(row[1]))
+        })
+    for r in result:
+        print r, r['count']
+    return {'result': result}
+
+    # Compute
+    #         if query[0] == '*':
+    #             cond_df = df
+    #         else:
+    #             # Uses column indexing for now
+    #             cond_df = df[df[condition].isin(query)]
+
+    print spec, pID
     return
 
 #####################################################################
@@ -455,8 +490,6 @@ class Visualization_Data(Resource):
         pID = args.get('pID').strip().strip('"')
         type = args.get('type')
         spec = json.loads(args.get('spec'))
-        print spec
-        print requiredParams(type, spec)
         if requiredParams(type, spec):
             return getTreemapData(spec, pID)
         return

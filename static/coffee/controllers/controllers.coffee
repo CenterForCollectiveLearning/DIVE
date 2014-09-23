@@ -228,28 +228,26 @@ controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertySer
     $scope.hierarchies = properties.hierarchies
   )
 
-  $scope.selected_type = 0
-  $scope.selected_spec = 0
+  $scope.selected_type_index = 0
+  $scope.selected_spec_index = 0
   SpecificationService.promise((specs) ->
     $scope.types = ({'name': k, 'length': v.length} for k, v of specs)
     $scope.allSpecs = specs
-    $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type].name]
+    $scope.selected_type = $scope.types[$scope.selected_type_index].name
+    $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type_index].name]
   )
 
-  type_name_from_index = (index) ->
-    $scope.types[index].name
-
   $scope.select_type = (index) ->
-    $scope.selected_type = index
-    $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type].name]
+    $scope.selected_type_index = index
+    $scope.selected_type = $scope.types[index].name
+    $scope.specs = $scope.allSpecs[$scope.types[index].name]
 
   $scope.select_spec = (index) ->
-    $scope.selected_spec = index
-    spec = $scope.specs[index]
-    type = $scope.types[$scope.selected_type].name
-    console.log("Selected vizspec", spec)
-    VizDataService.promise(type, spec, (result) ->
-      $scope.vizData = result
+    $scope.selected_spec_index = index
+    $scope.selected_spec = $scope.specs[index]
+
+    VizDataService.promise($scope.selected_type, $scope.selected_spec, (result) ->
+      $scope.vizData = result.result
     )
 
   #   # TODO Move parsing logic to server side...or just have it in the correct format anyways

@@ -25,7 +25,8 @@ engineApp.directive("visualizationPreview", [
             scope.render(newData[0], newData[1], newData[2]);
           }), true);
           scope.render = function(vizType, vizSpec, vizData) {
-            if (!vizData) {
+            console.log(vizType, vizSpec, vizData);
+            if (!(vizData && vizSpec && vizType)) {
               return;
             }
             if (renderTimeout) {
@@ -33,7 +34,8 @@ engineApp.directive("visualizationPreview", [
             }
             renderTimeout = $timeout(function() {
               var dropdown, groupBy, selectData, viz;
-              groupBy = vizSpec.groupBy.toString();
+              console.log(vizData, vizSpec);
+              groupBy = vizSpec.groupBy.title.toString();
               selectData = [
                 {
                   value: "ar",
@@ -57,6 +59,7 @@ engineApp.directive("visualizationPreview", [
                 }
               ];
               if (vizType === "treemap") {
+                console.log('drawing treemap');
                 viz = d3plus.viz().container("div#viz-container").data(vizData).type("tree_map").font({
                   family: "Karbon"
                 }).id(groupBy).size("count").draw();

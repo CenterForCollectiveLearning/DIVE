@@ -59,12 +59,13 @@ engineApp.service "SpecificationService", ($http, $rootScope) ->
 engineApp.service "VizDataService", ($http, $rootScope) ->
   # TODO Generalize service for other vizTypes
   promise: (type, spec, callback) ->
-    console.log('In VizDataService', type, spec)
+    console.log('[REQUEST] Viz Data for Type', type, 'and Specification ', spec)
     $http.get("http://localhost:8888/api/visualization_data",
       params:
         pID: $rootScope.pID
         type: type
         spec: spec
-    ).success((result) ->
-      callback(result)
+    ).success((data) ->
+      console.log("[DATA] Viz Data:", data) 
+      callback(data)
     )

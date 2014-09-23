@@ -215,7 +215,6 @@ controllers.controller("OntologyEditorCtrl", function($scope, $http, DataService
 controllers.controller("AssembleCtrl", function($scope, $http) {});
 
 controllers.controller("CreateVizCtrl", function($scope, $http, DataService, PropertyService, VizDataService, SpecificationService) {
-  var type_name_from_index;
   DataService.promise(function(datasets) {
     console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'));
     return $scope.datasets = datasets;
@@ -225,8 +224,8 @@ controllers.controller("CreateVizCtrl", function($scope, $http, DataService, Pro
     $scope.overlaps = properties.overlaps;
     return $scope.hierarchies = properties.hierarchies;
   });
-  $scope.selected_type = 0;
-  $scope.selected_spec = 0;
+  $scope.selected_type_index = 0;
+  $scope.selected_spec_index = 0;
   SpecificationService.promise(function(specs) {
     var k, v;
     $scope.types = (function() {
@@ -242,23 +241,19 @@ controllers.controller("CreateVizCtrl", function($scope, $http, DataService, Pro
       return _results;
     })();
     $scope.allSpecs = specs;
-    return $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type].name];
+    $scope.selected_type = $scope.types[$scope.selected_type_index].name;
+    return $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type_index].name];
   });
-  type_name_from_index = function(index) {
-    return $scope.types[index].name;
-  };
   $scope.select_type = function(index) {
-    $scope.selected_type = index;
-    return $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type].name];
+    $scope.selected_type_index = index;
+    $scope.selected_type = $scope.types[index].name;
+    return $scope.specs = $scope.allSpecs[$scope.types[index].name];
   };
   return $scope.select_spec = function(index) {
-    var spec, type;
-    $scope.selected_spec = index;
-    spec = $scope.specs[index];
-    type = $scope.types[$scope.selected_type].name;
-    console.log("Selected vizspec", spec);
-    return VizDataService.promise(type, spec, function(result) {
-      return $scope.vizData = result;
+    $scope.selected_spec_index = index;
+    $scope.selected_spec = $scope.specs[index];
+    return VizDataService.promise($scope.selected_type, $scope.selected_spec, function(result) {
+      return $scope.vizData = result.result;
     });
   };
 });
