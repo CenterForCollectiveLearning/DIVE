@@ -214,7 +214,7 @@ controllers.controller("OntologyEditorCtrl", function($scope, $http, DataService
 
 controllers.controller("AssembleCtrl", function($scope, $http) {});
 
-controllers.controller("CreateVizCtrl", function($scope, $http, DataService, PropertyService, VizDataService, SpecificationService) {
+controllers.controller("CreateVizCtrl", function($scope, $http, DataService, PropertyService, VizDataService, ConditionalDataService, SpecificationService) {
   DataService.promise(function(datasets) {
     console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'));
     return $scope.datasets = datasets;
@@ -252,6 +252,9 @@ controllers.controller("CreateVizCtrl", function($scope, $http, DataService, Pro
   return $scope.select_spec = function(index) {
     $scope.selected_spec_index = index;
     $scope.selected_spec = $scope.specs[index];
+    ConditionalDataService.promise($scope.selected_type, $scope.selected_spec, function(result) {
+      return $scope.conditionalData = result.result;
+    });
     return VizDataService.promise($scope.selected_type, $scope.selected_spec, function(result) {
       return $scope.vizData = result.result;
     });

@@ -78,6 +78,24 @@ engineApp.service("SpecificationService", function($http, $rootScope) {
   };
 });
 
+engineApp.service("ConditionalDataService", function($http, $rootScope) {
+  return {
+    promise: function(type, spec, callback) {
+      console.log('[REQUEST] Conditoinal Data for Type', type, 'and Specification ', spec);
+      return $http.get("http://localhost:8888/api/conditional_data", {
+        params: {
+          pID: $rootScope.pID,
+          type: type,
+          spec: spec
+        }
+      }).success(function(data) {
+        console.log("[DATA] Conditional Data:", data);
+        return callback(data);
+      });
+    }
+  };
+});
+
 engineApp.service("VizDataService", function($http, $rootScope) {
   return {
     promise: function(type, spec, callback) {

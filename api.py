@@ -461,8 +461,6 @@ def getTreemapData(spec, pID):
             groupby: row[0],
             'count': np.asscalar(np.int16(row[1]))
         })
-    for r in result:
-        print r, r['count']
     return {'result': result}
 
     # Compute
@@ -495,164 +493,41 @@ class Visualization_Data(Resource):
         return
 api.add_resource(Visualization_Data, '/api/visualization_data')
 
-# treemapDataParser = reqparse.RequestParser()
-# treemapDataParser.add_argument('condition', type=int, required=True)
-# treemapDataParser.add_argument('aggregate', type=int, required=True)
-# treemapDataParser.add_argument('groupBy', type=int, required=True)
-# treemapDataParser.add_argument('query', type=str, required=True)
-# treemapDataParser.add_argument('aggFn', type=str, default='sum')
-# class get_treemap_data(Resource):
-#     def get(self):
-#         # Get and parse arguments
-#         args = treemapDataParser.parse_args()
-#         condition = args.get('condition')
-#         aggregate = args.get('aggregate')
-#         by = args.get('groupBy')
-#         by_id = by
-#         query = args.get('query').strip('[').strip(']').split(',')
-#         aggFn = args.get('aggFn')
+def getConditionalData(spec, pID):
+    # Parse specification
+    condition = spec['condition']['title']
+    dID = spec['aggregate']['dID']
 
-#         # Test
-#         # http://localhost:5000/get_treemap_data?condition=11&aggregate=2&by=14&query=[USA]
-#         path = DAL.get_path_from_id(aggregate)
-#         delim = get_delimiter(path)
-#         df = pd.read_table(path, sep=delim)
+    # Load dataset (GENERALIZE THIS)
+    filename = MI.getData({'_id': ObjectId(dID)}, pID)[0]['filename']
+    path = os.path.join(app.config['UPLOAD_FOLDER'], pID, filename)
+    delim = get_delimiter(path)
+    df = pd.read_table(path, sep=delim)
 
-#         by = DAL.get_column_name_from_id(aggregate, by)
-#         condition = DAL.get_column_name_from_id(aggregate, condition)
+    unique_elements = [{condition: e} for e in pd.Series(df[condition]).unique()]
 
-#         if query[0] == '*':
-#             cond_df = df
-#         else:
-#             # Uses column indexing for now
-#             cond_df = df[df[condition].isin(query)]
-
-#         group_obj = cond_df.groupby(by)
-#         finalSeries = group_obj.size()
-
-#         result = []
-#         for row in finalSeries.iteritems():
-#             result.append({
-#                 by_id: row[0],
-#                 'count': np.asscalar(np.int16(row[1]))
-#             })
-#         # print result
-#         for r in result:
-#             print r, r['count']
-#         return {'result': result}
-
-# # TODO Break this up!!!
-# vizFromOntParser = reqparse.RequestParser()
-# # vizFromOntParser.add_argument('network', type=str, required=True)
-# class get_visualizations_from_ontology(Resource):
-#     def post(self):
-#         visualizations = {
-#             "treemap": [],
-#             "geomap": [],
-#             "barchart": [],
-#             "scatterplot": [],
-#             "linechart": [],
-#             "network": []
-#         }
-
-#         # TODO Use regular argument parser
-#         network = json.loads(request.data)
-#         nodes = network['nodes']
-#         edges = network['edges']
-
-#         edge_to_type_dict = {}
-#         for edge in edges:
-#             source = edge['source']
-#             target = edge['target']
-#             type = edge['type']
-
-#             edge_to_type_dict[tuple(source)] = type
-#             edge_to_type_dict[tuple(target)] = type
-
-#         # SCATTERPLOT
-#         # ATTR vs ATTR, optional QUERY and GROUP
-#         # for node in nodes:
-#         #     attrs = node['attrs']
-#         #     for attrA, attrB in combinations(attrs, 2):
-#         #         # TODO Don't plot against unique columns
-#         #         if (attrA['type'] in ['int', 'float'] or attrB['type'] in ['int', 'float']):
-#         #             print attrA['name'], attrB['name']
-
-#         # TODO Detect redundant fields
-#         # Detect objects that are attributes of another (count one-to-many edges leading outward)
-#         numOutwardOneToManys = dict([(node['model'], 0) for node in nodes])
-#         for edge in edges:
-#             sourceDataset = edge['source'][0]
-#             targetDataset = edge['target'][0]
-#             type = edge['type']
-#             if type == '1N':
-#                 numOutwardOneToManys[targetDataset] += 1
-#             if type == 'N1':
-#                 numOutwardOneToManys[sourceDataset] += 1
-
-#         # TODO: Detect if an entity is likely geographic
-
-#         # LINE CHART
-
-#         # TREEMAP
-#         # CONDITION -> QUERY -> N * GROUP BY
-#         for node in nodes:
-#             dataset_id = node['model']
-
-#             # Must be a first-order object
-#             if numOutwardOneToManys[dataset_id]:
-#                 attrs = node['attrs']
-
-#                 for attrA, attrB in combinations(attrs, 2):
-#                     unique_A = node['unique_cols'][attrs.index(attrA)]
-#                     unique_B = node['unique_cols'][attrs.index(attrB)]
-#                     type_A = attrA['type']
-#                     type_B = attrB['type']
-#                     column_idA = attrA['column_id']
-#                     column_idB = attrB['column_id']
-#                     name_A = attrA['name']
-#                     name_B = attrB['name']
-
-#                     column_relnA = edge_to_type_dict.get(tuple([dataset_id, column_idA]))
-#                     column_relnB = edge_to_type_dict.get(tuple([dataset_id, column_idB]))
-
-#                     # Ensure that the condition and grouping attributes map to second-order objects
-#                     # Ensure that the conditioning and grouping variables are not floats
-#                     # (do we want to do this???)
-#                     print name_A, column_relnA
-#                     if (not column_relnA) and (not unique_A) and (type_A != 'float') and (type_B != 'float') and (type_B != 'int'):
-#                         treemap_spec = {
-#                         'condition': column_idA,
-#                         'aggregate': dataset_id,
-#                         'groupBy': column_idB,
-#                         }
-#                         visualizations['treemap'].append(treemap_spec)
-
-#                     if (not unique_A) and (name_B == 'countryCode3'):
-#                         geomap_spec = {
-#                             'condition': column_idA,
-#                             'aggregate': dataset_id,
-#                             'groupBy': column_idB,
-#                         }
-#                         visualizations['geomap'].append(geomap_spec)
-
-#         result = {}
-#         for vizType, vizSpecs in visualizations.iteritems():
-#             if vizSpecs:
-#                 result[vizType] = vizSpecs
+    return {'result': unique_elements}
 
 
-#         json_data = json.jsonify({
-#                                 'status': "success",
-#                                 'visualizations': result,
-#                                 })
-#         response = make_response(json_data)
-#         return response
-
-# api.add_resource(get_visualizations_from_ontology, '/get_visualizations_from_ontology')
-
-# Visualization Endpoints
-# api.add_resource(get_treemap_data, '/get_treemap_data')
+#####################################################################
+# Endpoint returning data to populate dropdowns for given specification
+# INPUT: sID, pID, uID
+# OUTPUT: [conditional elements]
+#####################################################################
+visualizationDataGetParser = reqparse.RequestParser()
+visualizationDataGetParser.add_argument('pID', type=str, required=True)
+visualizationDataGetParser.add_argument('type', type=str, required=True)
+visualizationDataGetParser.add_argument('spec', type=str, required=True)
+class Conditional_Data(Resource):
+    def get(self):
+        args = visualizationDataGetParser.parse_args()
+        pID = args.get('pID').strip().strip('"')
+        type = args.get('type')
+        spec = json.loads(args.get('spec'))
+        if requiredParams(type, spec):
+            return getConditionalData(spec, pID)
+        return
+api.add_resource(Conditional_Data, '/api/conditional_data')
 
 if __name__ == '__main__':
     app.debug = True

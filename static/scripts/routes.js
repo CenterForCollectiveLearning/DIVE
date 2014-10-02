@@ -61,6 +61,9 @@ diveApp.config(function($stateProvider, $urlRouterProvider) {
       },
       vizDataService: function(VizDataService) {
         return VizDataService.promise;
+      },
+      conditionalDataService: function(ConditionalDataService) {
+        return ConditionalDataService.promise;
       }
     }
   }).state('engine.assemble', {

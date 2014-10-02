@@ -50,6 +50,7 @@ diveApp.config(($stateProvider, $urlRouterProvider) ->
         # propertyService: (PropertyService) -> PropertyService.promise
         specificationService: (SpecificationService) -> SpecificationService.promise
         vizDataService: (VizDataService) -> VizDataService.promise
+        conditionalDataService: (ConditionalDataService) -> ConditionalDataService.promise
     )
     .state('engine.assemble'
       url: '/assemble'

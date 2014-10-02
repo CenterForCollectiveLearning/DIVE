@@ -56,6 +56,20 @@ engineApp.service "SpecificationService", ($http, $rootScope) ->
       callback(data)
     )
 
+engineApp.service "ConditionalDataService", ($http, $rootScope) ->
+  # TODO Generalize service for other vizTypes
+  promise: (type, spec, callback) ->
+    console.log('[REQUEST] Conditoinal Data for Type', type, 'and Specification ', spec)
+    $http.get("http://localhost:8888/api/conditional_data",
+      params:
+        pID: $rootScope.pID
+        type: type
+        spec: spec
+    ).success((data) ->
+      console.log("[DATA] Conditional Data:", data) 
+      callback(data)
+    )
+
 engineApp.service "VizDataService", ($http, $rootScope) ->
   # TODO Generalize service for other vizTypes
   promise: (type, spec, callback) ->

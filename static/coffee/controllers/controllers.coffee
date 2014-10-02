@@ -214,7 +214,7 @@ controllers.controller "AssembleCtrl", ($scope, $http) ->
   return
 
 # TODO Make this controller thinner!
-controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertyService, VizDataService, SpecificationService) ->
+controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertyService, VizDataService, ConditionalDataService, SpecificationService) ->
 
   # Initialize datasets
   DataService.promise((datasets) ->
@@ -237,6 +237,8 @@ controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertySer
     $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type_index].name]
   )
 
+
+
   $scope.select_type = (index) ->
     $scope.selected_type_index = index
     $scope.selected_type = $scope.types[index].name
@@ -246,9 +248,15 @@ controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertySer
     $scope.selected_spec_index = index
     $scope.selected_spec = $scope.specs[index]
 
+    ConditionalDataService.promise($scope.selected_type, $scope.selected_spec, (result) ->
+      $scope.conditionalData = result.result
+    )
+
     VizDataService.promise($scope.selected_type, $scope.selected_spec, (result) ->
       $scope.vizData = result.result
     )
+
+
 
   #   # TODO Move parsing logic to server side...or just have it in the correct format anyways
   #   VizFromOntologyService.promise $scope.initNetwork, (data) ->

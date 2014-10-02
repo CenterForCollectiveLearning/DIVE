@@ -6,6 +6,7 @@ engineApp.directive "visualizationPreview", ["$window", "$timeout", "d3Service",
         vizType: "="
         vizSpec: "="
         vizData: "="
+        conditionalData: "="
         label: "@"
         onClick: "&"
 
@@ -16,53 +17,39 @@ engineApp.directive "visualizationPreview", ["$window", "$timeout", "d3Service",
             scope.$apply()
             return
 
+          # Resizing
           scope.$watch (->
             angular.element($window)[0].innerWidth
           ), ->
-            scope.render scope.vizType, scope.vizSpec, scope.vizData
+            scope.render(scope.vizType, scope.vizSpec, scope.vizData, scope.conditionalData)
             return
 
-          scope.$watchCollection "[vizType,vizSpec,vizData]", ((newData) ->
-            scope.render newData[0], newData[1], newData[2]
-            return
-          ), true
-          scope.render = (vizType, vizSpec, vizData) ->
-            console.log(vizType, vizSpec, vizData)
-            unless (vizData and vizSpec and vizType)
+          scope.$watchCollection("[vizType,vizSpec,vizData,conditionalData]", ((newData) ->
+            console.log("newdata", newData)
+            scope.render(newData[0], newData[1], newData[2], newData[3])
+          ), true)
+
+          scope.render = (vizType, vizSpec, vizData, conditionalData) ->
+            unless (vizData and vizSpec and vizType and conditionalData)
               return
+
             clearTimeout renderTimeout if renderTimeout
             renderTimeout = $timeout(->
-              
-              console.log(vizData, vizSpec)
+
+              condition = vizSpec.condition.title.toString()
+
+              selectFn = (d) -> console.log(d)
+              # dropdown = d3plus.form()
+              #   .data(conditionalData)
+              #   .title("Select Options")
+              #   .id(condition)
+              #   .text(condition)
+              #   .type("drop")
+              #   .draw()
+
               # TODO Reduce Redundancy in d3Plus
               groupBy = vizSpec.groupBy.title.toString()
-              selectData = [
-                {
-                  value: "ar"
-                  text: "Arabic"
-                }
-                {
-                  value: "zh"
-                  text: "Chinese"
-                }
-                {
-                  value: "en"
-                  text: "English"
-                  selected: true
-                }
-                {
-                  value: "de"
-                  text: "German"
-                }
-                {
-                  value: "pt"
-                  text: "Portuguese"
-                }
-                {
-                  value: "es"
-                  text: "Spanish"
-                }
-              ]
+
               if vizType is "treemap"
                 console.log('drawing treemap')
                 viz = d3plus.viz()
@@ -74,8 +61,6 @@ engineApp.directive "visualizationPreview", ["$window", "$timeout", "d3Service",
                   .size("count")
                   .draw()
                 
-                # https://github.com/alexandersimoes/d3plus/wiki/Forms
-                dropdown = d3plus.form().container("div#viz-container").data(selectData).title("Select Options").draw()
               else if vizType is "geomap"
                 viz = d3plus.viz().container("div#viz-container").type("geo_map").data(vizData).coords("/static/assets/countries.json").id(groupBy).color("count").text("name").font(family: "Karbon").style(color:
                   heatmap: [
