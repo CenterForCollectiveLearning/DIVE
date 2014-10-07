@@ -119,7 +119,8 @@ controllers.controller("DatasetListCtrl", function($scope, $rootScope, projectID
   };
   $scope.types = ["int", "float", "str"];
   DataService.promise(function(datasets) {
-    return $scope.datasets = datasets;
+    $scope.datasets = datasets;
+    return console.log($scope.datasets);
   });
   $scope.onFileSelect = function($files) {
     var file, i, _results;
@@ -208,13 +209,14 @@ controllers.controller("OntologyEditorCtrl", function($scope, $http, DataService
     $scope.loading = false;
     $scope.properties = properties;
     $scope.overlaps = properties.overlaps;
-    return $scope.hierarchies = properties.hierarchies;
+    $scope.hierarchies = properties.hierarchies;
+    return $scope.uniques = properties.uniques;
   });
 });
 
 controllers.controller("AssembleCtrl", function($scope, $http) {});
 
-controllers.controller("CreateVizCtrl", function($scope, $http, DataService, PropertyService, VizDataService, ConditionalDataService, SpecificationService) {
+controllers.controller("CreateVizCtrl", function($scope, $http, $rootScope, DataService, PropertyService, VizDataService, ConditionalDataService, SpecificationService) {
   DataService.promise(function(datasets) {
     console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'));
     return $scope.datasets = datasets;
@@ -242,8 +244,35 @@ controllers.controller("CreateVizCtrl", function($scope, $http, DataService, Pro
     })();
     $scope.allSpecs = specs;
     $scope.selected_type = $scope.types[$scope.selected_type_index].name;
-    return $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type_index].name];
+    $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type_index].name];
+    return $scope.select_spec(0);
   });
+  $scope.choose_spec = function(index) {
+    var spec;
+    spec = $scope.specs[index];
+    console.log("Chose spec", spec.sID);
+    return $http.get('http://localhost:8888/api/choose_spec', {
+      params: {
+        pID: $rootScope.pID,
+        sID: spec.sID
+      }
+    }).success(function(result) {
+      return spec.chosen = true;
+    });
+  };
+  $scope.reject_spec = function(index) {
+    var spec;
+    spec = $scope.specs[index];
+    console.log("Reject spec", spec.sID);
+    return $http.get('http://localhost:8888/api/reject_spec', {
+      params: {
+        pID: $rootScope.pID,
+        sID: $scope.specs[index].sID
+      }
+    }).success(function(result) {
+      return spec.chosen = false;
+    });
+  };
   $scope.select_type = function(index) {
     $scope.selected_type_index = index;
     $scope.selected_type = $scope.types[index].name;

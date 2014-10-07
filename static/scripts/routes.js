@@ -12,8 +12,7 @@ diveApp.config(function($stateProvider, $urlRouterProvider) {
     url: '/:formattedUserName/:formattedProjectTitle',
     templateUrl: 'static/views/project.html',
     controller: function($scope, $state, $stateParams) {
-      $scope.projectTitle = $stateParams.formattedProjectTitle;
-      return $state.go('engine.overview');
+      return $scope.projectTitle = $stateParams.formattedProjectTitle;
     },
     resolve: {
       formattedUserName: function($stateParams) {

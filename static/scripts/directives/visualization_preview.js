@@ -34,17 +34,18 @@ engineApp.directive("visualizationPreview", [
               clearTimeout(renderTimeout);
             }
             renderTimeout = $timeout(function() {
-              var condition, groupBy, selectFn, viz;
+              var aggregate, condition, groupBy, selectFn, viz;
               condition = vizSpec.condition.title.toString();
               selectFn = function(d) {
                 return console.log(d);
               };
+              aggregate = vizSpec.aggregate.title.toString();
               groupBy = vizSpec.groupBy.title.toString();
               if (vizType === "treemap") {
                 console.log('drawing treemap');
-                viz = d3plus.viz().container("div#viz-container").data(vizData).type("tree_map").font({
+                viz = d3plus.viz().container("div#viz-container").margin("20px").height(600).data(vizData).type("tree_map").font({
                   family: "Karbon"
-                }).id(groupBy).size("count").draw();
+                }).title("Group all " + vizSpec.aggregate.title + " by " + groupBy + " given a " + condition).id(groupBy).size("count").draw();
               } else if (vizType === "geomap") {
                 viz = d3plus.viz().container("div#viz-container").type("geo_map").data(vizData).coords("/static/assets/countries.json").id(groupBy).color("count").text("name").font({
                   family: "Karbon"

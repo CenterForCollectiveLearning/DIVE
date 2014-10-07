@@ -31,5 +31,8 @@ design
 node_modules
 
 # Compiled Files
-static/scripts
-static/styles/css
+static/scripts/
+static/styles/css/
+
+# Environment
+venv/

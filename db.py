@@ -33,6 +33,21 @@ class mongoInstance(object):
         if resp['n'] and resp['ok']:
             return dID
 
+    def postSpecs(self, pID, specs):
+        resp = MongoInstance.client[pID].specifications.insert(specs)
+        print len([str(sID_obj) for sID_obj in resp])
+        return [str(sID_obj) for sID_obj in resp]
+
+    def chooseSpec(self, pID, sID):
+        info = MongoInstance.client[pID].specifications.find_and_modify({'sID': sID}, {'$set': {'chosen': True}}, upsert=True, new=True)
+        sID = str(info['_id'])
+        return sID
+
+    def rejectSpec(self, pID, sID):
+        info = MongoInstance.client[pID].specifications.find_and_modify({'sID': sID}, {'$set': {'chosen': False}}, upsert=True, new=True)
+        sID = str(info['_id'])
+        return sID
+
     # Project Editing
     def getProject(self, pID, user):
         projects_collection = MongoInstance.client['dive'].projects

@@ -73,6 +73,7 @@ def set_allow_origin(resp):
         h['Access-Control-Allow-Origin'] = request.headers['Origin']
     return resp
 
+
 # TODO Look into Flask WTForms
 # File upload handler
 uploadFileParser = reqparse.RequestParser()
@@ -105,6 +106,7 @@ class UploadFile(Resource):
             column_attrs = [{'name': header[i], 'type': types[i], 'column_id': i} for i in range(0, len(columns) - 1)]
             json_data = json.jsonify({
                                     'status': "success",
+                                    'title': filename,
                                     'filename': filename,
                                     'dID': dID,
                                     'column_attrs': column_attrs,
@@ -120,7 +122,6 @@ class UploadFile(Resource):
             print "Upload response:", response
             return response
         return json.jsonify({'status': "Upload failed"})
-api.add_resource(UploadFile, '/api/upload')
 
 
 # Dataset retrieval, editing, deletion
@@ -167,6 +168,7 @@ class Data(Resource):
 
                 # Make response
                 json_data = {
+                    'title': d['filename'],
                     'filename': d['filename'],
                     'dID': d['dID'],
                     'column_attrs': column_attrs,
@@ -190,8 +192,6 @@ class Data(Resource):
         deleted_dIDs = [ MI.deleteData(dID, pID) for (dID, pID) in params ]
         return deleted_dIDs
 
-api.add_resource(Data, '/api/data')
-
 ############################
 # Get Project ID from Title
 ############################
@@ -205,7 +205,7 @@ class GetProjectID(Resource):
         res = MI.getProjectID(formattedProjectTitle)
         print "projectID result", res
         return res
-api.add_resource(GetProjectID, '/api/getProjectID')
+
 
 ############################
 # Projects
@@ -259,7 +259,7 @@ class Project(Resource):
         MI.deleteProject(pID)
         return
 
-api.add_resource(Project, '/api/project')
+
 
 ############################
 # Property (begins processing on first client API call)
@@ -282,8 +282,10 @@ class Property(Resource):
         raw_columns_dict = {}
         is_unique_dict = {}
         uniqued_columns_dict = {}
+        stats_dict = {}
         # TODO Don't reanalyze every single time...make properties persistent and only recalculate if dependent on uploaded datasets
-        # Tie into a single function
+        # Single-column functions
+        # Create a pipeline of functions
         for dataset in datasets:
             dID = dataset['dID']
             filename = dataset['filename']
@@ -298,7 +300,12 @@ class Property(Resource):
 
             # Statistical properties
             df = pd.read_table(path, sep=delim)
-            # print df, df.describe()
+            df_stats = df.describe()
+            df_stats_dict = json.loads(df_stats.to_json())
+            stats_dict[dID] = df_stats_dict
+            print df_stats_dict
+
+            # Replace nan
             # entropy 
             # gini
 
@@ -313,7 +320,8 @@ class Property(Resource):
             dataset_properties = {
                 'types': types,
                 'uniques': is_unique,
-                'headers': header
+                'headers': header,
+                'stats': df_stats_dict
             }
             tID = MI.upsertProperty(dID, pID, dataset_properties)
 
@@ -353,11 +361,14 @@ class Property(Resource):
             'types': types_dict, 
             'uniques': is_unique_dict, 
             'overlaps': overlaps, 
-            'hierarchies': hierarchies
+            'hierarchies': hierarchies,
+            'stats': stats_dict
         }
 
+        print all_properties
+
         return json.jsonify(all_properties)
-api.add_resource(Property, '/api/property')
+
 
 def is_numeric(x):
     if (x == 'int') or (x == 'float'):
@@ -374,10 +385,10 @@ def is_numeric(x):
 # TODO Incorporate ontologies
 def getTreemapSpecs(datasets, properties, ontologies):
     specs = []
-    print datasets
     dataset_titles = dict([(d['dID'], d['filename']) for d in datasets])
 
     for p in properties:
+        print p
         dID = p['dID']
         # TODO Perform this as a database query with a specific document?
         relevant_ontologies = [ o for o in ontologies if ((o['source_dID'] == dID) or (o['target_dID'] == dID))]
@@ -392,9 +403,11 @@ def getTreemapSpecs(datasets, properties, ontologies):
             type_b = types[index_b]
             if not (is_numeric(type_a) or is_numeric(type_b)):
                 specs.append({
+                    'viz_type': 'treemap',
                     'condition': {'index': index_a, 'title': headers[index_a]},
                     'aggregate': {'dID': dID, 'title': dataset_titles[dID]},
                     'groupBy': {'index': index_b, 'title': headers[index_b]},
+                    'chosen': False
                 })
     return specs
 
@@ -424,19 +437,25 @@ class Specification(Resource):
             # "network": getNetworkSpecs(p, o)
         }
 
-        
-        # print 'Properties:', properties
-        # print 'Ontologies:', ontologies
+        for viz_type, specs in viz_types.iteritems():
+            sIDs = MI.postSpecs(pID, specs) 
+            for i, spec in enumerate(specs):
+                spec['sID'] = sIDs[i]
+                del spec['_id']
         return viz_types
-api.add_resource(Specification, '/api/specification')
+
 
 vizToRequiredParams = {
     'treemap': ['aggregate', 'condition', 'groupBy']
 }
 
-# Utility function to make sure all fields needed to create visualization type are passed
+# Utility functio n to make sure all fields needed to create visualization type are passed
 def requiredParams(type, spec):
-    return set(spec.keys()) == set(vizToRequiredParams[type])
+    for requiredParam in vizToRequiredParams[type]:
+        if requiredParam not in spec:
+            return False
+    return True
+
 
 def getTreemapData(spec, pID):
     # Parse specification
@@ -470,7 +489,6 @@ def getTreemapData(spec, pID):
     #             # Uses column indexing for now
     #             cond_df = df[df[condition].isin(query)]
 
-    print spec, pID
     return
 
 #####################################################################
@@ -484,14 +502,16 @@ visualizationDataGetParser.add_argument('type', type=str, required=True)
 visualizationDataGetParser.add_argument('spec', type=str, required=True)
 class Visualization_Data(Resource):
     def get(self):
+        print "Getting viz data"
         args = visualizationDataGetParser.parse_args()
         pID = args.get('pID').strip().strip('"')
         type = args.get('type')
         spec = json.loads(args.get('spec'))
         if requiredParams(type, spec):
+            print getTreemapData(spec, pID)
             return getTreemapData(spec, pID)
         return
-api.add_resource(Visualization_Data, '/api/visualization_data')
+
 
 def getConditionalData(spec, pID):
     # Parse specification
@@ -508,6 +528,32 @@ def getConditionalData(spec, pID):
 
     return {'result': unique_elements}
 
+#####################################################################
+# Endpoint returning data to populate dropdowns for given specification
+# INPUT: sID, pID, uID
+# OUTPUT: [conditional elements]
+#####################################################################
+chooseSpecParser = reqparse.RequestParser()
+chooseSpecParser.add_argument('pID', type=str, required=True)
+chooseSpecParser.add_argument('sID', type=str, required=True)
+class Choose_Spec(Resource):
+    def get(self):
+        args = chooseSpecParser.parse_args()
+        pID = args.get('pID').strip().strip('"')
+        sID = args.get('sID')
+        MI.chooseSpec(pID, sID)
+        return
+
+rejectSpecParser = reqparse.RequestParser()
+rejectSpecParser.add_argument('pID', type=str, required=True)
+rejectSpecParser.add_argument('sID', type=str, required=True)
+class Reject_Spec(Resource):
+    def get(self):
+        args = rejectSpecParser.parse_args()
+        pID = args.get('pID').strip().strip('"')
+        sID = args.get('sID')
+        MI.rejectSpec(pID, sID)
+        return
 
 #####################################################################
 # Endpoint returning data to populate dropdowns for given specification
@@ -527,7 +573,19 @@ class Conditional_Data(Resource):
         if requiredParams(type, spec):
             return getConditionalData(spec, pID)
         return
+
+
+api.add_resource(UploadFile, '/api/upload')
+api.add_resource(Data, '/api/data')
+api.add_resource(GetProjectID, '/api/getProjectID')
+api.add_resource(Project, '/api/project')
+api.add_resource(Property, '/api/property')
+api.add_resource(Specification, '/api/specification')
+api.add_resource(Choose_Spec, '/api/choose_spec')
+api.add_resource(Reject_Spec, '/api/reject_spec')
+api.add_resource(Visualization_Data, '/api/visualization_data')
 api.add_resource(Conditional_Data, '/api/conditional_data')
+
 
 if __name__ == '__main__':
     app.debug = True

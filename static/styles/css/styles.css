@@ -156,7 +156,7 @@ section.landing-projects ul.projects {
     cursor: pointer;
     margin-top: 10px;
     height: 140px;
-    width: 200px;
+    width: 250px;
     background-color: #F1EFEF;
     border-radius: 2px;
     display: inline-block;
@@ -197,10 +197,12 @@ nav.navbar {
   nav.navbar ul {
     padding-left: 0; }
     nav.navbar ul li {
+      -webkit-transition: background 0.1s ease-in;
+      transition: background 0.1s ease-in;
       float: left;
       padding: 0 20px; }
       nav.navbar ul li.active {
-        background-color: #4A90E2; }
+        background-color: #F1EFEF; }
       nav.navbar ul li a {
         line-height: 49px;
         color: black;
@@ -286,6 +288,8 @@ section.left-pane, section.right-pane {
     padding-left: 0;
     list-style-type: none; }
     section.left-pane ul.pane-items li, section.right-pane ul.pane-items li {
+      -webkit-transition: background 0.1s ease-in;
+      transition: background 0.1s ease-in;
       position: relative;
       list-style-type: none;
       height: 80px;
@@ -309,7 +313,8 @@ section.left-pane, section.right-pane {
           section.left-pane ul.pane-items li div.choose div i, section.right-pane ul.pane-items li div.choose div i {
             width: 100%;
             line-height: 40px;
-            text-align: center; }
+            text-align: center;
+            color: black; }
         section.left-pane ul.pane-items li div.choose div.select, section.right-pane ul.pane-items li div.choose div.select {
           background-color: #7ED321; }
         section.left-pane ul.pane-items li div.choose div.reject, section.right-pane ul.pane-items li div.choose div.reject {
@@ -326,6 +331,8 @@ section.left-pane, section.right-pane {
           color: #666; }
       section.left-pane ul.pane-items li.selected, section.right-pane ul.pane-items li.selected {
         background-color: #F1EFEF; }
+      section.left-pane ul.pane-items li.chosen, section.right-pane ul.pane-items li.chosen {
+        background-color: #7ED321; }
       section.left-pane ul.pane-items li div.dimensions, section.right-pane ul.pane-items li div.dimensions {
         float: left;
         width: 200px;
@@ -533,6 +540,16 @@ tr.ng-scope td {
   40% {
     box-shadow: 0 -2em #666;
     height: 5em; } }
+
+ontology-editor .title {
+  font-size: 20px; }
+ontology-editor text, ontology-editor path {
+  cursor: pointer; }
+ontology-editor rect {
+  cursor: pointer; }
+  ontology-editor rect.hover {
+    fill-opacity: 1;
+    fill: #F1EFEF; }
 
 select {
   font-size: 14px;

@@ -18,7 +18,7 @@ engineApp.directive "visualizationPreview", ["$window", "$timeout", "d3Service",
             return
 
           # Resizing
-          scope.$watch (->
+          scope.$watch ( ->
             angular.element($window)[0].innerWidth
           ), ->
             scope.render(scope.vizType, scope.vizSpec, scope.vizData, scope.conditionalData)
@@ -48,15 +48,19 @@ engineApp.directive "visualizationPreview", ["$window", "$timeout", "d3Service",
               #   .draw()
 
               # TODO Reduce Redundancy in d3Plus
+              aggregate = vizSpec.aggregate.title.toString()
               groupBy = vizSpec.groupBy.title.toString()
 
               if vizType is "treemap"
                 console.log('drawing treemap')
                 viz = d3plus.viz()
                   .container("div#viz-container")
+                  .margin("20px")
+                  .height(600)
                   .data(vizData)
                   .type("tree_map")
                   .font(family: "Karbon")
+                  .title("Group all " + vizSpec.aggregate.title + " by " + groupBy + " given a " + condition)
                   .id(groupBy)
                   .size("count")
                   .draw()

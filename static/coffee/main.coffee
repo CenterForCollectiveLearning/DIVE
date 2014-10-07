@@ -64,9 +64,6 @@ engineApp.directive("topBar", ->
 	}
 )
 
-diveApp.config ($interpolateProvider) ->
-  $interpolateProvider.startSymbol("{[{").endSymbol "}]}"
-
 # Need to return function
 diveApp.filter "capitalize", -> 
   (input, scope) ->

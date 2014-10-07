@@ -66,10 +66,6 @@ engineApp.directive("topBar", function() {
   };
 });
 
-diveApp.config(function($interpolateProvider) {
-  return $interpolateProvider.startSymbol("{[{").endSymbol("}]}");
-});
-
 diveApp.filter("capitalize", function() {
   return function(input, scope) {
     input = input.toLowerCase();

@@ -47,7 +47,7 @@ section.landing-top {
 }
 
 section.landing-projects {
-    $block-width: 200px;
+    $block-width: 250px;
     $block-height: 140px;
 
     div.new-project-button {
@@ -152,11 +152,13 @@ nav.navbar {
         padding-left: 0;
 
         li {
+            @include background-transition();
             float: left;
             padding: 0 20px;
 
             &.active {
-                background-color: $ontology-blue;
+                background-color: $light-gray;
+                // background-color: $ontology-blue;
                 // &.data { background-color: $data-yellow; }
                 // &.ontology { background-color: $ontology-blue; }
                 // &.visualize { background-color: $visualize-purple; }
@@ -278,6 +280,7 @@ section.left-pane, section.right-pane {
         padding-left: 0;
         list-style-type: none;
         li {
+            @include background-transition();
             position: relative;
             list-style-type: none;
             height: 80px;
@@ -310,6 +313,7 @@ section.left-pane, section.right-pane {
                         width: 100%;
                         line-height: 40px;
                         text-align: center;
+                        color: black;
                     }
                 }
 
@@ -337,6 +341,10 @@ section.left-pane, section.right-pane {
 
             &.selected {
               background-color: $light-gray;
+            }
+
+            &.chosen {
+                background-color: $assemble-green;
             }
 
             div.title {
@@ -571,7 +579,23 @@ tr.ng-scope {
   }
 }
 
+ontology-editor {
+    .title {
+        font-size: 20px;
+    }
 
+    text, path {
+        cursor: pointer;
+    }
+
+    rect {
+        cursor: pointer;
+        &.hover {
+            fill-opacity: 1.0;
+            fill: $light-gray;
+        }
+    }
+}
 
 // Dropdown styling
 select{

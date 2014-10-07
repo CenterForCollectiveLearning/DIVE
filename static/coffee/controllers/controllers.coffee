@@ -115,6 +115,7 @@ controllers.controller "DatasetListCtrl", ($scope, $rootScope, projectID, $http,
   # Initialize datasets
   DataService.promise((datasets) ->
     $scope.datasets = datasets
+    console.log($scope.datasets)
   )
 
   ###############
@@ -208,13 +209,14 @@ controllers.controller "OntologyEditorCtrl", ($scope, $http, DataService, Proper
     $scope.properties = properties
     $scope.overlaps = properties.overlaps
     $scope.hierarchies = properties.hierarchies
+    $scope.uniques = properties.uniques
   )
 
 controllers.controller "AssembleCtrl", ($scope, $http) ->
   return
 
 # TODO Make this controller thinner!
-controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertyService, VizDataService, ConditionalDataService, SpecificationService) ->
+controllers.controller "CreateVizCtrl", ($scope, $http, $rootScope, DataService, PropertyService, VizDataService, ConditionalDataService, SpecificationService) ->
 
   # Initialize datasets
   DataService.promise((datasets) ->
@@ -235,9 +237,31 @@ controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertySer
     $scope.allSpecs = specs
     $scope.selected_type = $scope.types[$scope.selected_type_index].name
     $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type_index].name]
+
+    $scope.select_spec(0)
   )
 
+  $scope.choose_spec = (index) ->
+    spec = $scope.specs[index]
+    console.log("Chose spec", spec.sID)
+    $http.get('http://localhost:8888/api/choose_spec',
+      params:
+        pID: $rootScope.pID
+        sID: spec.sID
+    ).success((result) ->
+      spec.chosen = true
+    )
 
+  $scope.reject_spec = (index) ->
+    spec = $scope.specs[index]
+    console.log("Reject spec", spec.sID)
+    $http.get('http://localhost:8888/api/reject_spec',
+      params:
+        pID: $rootScope.pID
+        sID: $scope.specs[index].sID
+    ).success((result) ->
+      spec.chosen = false
+    )
 
   $scope.select_type = (index) ->
     $scope.selected_type_index = index
@@ -255,27 +279,3 @@ controllers.controller "CreateVizCtrl", ($scope, $http, DataService, PropertySer
     VizDataService.promise($scope.selected_type, $scope.selected_spec, (result) ->
       $scope.vizData = result.result
     )
-
-
-
-  #   # TODO Move parsing logic to server side...or just have it in the correct format anyways
-  #   VizFromOntologyService.promise $scope.initNetwork, (data) ->
-  #     visualizations = data.visualizations
-  #     vizTypes = []
-  #     for visualization of visualizations
-  #       vizTypes.push
-  #         name: visualization
-  #         count: visualizations[visualization].length
-
-  #     $scope.vizTypes = vizTypes
-  #     $scope.vizSpecs = visualizations[$scope.vizType]
-  #     $scope.allVizSpecs = visualizations
-  #     return
-
-  #   return
-
-  # $scope.vizFromOntology()
-  # $scope.setVizData = (vizSpec) ->
-  #   $scope.vizSpec = vizSpec
-  #   VizDataService.promise vizSpec, (result) ->
-  #     $scope.vizData = result.result

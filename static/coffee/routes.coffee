@@ -15,7 +15,7 @@ diveApp.config(($stateProvider, $urlRouterProvider) ->
         $scope.projectTitle = $stateParams.formattedProjectTitle
 
         # TODO Only redirect if exact URL match
-        $state.go('engine.overview')
+        # $state.go('engine.overview')
       resolve:
         formattedUserName: ($stateParams) -> $stateParams.formattedUserName
         formattedProjectTitle: ($stateParams) -> $stateParams.formattedProjectTitle

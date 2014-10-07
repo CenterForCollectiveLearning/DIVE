@@ -1,37 +1,37 @@
-<section class="left-pane" ng-class="{'closed': leftClosed}">
+<section class="left-pane" ng-class="{'closed': leftClosed}" maxheight>
   <div class="pane-title">
     Visualization Types
   </div>
   <ul class="pane-items">
     <li ng-repeat="type in types" class="dataset" ng-click="select_type($index)" ng-class="{'selected':$index==selected_type_index}">
-      <div class="vertical-centertitle"><b>{[{type.name | capitalize}]}</b></div>
-      <div class="count">{[{type.length}]} Visualization Types</div>
+      <div class="vertical-centertitle"><b>{{type.name | capitalize}}</b></div>
+      <div class="count">{{type.length}} Visualization Types</div>
     </li>
   </ul>
 </section>
 
-<section class="right-pane" ng-class="{'closed': rightClosed}">
+<section class="right-pane" ng-class="{'closed': rightClosed}" maxheight>
   <div class="pane-title">
     Visualization Specifications
   </div>
   <ul class="pane-items">
-    <li ng-repeat="spec in specs" ng-click="select_spec($index);" ng-class="{'selected':$index==selected_spec_index}">
-      <div>Aggregate <b>{[{spec.aggregate.title}]}</b></div>
-      <div>Condition on <b>{[{spec.condition.title}]}</b></div>
-      <div>Group by <b>{[{spec.groupBy.title}]}</b></div>
+    <li ng-repeat="spec in specs" ng-click="select_spec($index);" ng-class="{'selected':$index==selected_spec_index, 'chosen':spec.chosen}">
+      <div>Aggregate <b>{{spec.aggregate.title}}</b></div>
+      <div>Condition on <b>{{spec.condition.title}}</b></div>
+      <div>Group by <b>{{spec.groupBy.title}}</b></div>
       <div class="choose" ng-if="$index==selected_spec_index">
         <div class="select" ng-click="choose_spec($index)">
-          <i class="fa fa-check fa-2x"></i>
+          <i class="fa fa-check"></i>
         </div>
         <div class="reject" ng-click="reject_spec($index)">
-          <i class="fa fa-times fa-2x"></i>
+          <i class="fa fa-times"></i>
         </div>
       </div>
     </li>
   </ul>
 </section>
 
-<section class="viewport" ng-class="{'right-closed': rightClosed, 'left-closed': leftClosed}">
+<section class="viewport" ng-class="{'right-closed': rightClosed, 'left-closed': leftClosed}" maxheight>
   <pane-toggle></pane-toggle>
   <div id="viz-container"></div>
   <visualization-preview viz-type="selected_type" viz-spec="selected_spec" viz-data="vizData" conditional-data="conditionalData"></visualization-preview>

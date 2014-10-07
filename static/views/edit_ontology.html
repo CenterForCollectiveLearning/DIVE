@@ -1,27 +1,27 @@
-<section class="left-pane" ng-class="{'closed': leftClosed}">
+<section class="left-pane" ng-class="{'closed': leftClosed}" maxheight>
 	<div class="pane-title">
 		Change Ontology View
 	</div>
 	<ul class="pane-items">
 		<li ng-repeat="option in layoutOptions" class="option" ng-class="{'selected':$index==selectedLeftIndex && currentPane=='left'}">
-			<div class="vertical-center title" ng-click="select_left_option($index)" ng-class="{'inactive': option.inactive}">{[{option.label}]}</div>
+			<div class="vertical-center title" ng-click="select_left_option($index)" ng-class="{'inactive': option.inactive}">{{option.label}}</div>
 		</li>
 	</ul>
 </section>
 
-<section class="right-pane" ng-class="{'closed': rightClosed}">
+<section class="right-pane" ng-class="{'closed': rightClosed}" maxheight>
 	<div class="pane-title">
 		Edit Ontology
 	</div>
 	<ul class="pane-items">
 		<li ng-repeat="option in editOptions" class="option" ng-class="{'selected':$index==selectedRightIndex && currentPane=='left'}">
-			<div class="vertical-center title" ng-click="select_right_option($index)" ng-class="{'inactive': option.inactive}">{[{option.label}]}</div>
+			<div class="vertical-center title" ng-click="select_right_option($index)" ng-class="{'inactive': option.inactive}">{{option.label}}</div>
 		</li>
 	</ul>
 </section>
 
-<section class="viewport" ng-class="{'right-closed': rightClosed, 'left-closed': leftClosed}">
+<section class="viewport" ng-class="{'right-closed': rightClosed, 'left-closed': leftClosed}" maxheight>
 	<pane-toggle></pane-toggle>
 	<loader></loader>
-    <ontology-editor data="datasets" overlaps="overlaps" hierarchies="hierarchies"></ontology-editor>
+    <ontology-editor data="datasets" overlaps="overlaps" hierarchies="hierarchies" uniques="uniques"></ontology-editor>
 </section>
