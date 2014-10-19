@@ -5,7 +5,7 @@ diveApp.service "AllProjectsService", ($http, $rootScope) ->
     $http.get('http://localhost:8888/api/project',
       params:
         user_name: userName
-    ).success((result) -> 
+    ).success((result) ->
       callback(result)
     )
 
@@ -30,7 +30,7 @@ engineApp.service "DataService", ($http, $rootScope) ->
         pID: $rootScope.pID
         sample: true
     ).success((data) ->
-      console.log("[DATA] datasets:", data) 
+      console.log("[DATA] datasets:", data)
       callback(data.datasets)
     )
 
@@ -41,7 +41,7 @@ engineApp.service "PropertyService", ($http, $rootScope) ->
       params:
         pID: $rootScope.pID
     ).success((data) ->
-      console.log("[DATA] properties:", data) 
+      console.log("[DATA] properties:", data)
       callback(data)
     )
 
@@ -51,22 +51,22 @@ engineApp.service "SpecificationService", ($http, $rootScope) ->
     $http.get("http://localhost:8888/api/specification",
       params:
         pID: $rootScope.pID
-    ).success((data) -> 
-      console.log("[DATA] specifications:", data) 
+    ).success((data) ->
+      console.log("[DATA] specifications:", data)
       callback(data)
     )
 
 engineApp.service "ConditionalDataService", ($http, $rootScope) ->
   # TODO Generalize service for other vizTypes
   promise: (type, spec, callback) ->
-    console.log('[REQUEST] Conditoinal Data for Type', type, 'and Specification ', spec)
+    console.log('[REQUEST] Conditional Data for Type', type, 'and Specification ', spec)
     $http.get("http://localhost:8888/api/conditional_data",
       params:
         pID: $rootScope.pID
         type: type
         spec: spec
     ).success((data) ->
-      console.log("[DATA] Conditional Data:", data) 
+      console.log("[DATA] Conditional Data:", data)
       callback(data)
     )
 
@@ -80,6 +80,6 @@ engineApp.service "VizDataService", ($http, $rootScope) ->
         type: type
         spec: spec
     ).success((data) ->
-      console.log("[DATA] Viz Data:", data) 
+      console.log("[DATA] Viz Data:", data)
       callback(data)
     )

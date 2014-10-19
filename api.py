@@ -4,17 +4,17 @@ import json
 from random import sample
 from os import listdir
 from os.path import isfile, join
-from itertools import combinations
+
 from werkzeug.utils import secure_filename
 from bson.objectid import ObjectId
-import numpy as np
-import pandas as pd
 
 from db import MongoInstance as MI
 
 from flask import Flask, render_template, redirect, url_for, request, make_response, json
 from flask.ext.restful import Resource, Api, reqparse
 
+from server.specifications import *
+from server.visualization_data import getVisualizationData, getConditionalData
 from server.data import *
 from server.utility import *
 
@@ -106,7 +106,7 @@ class UploadFile(Resource):
             column_attrs = [{'name': header[i], 'type': types[i], 'column_id': i} for i in range(0, len(columns) - 1)]
             json_data = json.jsonify({
                                     'status': "success",
-                                    'title': filename,
+                                    'title': filename.split('.')[0],
                                     'filename': filename,
                                     'dID': dID,
                                     'column_attrs': column_attrs,
@@ -119,7 +119,6 @@ class UploadFile(Resource):
                                     })
             response = make_response(json_data)
             response.set_cookie('file', filename)
-            print "Upload response:", response
             return response
         return json.jsonify({'status': "Upload failed"})
 
@@ -163,12 +162,11 @@ class Data(Resource):
                 # make response
                 sample, rows, cols, extension, header = get_sample_data(path)
                 types = get_column_types(path)
-
                 column_attrs = [{'name': header[i], 'type': types[i], 'column_id': i} for i in range(0, len(columns) - 1)]
 
                 # Make response
                 json_data = {
-                    'title': d['filename'],
+                    'title': d['filename'].split('.')[0],
                     'filename': d['filename'],
                     'dID': d['dID'],
                     'column_attrs': column_attrs,
@@ -230,7 +228,6 @@ class Project(Resource):
         pID = args.get('pID').strip().strip('"')
         user_name = args.get('user_name')
         print "GET", pID, user_name
-
         return MI.getProject(pID, user_name)
 
     # Create project, initialize directories and collections
@@ -258,7 +255,6 @@ class Project(Resource):
 
         MI.deleteProject(pID)
         return
-
 
 
 ############################
@@ -303,7 +299,6 @@ class Property(Resource):
             df_stats = df.describe()
             df_stats_dict = json.loads(df_stats.to_json())
             stats_dict[dID] = df_stats_dict
-            print df_stats_dict
 
             # Replace nan
             # entropy 
@@ -365,51 +360,7 @@ class Property(Resource):
             'stats': stats_dict
         }
 
-        print all_properties
-
         return json.jsonify(all_properties)
-
-
-def is_numeric(x):
-    if (x == 'int') or (x == 'float'):
-        return True
-    return False
-
-#####################################################################
-# 1. GROUP every entity by a non-unique attribute (for factors, group by factors but score by number of distinct. For continuous, discretize the range) 
-#   1b. If attribute represents another object, also add aggregation by that object's attributes
-# 2. AGGREGATE by some function (could be count)
-# 3. QUERY by another non-unique attribute
-#####################################################################
-
-# TODO Incorporate ontologies
-def getTreemapSpecs(datasets, properties, ontologies):
-    specs = []
-    dataset_titles = dict([(d['dID'], d['filename']) for d in datasets])
-
-    for p in properties:
-        print p
-        dID = p['dID']
-        # TODO Perform this as a database query with a specific document?
-        relevant_ontologies = [ o for o in ontologies if ((o['source_dID'] == dID) or (o['target_dID'] == dID))]
-
-        types = p['types']
-        uniques = p['uniques']
-        headers = p['headers']
-        non_uniques = [i for (i, unique) in enumerate(uniques) if not unique]
-
-        for (index_a, index_b) in combinations(non_uniques, 2):
-            type_a = types[index_a]
-            type_b = types[index_b]
-            if not (is_numeric(type_a) or is_numeric(type_b)):
-                specs.append({
-                    'viz_type': 'treemap',
-                    'condition': {'index': index_a, 'title': headers[index_a]},
-                    'aggregate': {'dID': dID, 'title': dataset_titles[dID]},
-                    'groupBy': {'index': index_b, 'title': headers[index_b]},
-                    'chosen': False
-                })
-    return specs
 
 #####################################################################
 # Endpoint returning all inferred visualization specifications for a specific project
@@ -430,66 +381,22 @@ class Specification(Resource):
 
         viz_types = {
             "treemap": getTreemapSpecs(d, p, o),
-            # "geomap": getGeomapSpecs(p, o),
-            # "barchart": getBarchartSpecs(p, o),
-            # "scatterplot": getScatterplotSpecs(p, o),
-            # "linechart": getLineChartSpecs(p, o),
-            # "network": getNetworkSpecs(p, o)
+            "piechart": getPiechartSpecs(d, p, o),
+            "geomap": getGeomapSpecs(d, p, o),
+            "barchart": getBarchartSpecs(d, p, o),
+            "scatterplot": getScatterplotSpecs(d, p, o),
+            "linechart": getLinechartSpecs(d, p, o),
+            # "network": getNetworkSpecs(d, p, o)
         }
 
         for viz_type, specs in viz_types.iteritems():
-            sIDs = MI.postSpecs(pID, specs) 
-            for i, spec in enumerate(specs):
-                spec['sID'] = sIDs[i]
-                del spec['_id']
+            if specs:
+                sIDs = MI.postSpecs(pID, specs) 
+                for i, spec in enumerate(specs):
+                    spec['sID'] = sIDs[i]
+                    del spec['_id']
         return viz_types
 
-
-vizToRequiredParams = {
-    'treemap': ['aggregate', 'condition', 'groupBy']
-}
-
-# Utility functio n to make sure all fields needed to create visualization type are passed
-def requiredParams(type, spec):
-    for requiredParam in vizToRequiredParams[type]:
-        if requiredParam not in spec:
-            return False
-    return True
-
-
-def getTreemapData(spec, pID):
-    # Parse specification
-    condition = spec['condition']['title']
-    groupby = spec['groupBy']['title']
-    dID = spec['aggregate']['dID']
-    aggFn = 'sum'  # TODO: get this from an argument
-
-    # Load dataset (GENERALIZE THIS)
-    filename = MI.getData({'_id': ObjectId(dID)}, pID)[0]['filename']
-    path = os.path.join(app.config['UPLOAD_FOLDER'], pID, filename)
-    delim = get_delimiter(path)
-    df = pd.read_table(path, sep=delim)
-
-    cond_df = df
-    group_obj = cond_df.groupby(groupby)
-    finalSeries = group_obj.size()
-
-    result = []
-    for row in finalSeries.iteritems():
-        result.append({
-            groupby: row[0],
-            'count': np.asscalar(np.int16(row[1]))
-        })
-    return {'result': result}
-
-    # Compute
-    #         if query[0] == '*':
-    #             cond_df = df
-    #         else:
-    #             # Uses column indexing for now
-    #             cond_df = df[df[condition].isin(query)]
-
-    return
 
 #####################################################################
 # Endpoint returning aggregated visualization data given a specification ID
@@ -507,26 +414,9 @@ class Visualization_Data(Resource):
         pID = args.get('pID').strip().strip('"')
         type = args.get('type')
         spec = json.loads(args.get('spec'))
-        if requiredParams(type, spec):
-            print getTreemapData(spec, pID)
-            return getTreemapData(spec, pID)
-        return
 
+        return json.jsonify(getVisualizationData(type, spec, pID))
 
-def getConditionalData(spec, pID):
-    # Parse specification
-    condition = spec['condition']['title']
-    dID = spec['aggregate']['dID']
-
-    # Load dataset (GENERALIZE THIS)
-    filename = MI.getData({'_id': ObjectId(dID)}, pID)[0]['filename']
-    path = os.path.join(app.config['UPLOAD_FOLDER'], pID, filename)
-    delim = get_delimiter(path)
-    df = pd.read_table(path, sep=delim)
-
-    unique_elements = [{condition: e} for e in pd.Series(df[condition]).unique()]
-
-    return {'result': unique_elements}
 
 #####################################################################
 # Endpoint returning data to populate dropdowns for given specification

@@ -4,8 +4,11 @@
     Choose Data Sources
   </div>
   <ul class="pane-items">
-    <li ng-repeat="option in options" class="option" ng-class="{'selected':$index==selectedIndex && currentPane=='left'}">
-      <div class="vertical-center title" ng-click="select_option($index)" ng-class="{'inactive': option.inactive}">{{option.label}}</div>
+    <li ng-repeat="option in options" class="option" ng-class="{'selected':$index==selectedIndex && currentPane=='left', 'inactive': option.inactive}">
+      <div class="vertical-center title" ng-click="select_option($index)">{{option.label}}</div>
+      <div class="right">
+        <img src="/assets/images/{{option.icon}}" />
+      </div>
     </li>
   </ul>
 </section>

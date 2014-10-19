@@ -82,22 +82,28 @@ controllers.controller "DatasetListCtrl", ($scope, $rootScope, projectID, $http,
   $scope.selectedIndex = 0
   $scope.currentPane = 'left'
 
+  $scope.datasets = []
+
   $scope.options = [
     {
       label: 'Upload File'
       inactive: false
+      icon: 'file.svg'
     },
     {
       label: 'Connect to Database'
       inactive: true
+      icon: 'database.svg'
     },
     {
       label: 'Connect to API'
       inactive: true
+      icon: 'link.svg'
     },
     {
       label: 'Search DIVE Datasets'
       inactive: true
+      icon: 'search.svg'
     }
   ]
   $scope.select_option = (index) ->
@@ -110,7 +116,7 @@ controllers.controller "DatasetListCtrl", ($scope, $rootScope, projectID, $http,
     $scope.currentPane = 'right'
     $scope.selectedIndex = index
 
-  $scope.types = [ "int", "float", "str" ]
+  $scope.types = [ "integer", "float", "string", "country", "continent", "datetime" ]
 
   # Initialize datasets
   DataService.promise((datasets) ->
@@ -157,44 +163,37 @@ controllers.controller "DatasetListCtrl", ($scope, $rootScope, projectID, $http,
     )
 
 controllers.controller "OntologyEditorCtrl", ($scope, $http, DataService, PropertyService) ->
+  # Selected Element
+  $scope.selected = null
+
   # Interface elements
   $scope.selectedLeftIndex = 0
   $scope.selectedRightIndex = 0
   $scope.currentPane = 'left'
   $scope.layoutOptions = [
     {
-      label: 'Object'
+      label: 'Network'
+      layout: 'network'
       inactive: false
+      icon: 'network.svg'
     },
     {
       label: 'List'
-      inactive: true
+      layout: 'list'
+      inactive: false
+      icon: 'list.svg'
     },
     {
       label: 'Hierarchy'
+      layout: 'hierarchy'
       inactive: true
+      icon: 'hierarchy.svg'
     }
   ]
-  $scope.editOptions = [
-    {
-      label: 'Add'
-      inactive: true
-    },
-    {
-      label: 'Edit'
-      inactive: true
-    },
-    {
-      label: 'Delete'
-      inactive: true
-    }
-  ]
+
   $scope.select_left_option = (index) ->
     $scope.selectedLeftIndex = index
-
-  $scope.select_right_option = (index) ->
-    $scope.selectedRightIndex = index
-
+    $scope.selectedLayout = $scope.layoutOptions[index].layout
 
   # Initialize datasets
   DataService.promise((datasets) ->
@@ -210,14 +209,14 @@ controllers.controller "OntologyEditorCtrl", ($scope, $http, DataService, Proper
     $scope.overlaps = properties.overlaps
     $scope.hierarchies = properties.hierarchies
     $scope.uniques = properties.uniques
+    $scope.stats = properties.stats
   )
 
-controllers.controller "AssembleCtrl", ($scope, $http) ->
-  return
+
 
 # TODO Make this controller thinner!
 controllers.controller "CreateVizCtrl", ($scope, $http, $rootScope, DataService, PropertyService, VizDataService, ConditionalDataService, SpecificationService) ->
-
+  $scope.loading = true
   # Initialize datasets
   DataService.promise((datasets) ->
     console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'))
@@ -230,10 +229,18 @@ controllers.controller "CreateVizCtrl", ($scope, $http, $rootScope, DataService,
     $scope.hierarchies = properties.hierarchies
   )
 
+  icons =
+    treemap: 'treemap.svg'
+    barchart: 'barchart.svg'
+    piechart: 'piechart.svg'
+    geomap: 'geomap.svg'
+    scatterplot: 'scatterplot.svg'
+    linechart: 'linechart.svg'
+
   $scope.selected_type_index = 0
   $scope.selected_spec_index = 0
   SpecificationService.promise((specs) ->
-    $scope.types = ({'name': k, 'length': v.length} for k, v of specs)
+    $scope.types = ({'name': k, 'length': v.length, 'icon': icons[k.toLowerCase()]} for k, v of specs)
     $scope.allSpecs = specs
     $scope.selected_type = $scope.types[$scope.selected_type_index].name
     $scope.specs = $scope.allSpecs[$scope.types[$scope.selected_type_index].name]
@@ -272,10 +279,14 @@ controllers.controller "CreateVizCtrl", ($scope, $http, $rootScope, DataService,
     $scope.selected_spec_index = index
     $scope.selected_spec = $scope.specs[index]
 
-    ConditionalDataService.promise($scope.selected_type, $scope.selected_spec, (result) ->
-      $scope.conditionalData = result.result
-    )
+    # ConditionalDataService.promise($scope.selected_type, $scope.selected_spec, (result) ->
+    #   $scope.conditionalData = result.result
+    # )
 
     VizDataService.promise($scope.selected_type, $scope.selected_spec, (result) ->
       $scope.vizData = result.result
+      $scope.loading = false
     )
+
+controllers.controller "AssembleCtrl", ($scope, $http) ->
+  return

@@ -15,14 +15,12 @@ engineApp.directive "visualizationPreview", ["$window", "$timeout", "d3Service",
           renderTimeout = undefined
           $window.onresize = ->
             scope.$apply()
-            return
 
           # Resizing
           scope.$watch ( ->
             angular.element($window)[0].innerWidth
           ), ->
             scope.render(scope.vizType, scope.vizSpec, scope.vizData, scope.conditionalData)
-            return
 
           scope.$watchCollection("[vizType,vizSpec,vizData,conditionalData]", ((newData) ->
             console.log("newdata", newData)
@@ -30,48 +28,90 @@ engineApp.directive "visualizationPreview", ["$window", "$timeout", "d3Service",
           ), true)
 
           scope.render = (vizType, vizSpec, vizData, conditionalData) ->
-            unless (vizData and vizSpec and vizType and conditionalData)
+            unless (vizData and vizSpec and vizType) # and conditionalData)
               return
 
             clearTimeout renderTimeout if renderTimeout
             renderTimeout = $timeout(->
 
-              condition = vizSpec.condition.title.toString()
+              getTitle = (vizType, vizSpec) ->
+                title = ''
+                if vizType in ['treemap', 'piechart']
+                  title += ('Group all ' + vizSpec.aggregate.title + ' by ' + vizSpec.groupBy.title.toString())
+                  if (vizSpec.condition.title)
+                    title += (' given a ' + vizSpec.condition.title.toString())
+                else if vizType in ['scatterplot', 'barchart', 'linechart']
+                  return
+                return title
 
-              selectFn = (d) -> console.log(d)
-              # dropdown = d3plus.form()
-              #   .data(conditionalData)
-              #   .title("Select Options")
-              #   .id(condition)
-              #   .text(condition)
-              #   .type("drop")
-              #   .draw()
+              if condition
+                condition = vizSpec.condition.title.toString()
 
-              # TODO Reduce Redundancy in d3Plus
-              aggregate = vizSpec.aggregate.title.toString()
-              groupBy = vizSpec.groupBy.title.toString()
+                if conditionalData.length < 300
+                  dropdown = d3plus.form()
+                    .container("div#viz-container")
+                    .data(conditionalData)
+                    .title("Select Options")
+                    .id(condition)
+                    .text(condition)
+                    .type("drop")
+                    .title(condition)
+                    .draw()
 
-              if vizType is "treemap"
-                console.log('drawing treemap')
-                viz = d3plus.viz()
-                  .container("div#viz-container")
-                  .margin("20px")
-                  .height(600)
-                  .data(vizData)
-                  .type("tree_map")
-                  .font(family: "Karbon")
-                  .title("Group all " + vizSpec.aggregate.title + " by " + groupBy + " given a " + condition)
-                  .id(groupBy)
+              d3PlusTitleMapping =
+                treemap: 'tree_map'
+                piechart: 'pie'
+                barchart: 'bar'
+                scatterplot: 'scatter'
+                linechart: 'line'
+                geomap: 'geo_map'
+
+              viz = d3plus.viz()
+                .container("div#viz-container")
+                .margin("20px")
+                .height(600)
+                .data(vizData)
+                .font(family: "Karbon")
+
+              if vizType in ["treemap", "piechart"]
+                viz.type(d3PlusTitleMapping[vizType])
+                  .title(getTitle(vizType, vizSpec))
+                  .id(vizSpec.groupBy.title.toString())
                   .size("count")
                   .draw()
-                
-              else if vizType is "geomap"
-                viz = d3plus.viz().container("div#viz-container").type("geo_map").data(vizData).coords("/static/assets/countries.json").id(groupBy).color("count").text("name").font(family: "Karbon").style(color:
-                  heatmap: [
-                    "grey"
-                    "purple"
-                  ]
-                ).draw()
+
+              else if vizType in ["scatterplot", "barchart", "linechart"]
+                x = vizSpec.x.title
+                agg = vizSpec.aggregation
+                if agg
+                  viz.type(d3PlusTitleMapping[vizType])
+                    .title(getTitle(vizType, vizSpec))
+                    .x(x)
+                    .y("count")
+                    .id(x)
+                    .draw()
+                else
+                  y = vizSpec.y.title
+                  viz.type("scatter")
+                    .title(getTitle(vizType, vizSpec))
+                    .x(x)
+                    .y(y)
+                    .id(x)
+                    .draw()
+
+              else if vizType in ["geomap"]
+                viz.type(d3PlusTitleMapping[vizType])
+                  .coords("/static/assets/countries.json")
+                  .id(groupBy)
+                  .color("count")
+                  .title(getTitle(vizType, vizSpec))
+                  .text("name")
+                  .style(color:
+                    heatmap: [
+                      "grey"
+                      "purple"
+                    ]
+                  ).draw()
               return
             , 200)
             return

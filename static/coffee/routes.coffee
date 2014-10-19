@@ -8,14 +8,21 @@ diveApp.config(($stateProvider, $urlRouterProvider) ->
       resolve:
         allProjectsService: (AllProjectsService) -> AllProjectsService.promise
     )
+    .state('embed',
+      url: '/embed/:visualizationID'
+      templateUrl: 'static/views/embed.html'
+      controller: 'EmbedCtrl'
+      resolve:
+        embedVizDataService: (EmbedVizDataService) -> EmbedVizDataService.promise
+    )
     .state('engine',
       url: '/:formattedUserName/:formattedProjectTitle'
       templateUrl: 'static/views/project.html'
       controller: ($scope, $state, $stateParams) ->
-        $scope.projectTitle = $stateParams.formattedProjectTitle
+        $scope.projectTitle = $stateParams.formattedProjectTitle.replace('-', ' ')
 
         # TODO Only redirect if exact URL match
-        # $state.go('engine.overview')
+        $state.go('engine.overview')
       resolve:
         formattedUserName: ($stateParams) -> $stateParams.formattedUserName
         formattedProjectTitle: ($stateParams) -> $stateParams.formattedProjectTitle
@@ -46,8 +53,6 @@ diveApp.config(($stateProvider, $urlRouterProvider) ->
       templateUrl: 'static/views/create_viz.html'
       controller: 'CreateVizCtrl'
       resolve:
-        # initialData: (DataService) -> DataService.promise
-        # propertyService: (PropertyService) -> PropertyService.promise
         specificationService: (SpecificationService) -> SpecificationService.promise
         vizDataService: (VizDataService) -> VizDataService.promise
         conditionalDataService: (ConditionalDataService) -> ConditionalDataService.promise
