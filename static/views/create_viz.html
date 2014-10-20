@@ -25,10 +25,10 @@
 
         <div class="choose" ng-if="$index==selected_spec_index">
           <div class="select" ng-click="choose_spec($index); $event.stopPropagation();">
-            <i class="fa fa-check"></i>
+            <img src="/assets/images/check.svg" />
           </div>
           <div class="reject" ng-click="reject_spec($index); $event.stopPropagation();">
-            <i class="fa fa-times"></i>
+            <img src="/assets/images/cross.svg" />
           </div>
         </div>
       </div>
@@ -39,10 +39,10 @@
         <div ng-if="!spec.aggregation">vs. <b>{{spec.y.title}}</b></div>
         <div class="choose" ng-if="$index==selected_spec_index">
           <div class="select" ng-click="choose_spec($index); $event.stopPropagation();">
-            <img class="/assets/images/check.svg" />
+            <img src="/assets/images/check.svg" />
           </div>
           <div class="reject" ng-click="reject_spec($index); $event.stopPropagation();">
-            <img class="/assets/images/cross.svg" />
+            <img src="/assets/images/cross.svg" />
           </div>
         </div>
       </div>
@@ -58,17 +58,18 @@
 
   <section class="conditionals">
     <div class="title">Conditionals</div>
-    <div class="add-dropdown button" ng-click="add_dropdown()">Add Dropdown</div>
     <ul class="conditional-options">
-      <li class="conditional-option" ng-repeat="conditionalOption in conditionalOptions" ng-click="selectConditional(conditionalOption)">
+      <li class="conditional-option" ng-repeat="conditionalOption in conditionalOptions" ng-click="selectConditional(conditionalOption)" ng-class="{'selected':selectedConditional(conditionalOption.name)}">
         {{conditionalOption.name}}
       </li>
     </ul>
+    <div class="dropdowns">
     <ul class="dropdowns">
-      <li ng-repeat="(title, data) in conditionalData">
+      <li ng-repeat="(title, data) in selectedConditionalData">
         <label class="dropdown-label">{{title}}</label>
         <select ng-model="selectedConditionalValues[currentdID][title]" ng-options="datum for datum in data" ng-change="changedConditional()" ng-init="selectedConditionalValues[currentdID][title]=data[0]"></select>
       </li>
     </ul>
+  </div>
   </section>
 </section>

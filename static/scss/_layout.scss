@@ -358,10 +358,21 @@ section.left-pane, section.right-pane {
 
                 div.select {
                     background-color: $assemble-green;
+
+                    img {
+                        width: 16px;
+                        margin-top: 16px;
+                        margin-left: 12px
+                    }
                 }
 
                 div.reject {
                     background-color: $project-red;
+                    img {
+                        width: 14px;
+                        margin-top: 14px;
+                        margin-left: 13px;
+                    }
                 }
             }
 
@@ -573,34 +584,62 @@ section.conditionals, #viz-container {
         left: 50%;
         padding-left: 0px;
         margin-top:10px;
-        height: 60px;
+        height: auto;
         background-color: white;
 
         li.conditional-option {
+            @include background-transition();
+            margin-left: 4px;
+
+            @include small-caps;
+            text-align: center;
             display: inline;
             cursor: pointer;
             border-radius: 3px;
-            padding: 5px;
+            padding: 7px 10px;
             border: 1px solid $dark-gray;
             border-bottom-color: #D0D1D5;
             border-left-color: #DFE0E4;
             border-right-color: #DFE0E4;
             border-top-color: #E5E6E9;
+
+            &.selected {
+                background-color: $ontology-blue;
+            }
         }
     }
 
-    ul.dropdowns {
+    div.dropdowns {
         padding: 0;
-        height: 50px;
-        width: 630px;
-        margin: 0 auto;
+        width: auto;
+        margin: 20px -12px;
+        border-top: 1px solid #E5E6E9;
+
+        ul {
+            overflow: hidden;
+        }
+
+        div.delete-dropdown {
+            width: 12px;
+            height: 12px;
+            float: right;
+            position: relative;
+            bottom: 23px;
+            right: 5px;
+            img {
+                width: 12px;
+                height: 12px;
+                cursor: pointer;
+            }
+        }
+
         li {
-            margin-left: 10px;
-            &:nth-child(3n + 1) { margin-left: 0px; }
+            margin-left: 15px;
+            // &:nth-child(3n + 1) { margin-left: 0px; }
             width: 200px;
             float: left;
-            display: inline;
             label.dropdown-label {
+                @include small-caps;
                 text-align: center;
                 display: block;
             }

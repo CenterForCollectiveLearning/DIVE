@@ -304,32 +304,33 @@ controllers.controller "CreateVizCtrl", ($scope, $http, $rootScope, DataService,
   ###############################
   # Conditionals (TODO Refactor into directive)
   ###############################
-  $scope.addingConditional = false
-  $scope.conditionalOptions = []
-  $scope.conditionalData = {}
-  $scope.selectedConditionalValue = {}  # Currently selected
-  $scope.selectedConditionalValues = {}  # All selected
-
-  $scope.add_dropdown = ->
-    $scope.addingConditional = true
+  $scope.conditionalOptions = []  # All conditionals by name
+  $scope.selectedConditionalData = {}  # Data corresponding to selected conditionals (k: list)
+  $scope.selectedConditionalValues = {}  # All selected conditional values (k: val)
 
   $scope.selectConditional = (spec) ->
-    ConditionalDataService.promise($scope.currentdID, spec, (result) ->
-      console.log(result)
-      data = result.result.unshift('All')
-      $scope.conditionalData[spec.name] = result.result
-      $scope.addingConditional = false
-    )
-    VizDataService.promise($scope.selected_type, $scope.selected_spec, $scope.selectedConditionalValues, (result) ->
-      $scope.vizData = result.result
-      $scope.loading = false
-    )
+    if spec.name of $scope.selectedConditionalData
+      delete $scope.selectedConditionalData[spec.name]
+    else
+      ConditionalDataService.promise($scope.currentdID, spec, (result) ->
+        data = result.result.unshift('All')
+        $scope.selectedConditionalData[spec.name] = result.result
+      )
+      VizDataService.promise($scope.selected_type, $scope.selected_spec, $scope.selectedConditionalValues, (result) ->
+        $scope.vizData = result.result
+        $scope.loading = false
+      )
 
   $scope.changedConditional = (title) ->
     VizDataService.promise($scope.selected_type, $scope.selected_spec, $scope.selectedConditionalValues, (result) ->
       $scope.vizData = result.result
       $scope.loading = false
     )
+
+  $scope.selectedConditional = (name) ->
+    if name of $scope.selectedConditionalData
+      return true
+    return false
 
 controllers.controller "AssembleCtrl", ($scope, $http) ->
   return
