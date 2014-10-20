@@ -19,10 +19,10 @@ diveApp.config(($stateProvider, $urlRouterProvider) ->
       url: '/:formattedUserName/:formattedProjectTitle'
       templateUrl: 'static/views/project.html'
       controller: ($scope, $state, $stateParams) ->
-        $scope.projectTitle = $stateParams.formattedProjectTitle.replace('-', ' ')
+        $scope.projectTitle = $stateParams.formattedProjectTitle.split('-').join(' ')
 
         # TODO Only redirect if exact URL match
-        $state.go('engine.overview')
+        # $state.go('engine.overview')
       resolve:
         formattedUserName: ($stateParams) -> $stateParams.formattedUserName
         formattedProjectTitle: ($stateParams) -> $stateParams.formattedProjectTitle

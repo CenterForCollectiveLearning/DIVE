@@ -216,11 +216,17 @@ controllers.controller "OntologyEditorCtrl", ($scope, $http, DataService, Proper
 
 # TODO Make this controller thinner!
 controllers.controller "CreateVizCtrl", ($scope, $http, $rootScope, DataService, PropertyService, VizDataService, ConditionalDataService, SpecificationService) ->
-  $scope.loading = true
+
   # Initialize datasets
   DataService.promise((datasets) ->
     console.log('Datasets dIDs:', _.pluck($scope.datasets, 'dID'))
     $scope.datasets = datasets
+    console.log($scope.datasets)
+    $scope.datasetsByDID = {}
+    for d in datasets
+      dID = d.dID
+      $scope.datasetsByDID[dID] = d.column_attrs
+    console.log("cond options", $scope.conditionalOptions)
   )
 
   PropertyService.promise((properties) ->
@@ -255,6 +261,7 @@ controllers.controller "CreateVizCtrl", ($scope, $http, $rootScope, DataService,
       params:
         pID: $rootScope.pID
         sID: spec.sID
+        conditional: $scope.selectedConditionalValues
     ).success((result) ->
       spec.chosen = true
     )
@@ -279,11 +286,47 @@ controllers.controller "CreateVizCtrl", ($scope, $http, $rootScope, DataService,
     $scope.selected_spec_index = index
     $scope.selected_spec = $scope.specs[index]
 
-    # ConditionalDataService.promise($scope.selected_type, $scope.selected_spec, (result) ->
-    #   $scope.conditionalData = result.result
-    # )
+    if $scope.selected_spec.aggregate
+      dID = $scope.selected_spec.aggregate.dID
+    else
+      dID = $scope.selected_spec.object.dID
+    $scope.currentdID = dID
+    unless $scope.selectedConditionalValues[dID]
+      $scope.selectedConditionalValues[dID] = {}
+    $scope.conditionalOptions = $scope.datasetsByDID[dID]
+    console.log( $scope.conditionalData )
 
-    VizDataService.promise($scope.selected_type, $scope.selected_spec, (result) ->
+    VizDataService.promise($scope.selected_type, $scope.selected_spec, $scope.selectedConditionalValues, (result) ->
+      $scope.vizData = result.result
+      $scope.loading = false
+    )
+
+  ###############################
+  # Conditionals (TODO Refactor into directive)
+  ###############################
+  $scope.addingConditional = false
+  $scope.conditionalOptions = []
+  $scope.conditionalData = {}
+  $scope.selectedConditionalValue = {}  # Currently selected
+  $scope.selectedConditionalValues = {}  # All selected
+
+  $scope.add_dropdown = ->
+    $scope.addingConditional = true
+
+  $scope.selectConditional = (spec) ->
+    ConditionalDataService.promise($scope.currentdID, spec, (result) ->
+      console.log(result)
+      data = result.result.unshift('All')
+      $scope.conditionalData[spec.name] = result.result
+      $scope.addingConditional = false
+    )
+    VizDataService.promise($scope.selected_type, $scope.selected_spec, $scope.selectedConditionalValues, (result) ->
+      $scope.vizData = result.result
+      $scope.loading = false
+    )
+
+  $scope.changedConditional = (title) ->
+    VizDataService.promise($scope.selected_type, $scope.selected_spec, $scope.selectedConditionalValues, (result) ->
       $scope.vizData = result.result
       $scope.loading = false
     )

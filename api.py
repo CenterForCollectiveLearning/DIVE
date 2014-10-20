@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import shutil
 from random import sample
 from os import listdir
 from os.path import isfile, join
@@ -8,11 +9,10 @@ from os.path import isfile, join
 from werkzeug.utils import secure_filename
 from bson.objectid import ObjectId
 
-from db import MongoInstance as MI
-
 from flask import Flask, render_template, redirect, url_for, request, make_response, json
 from flask.ext.restful import Resource, Api, reqparse
 
+from server.db import MongoInstance as MI
 from server.specifications import *
 from server.visualization_data import getVisualizationData, getConditionalData
 from server.data import *
@@ -254,6 +254,9 @@ class Project(Resource):
         print "DELETE", pID
 
         MI.deleteProject(pID)
+
+        # Delete uploads directory
+        shutil.rmtree(os.path.join(app.config['UPLOAD_FOLDER'], pID))
         return
 
 
@@ -383,7 +386,7 @@ class Specification(Resource):
             "treemap": getTreemapSpecs(d, p, o),
             "piechart": getPiechartSpecs(d, p, o),
             "geomap": getGeomapSpecs(d, p, o),
-            "barchart": getBarchartSpecs(d, p, o),
+            # "barchart": getBarchartSpecs(d, p, o),
             "scatterplot": getScatterplotSpecs(d, p, o),
             "linechart": getLinechartSpecs(d, p, o),
             # "network": getNetworkSpecs(d, p, o)
@@ -407,6 +410,7 @@ visualizationDataGetParser = reqparse.RequestParser()
 visualizationDataGetParser.add_argument('pID', type=str, required=True)
 visualizationDataGetParser.add_argument('type', type=str, required=True)
 visualizationDataGetParser.add_argument('spec', type=str, required=True)
+visualizationDataGetParser.add_argument('conditional', type=str, required=True)
 class Visualization_Data(Resource):
     def get(self):
         print "Getting viz data"
@@ -414,9 +418,18 @@ class Visualization_Data(Resource):
         pID = args.get('pID').strip().strip('"')
         type = args.get('type')
         spec = json.loads(args.get('spec'))
+        conditional = json.loads(args.get('conditional'))
+        print "CONDITIONAL", conditional
 
-        return json.jsonify(getVisualizationData(type, spec, pID))
+        return json.jsonify(getVisualizationData(type, spec, conditional, pID))
 
+chosenSpecsParser = reqparse.RequestParser()
+chosenSpecsParser.add_argument('pID', type=str, required=True)
+class Chosen_Specs(Resource):
+    def get(self):
+        args = chooseSpecParser.parse_args()
+        pID = args.get('pID').strip().strip('"')
+        return
 
 #####################################################################
 # Endpoint returning data to populate dropdowns for given specification
@@ -426,11 +439,13 @@ class Visualization_Data(Resource):
 chooseSpecParser = reqparse.RequestParser()
 chooseSpecParser.add_argument('pID', type=str, required=True)
 chooseSpecParser.add_argument('sID', type=str, required=True)
+chooseSpecParser.add_argument('conditional', type=str, required=True)
 class Choose_Spec(Resource):
     def get(self):
         args = chooseSpecParser.parse_args()
         pID = args.get('pID').strip().strip('"')
         sID = args.get('sID')
+        conditional = json.loads(args.get('conditional'))
         MI.chooseSpec(pID, sID)
         return
 
@@ -450,19 +465,17 @@ class Reject_Spec(Resource):
 # INPUT: sID, pID, uID
 # OUTPUT: [conditional elements]
 #####################################################################
-visualizationDataGetParser = reqparse.RequestParser()
-visualizationDataGetParser.add_argument('pID', type=str, required=True)
-visualizationDataGetParser.add_argument('type', type=str, required=True)
-visualizationDataGetParser.add_argument('spec', type=str, required=True)
+conditionalDataGetParser = reqparse.RequestParser()
+conditionalDataGetParser.add_argument('pID', type=str, required=True)
+conditionalDataGetParser.add_argument('dID', type=str, required=True)
+conditionalDataGetParser.add_argument('spec', type=str, required=True)
 class Conditional_Data(Resource):
     def get(self):
-        args = visualizationDataGetParser.parse_args()
+        args = conditionalDataGetParser.parse_args()
         pID = args.get('pID').strip().strip('"')
-        type = args.get('type')
+        dID = args.get('dID').strip().strip('"')
         spec = json.loads(args.get('spec'))
-        if requiredParams(type, spec):
-            return getConditionalData(spec, pID)
-        return
+        return json.jsonify({'result': getConditionalData(spec, dID, pID)})
 
 
 api.add_resource(UploadFile, '/api/upload')

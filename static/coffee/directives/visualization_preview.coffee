@@ -23,7 +23,6 @@ engineApp.directive "visualizationPreview", ["$window", "$timeout", "d3Service",
             scope.render(scope.vizType, scope.vizSpec, scope.vizData, scope.conditionalData)
 
           scope.$watchCollection("[vizType,vizSpec,vizData,conditionalData]", ((newData) ->
-            console.log("newdata", newData)
             scope.render(newData[0], newData[1], newData[2], newData[3])
           ), true)
 
@@ -68,6 +67,7 @@ engineApp.directive "visualizationPreview", ["$window", "$timeout", "d3Service",
 
               viz = d3plus.viz()
                 .container("div#viz-container")
+                .width($("section.viewport").width() - 40)
                 .margin("20px")
                 .height(600)
                 .data(vizData)

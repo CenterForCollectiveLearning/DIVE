@@ -39,10 +39,10 @@
         <div ng-if="!spec.aggregation">vs. <b>{{spec.y.title}}</b></div>
         <div class="choose" ng-if="$index==selected_spec_index">
           <div class="select" ng-click="choose_spec($index); $event.stopPropagation();">
-            <i class="fa fa-check"></i>
+            <img class="/assets/images/check.svg" />
           </div>
           <div class="reject" ng-click="reject_spec($index); $event.stopPropagation();">
-            <i class="fa fa-times"></i>
+            <img class="/assets/images/cross.svg" />
           </div>
         </div>
       </div>
@@ -55,5 +55,20 @@
   <loader></loader>
   <div id="viz-container"></div>
   <visualization-preview viz-type="selected_type" viz-spec="selected_spec" viz-data="vizData" conditional-data="conditionalData"></visualization-preview>
-  <conditional-preview></conditional-preview>
+
+  <section class="conditionals">
+    <div class="title">Conditionals</div>
+    <div class="add-dropdown button" ng-click="add_dropdown()">Add Dropdown</div>
+    <ul class="conditional-options">
+      <li class="conditional-option" ng-repeat="conditionalOption in conditionalOptions" ng-click="selectConditional(conditionalOption)">
+        {{conditionalOption.name}}
+      </li>
+    </ul>
+    <ul class="dropdowns">
+      <li ng-repeat="(title, data) in conditionalData">
+        <label class="dropdown-label">{{title}}</label>
+        <select ng-model="selectedConditionalValues[currentdID][title]" ng-options="datum for datum in data" ng-change="changedConditional()" ng-init="selectedConditionalValues[currentdID][title]=data[0]"></select>
+      </li>
+    </ul>
+  </section>
 </section>
