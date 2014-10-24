@@ -84,3 +84,18 @@ engineApp.service "VizDataService", ($http, $rootScope) ->
       # console.log("[DATA] Viz Data:", data)
       callback(data)
     )
+
+engineApp.service "ExportedVisualizationDataService", ($http, $rootScope) ->
+  # TODO Generalize service for other vizTypes
+  promise: (type, spec, conditional, callback) ->
+    # console.log('[REQUEST] Viz Data for Type', type, 'and Specification ', spec)
+    $http.get("http://localhost:8888/api/visualization_data",
+      params:
+        pID: $rootScope.pID
+        type: type
+        spec: spec
+        conditional: conditional
+    ).success((data) ->
+      # console.log("[DATA] Viz Data:", data)
+      callback(data)
+    )

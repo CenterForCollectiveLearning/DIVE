@@ -150,11 +150,16 @@ nav.navbar {
 
     ul {
         padding-left: 0;
-
         li {
+            @include small-caps;
             @include background-transition();
+            cursor: pointer;
             float: left;
             padding: 0 20px;
+
+            a {
+                color: black;
+            }
 
             &.active {
                 background-color: $light-gray;
@@ -168,13 +173,6 @@ nav.navbar {
                     position: relative;
                     bottom: 1px;
                 }
-            }
-
-            a {
-                line-height: 49px;
-                color: black;   
-                font-size: 16px;
-                @include small-caps;
             }
         }
     }

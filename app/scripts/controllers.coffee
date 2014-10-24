@@ -180,7 +180,7 @@ controllers.controller "OntologyEditorCtrl", ($scope, $http, DataService, Proper
     {
       label: 'List'
       layout: 'list'
-      inactive: false
+      inactive: true
       icon: 'list.svg'
     },
     {

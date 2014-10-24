@@ -6,7 +6,7 @@ engineApp.directive "visualizationPreview", ["$window", "$timeout", "d3Service",
         vizType: "="
         vizSpec: "="
         vizData: "="
-        conditionalData: "="
+        conditional: "="
         label: "@"
         onClick: "&"
 
@@ -22,18 +22,18 @@ engineApp.directive "visualizationPreview", ["$window", "$timeout", "d3Service",
           ), ->
             scope.render(scope.vizType, scope.vizSpec, scope.vizData, scope.conditionalData)
 
-          scope.$watchCollection("[vizType,vizSpec,vizData,conditionalData]", ((newData) ->
+          scope.$watchCollection("[vizType,vizSpec,vizData,conditional]", ((newData) ->
             scope.render(newData[0], newData[1], newData[2], newData[3])
           ), true)
 
-          scope.render = (vizType, vizSpec, vizData, conditionalData) ->
-            unless (vizData and vizSpec and vizType) # and conditionalData)
+          scope.render = (vizType, vizSpec, vizData, conditional) ->
+            unless (vizData and vizSpec and vizType and conditional)
               return
 
             clearTimeout renderTimeout if renderTimeout
             renderTimeout = $timeout(->
 
-              getTitle = (vizType, vizSpec) ->
+              getTitle = (vizType, vizSpec, conditional) ->
                 title = ''
                 if vizType in ['treemap', 'piechart']
                   title += ('Group all ' + vizSpec.aggregate.title + ' by ' + vizSpec.groupBy.title.toString())
@@ -101,18 +101,12 @@ engineApp.directive "visualizationPreview", ["$window", "$timeout", "d3Service",
 
               else if vizType in ["geomap"]
                 viz.type(d3PlusTitleMapping[vizType])
-                  .coords("/static/assets/countries.json")
-                  .id(groupBy)
-                  .color("count")
                   .title(getTitle(vizType, vizSpec))
-                  .text("name")
-                  .style(color:
-                    heatmap: [
-                      "grey"
-                      "purple"
-                    ]
-                  ).draw()
-              return
+                  .coords("/assets/countries.json")
+                  .id(vizSpec.groupBy.title.toString())
+                  .color("count")
+                  .size("count")
+                  .draw()
             , 200)
             return
 

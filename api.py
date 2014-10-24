@@ -446,7 +446,9 @@ class Choose_Spec(Resource):
         pID = args.get('pID').strip().strip('"')
         sID = args.get('sID')
         conditional = json.loads(args.get('conditional'))
-        MI.chooseSpec(pID, sID)
+
+        print "Choose spec", pID, sID, conditional
+        MI.chooseSpec(pID, sID, conditional)
         return
 
 rejectSpecParser = reqparse.RequestParser()
@@ -470,6 +472,21 @@ conditionalDataGetParser.add_argument('pID', type=str, required=True)
 conditionalDataGetParser.add_argument('dID', type=str, required=True)
 conditionalDataGetParser.add_argument('spec', type=str, required=True)
 class Conditional_Data(Resource):
+    def get(self):
+        args = conditionalDataGetParser.parse_args()
+        pID = args.get('pID').strip().strip('"')
+        dID = args.get('dID').strip().strip('"')
+        spec = json.loads(args.get('spec'))
+        return json.jsonify({'result': getConditionalData(spec, dID, pID)})
+
+
+#####################################################################
+# Endpoint returning exported visualizations
+#####################################################################
+exportedVisualizationGetParser = reqparse.RequestParser()
+exportedVisualizationGetParser.add_argument('pID', type=str, required=True)
+exportedVisualizationGetParser.add_argument('eID', type=str, required=True)
+class Exported_Visualization(Resource):
     def get(self):
         args = conditionalDataGetParser.parse_args()
         pID = args.get('pID').strip().strip('"')

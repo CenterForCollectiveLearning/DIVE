@@ -11,9 +11,11 @@
 	</nav>
 	<nav class="navbar navbar-default sections" role="navigation">
 		<ul ng-controller="TabsCtrl">
-			<li ui-sref-active="active" ng-repeat="tab in tabs">
-				<a ui-sref="{{tab.route}}" select="go(t.route)">{{tab.label}}</a>
-			</li>
+			<li ui-sref="{{tab.route}}" ui-sref-active="active" ng-repeat="tab in tabs" select="go(t.route)" select="go(t.route)">
+				<a>
+					{{tab.label}}
+				</a>
+			</li>			
 		</ul>
 	</nav>
 </header>
