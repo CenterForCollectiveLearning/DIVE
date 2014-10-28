@@ -22,13 +22,13 @@ var/
 *.ai
 *.sketch/
 *.sass-cache
+
 uploads/
 virt_env/
 
 # Directories
-test_data
-design
-node_modules
+design/
+node_modules/
 
 # Compiled Files
 dist/
