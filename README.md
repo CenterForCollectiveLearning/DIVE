@@ -2,8 +2,8 @@ Data Integration and Visualization Engine (DIVE)
 =================================================
 
 # Build Process
-1) Run 'npm install'
-2) Run 'gulp' (if gulp install globally) else ./node_modules/.bin/gulp
+1. Run 'npm install'
+2. Run 'gulp' (if gulp install globally) else ./node_modules/.bin/gulp
 
 # Using Virtual Env
 + Installation
