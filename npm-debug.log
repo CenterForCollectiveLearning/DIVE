@@ -1,0 +1,84 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'broswer-sync' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.35
+4 verbose readDependencies using package.json deps
+5 verbose cache add [ 'broswer-sync', null ]
+6 verbose cache add name=undefined spec="broswer-sync" args=["broswer-sync",null]
+7 verbose parsed url { protocol: null,
+7 verbose parsed url   slashes: null,
+7 verbose parsed url   auth: null,
+7 verbose parsed url   host: null,
+7 verbose parsed url   port: null,
+7 verbose parsed url   hostname: null,
+7 verbose parsed url   hash: null,
+7 verbose parsed url   search: null,
+7 verbose parsed url   query: null,
+7 verbose parsed url   pathname: 'broswer-sync',
+7 verbose parsed url   path: 'broswer-sync',
+7 verbose parsed url   href: 'broswer-sync' }
+8 silly lockFile 8d69259b-broswer-sync broswer-sync
+9 verbose lock broswer-sync /Users/judychang/.npm/8d69259b-broswer-sync.lock
+10 silly lockFile 8d69259b-broswer-sync broswer-sync
+11 silly lockFile 8d69259b-broswer-sync broswer-sync
+12 verbose addNamed [ 'broswer-sync', '' ]
+13 verbose addNamed [ null, '*' ]
+14 silly lockFile ae4c5fd3-broswer-sync broswer-sync@
+15 verbose lock broswer-sync@ /Users/judychang/.npm/ae4c5fd3-broswer-sync.lock
+16 silly addNameRange { name: 'broswer-sync', range: '*', hasData: false }
+17 verbose request where is /broswer-sync
+18 verbose request registry https://registry.npmjs.org/
+19 verbose request id e9acec48d6bb7a95
+20 verbose url raw /broswer-sync
+21 verbose url resolving [ 'https://registry.npmjs.org/', './broswer-sync' ]
+22 verbose url resolved https://registry.npmjs.org/broswer-sync
+23 verbose request where is https://registry.npmjs.org/broswer-sync
+24 info trying registry request attempt 1 at 09:32:40
+25 http GET https://registry.npmjs.org/broswer-sync
+26 http 404 https://registry.npmjs.org/broswer-sync
+27 verbose headers { date: 'Sat, 31 Jan 2015 17:32:41 GMT',
+27 verbose headers   server: 'CouchDB/1.6.1 (Erlang OTP/R14B04)',
+27 verbose headers   'content-type': 'application/json',
+27 verbose headers   'cache-control': 'max-age=0',
+27 verbose headers   'content-length': '52',
+27 verbose headers   'accept-ranges': 'bytes',
+27 verbose headers   via: '1.1 varnish',
+27 verbose headers   age: '0',
+27 verbose headers   'x-served-by': 'cache-lax1434-LAX',
+27 verbose headers   'x-cache': 'MISS',
+27 verbose headers   'x-cache-hits': '0',
+27 verbose headers   'x-timer': 'S1422725560.718062,VS0,VE320',
+27 verbose headers   'keep-alive': 'timeout=10, max=50',
+27 verbose headers   connection: 'Keep-Alive' }
+28 silly registry.get cb [ 404,
+28 silly registry.get   { date: 'Sat, 31 Jan 2015 17:32:41 GMT',
+28 silly registry.get     server: 'CouchDB/1.6.1 (Erlang OTP/R14B04)',
+28 silly registry.get     'content-type': 'application/json',
+28 silly registry.get     'cache-control': 'max-age=0',
+28 silly registry.get     'content-length': '52',
+28 silly registry.get     'accept-ranges': 'bytes',
+28 silly registry.get     via: '1.1 varnish',
+28 silly registry.get     age: '0',
+28 silly registry.get     'x-served-by': 'cache-lax1434-LAX',
+28 silly registry.get     'x-cache': 'MISS',
+28 silly registry.get     'x-cache-hits': '0',
+28 silly registry.get     'x-timer': 'S1422725560.718062,VS0,VE320',
+28 silly registry.get     'keep-alive': 'timeout=10, max=50',
+28 silly registry.get     connection: 'Keep-Alive' } ]
+29 silly lockFile ae4c5fd3-broswer-sync broswer-sync@
+30 silly lockFile ae4c5fd3-broswer-sync broswer-sync@
+31 error 404 404 Not Found: broswer-sync
+31 error 404
+31 error 404 'broswer-sync' is not in the npm registry.
+31 error 404 You should bug the author to publish it
+31 error 404 It was specified as a dependency of 'DIVE'
+31 error 404
+31 error 404 Note that you can also install from a
+31 error 404 tarball, folder, or http url, or git url.
+32 error System Darwin 13.4.0
+33 error command "node" "/usr/local/bin/npm" "install" "broswer-sync"
+34 error cwd /Users/judychang/Development/DIVE
+35 error node -v v0.10.35
+36 error npm -v 1.4.28
+37 error code E404
+38 verbose exit [ 1, true ]
