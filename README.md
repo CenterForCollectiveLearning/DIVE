@@ -22,13 +22,12 @@ Deployment Build Process
 
 Using Virtual Env to Manage Server-Side Dependencies
 ---------
-1. Installation
-See [this tutorial](http://simononsoftware.com/virtualenv-tutorial/)
-2. Freezing virtual env packages: `pip freeze > requirements.txt`
-3. Starting virtual env: `source venv/bin/activate`
-4. Reloading from `requirements.txt` (while virtualenv is active): `pip install -r requirements.txt`
+1. Installation: See [this fine tutorial](http://simononsoftware.com/virtualenv-tutorial/).
+2. Freezing virtual env packages: `pip freeze > requirements.txt`.
+3. Starting virtual env: `source venv/bin/activate`.
+4. Reloading from `requirements.txt` (while virtualenv is active): `pip install -r requirements.txt`.
 
 Run Server-Side Code / API
 ---------
-1. Load virtual environment
-2. In active virtual environment with all dependencies, run Flask server: `python ./server/run.py`
+1. Load virtual environment.
+2. In active virtual environment with all dependencies, run Flask server: `python ./server/run.py`.
