@@ -8,36 +8,27 @@ See this [Google Doc](https://docs.google.com/document/d/1J_wwbELz9l_KOoB6xRpUAS
 
 Development task list
 ---------
-See [Trello](https://trello.com/b/yKWRcTqT). Currently private, PM Kevin for access.
+See our [Trello](https://trello.com/b/yKWRcTqT). Currently private, PM Kevin for access.
 
 Development Build Process
 ---------
 1. Run `npm install` in base directory to get development and client-side dependencies.
-2. Run `gulp` in base directory (if gulp is installed globally) else `./node_modules/.bin/gulp` to build ./dist directory and run development server.
+2. In one terminal session, `gulp` in base directory (if gulp is installed globally) else `./node_modules/.bin/gulp` to build `./dist` directory and run development server.
+3. In another terminal session, API (see below).
 
 Deployment Build Process
 ---------
-1. Run `gulp build` to build ./dist directory
+1. Run `gulp build` to build `./dist` directory
 
 Using Virtual Env to Manage Server-Side Dependencies
 ---------
 1. Installation
 See [this tutorial](http://simononsoftware.com/virtualenv-tutorial/)
-2. Freezing virtual env packages
-
-    pip freeze > requirements.txt
-
-3. Starting virtual env
-
-    source venv/bin/activate
-
-4. Reloading from requirements.txt (while virtualenv is active)
-
-    pip install -r requirements.txt
+2. Freezing virtual env packages: `pip freeze > requirements.txt`
+3. Starting virtual env: `source venv/bin/activate`
+4. Reloading from `requirements.txt` (while virtualenv is active): `pip install -r requirements.txt`
 
 Run Server-Side Code / API
 ---------
 1. Load virtual environment
-2. In active virtual environment with all dependencies, run Flask server
-
-    python ./server/run.py
+2. In active virtual environment with all dependencies, run Flask server: `python ./server/run.py`
