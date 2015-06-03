@@ -23,6 +23,8 @@ var/
 *.sketch/
 *.sass-cache
 
+test*
+
 uploads/
 virt_env/
 
