@@ -26,6 +26,8 @@ Using Virtual Env to Manage Server-Side Dependencies
 2. Freezing virtual env packages: `pip freeze > requirements.txt`.
 3. Starting virtual env: `source venv/bin/activate`.
 4. Reloading from `requirements.txt` (while virtualenv is active): `pip install -r requirements.txt`.
+4. Install XQuartz: `brew install Caskroom/cask/xquartz`.
+5. Install Cairo: `brew install cairo`.
 
 Run Server-Side Code / API
 ---------
