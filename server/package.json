@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Automating the process of building web-based interactive visualizations.",
   "author": "Kevin Zeng Hu",
-  "main": "gulpfile.coffee",
+  "main": "gulpfile.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/MacroConnections/DIVE"
