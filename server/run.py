@@ -59,6 +59,10 @@ def set_allow_origin(resp):
 def index():
     return app.send_static_file('index.html')
 
+@app.route('/static/styleguide/')
+def style_guide_index():
+    return app.send_static_file('styleguide/index.html')
+
 PORT = 8888
 
 
