@@ -2,6 +2,7 @@ from api.api import app
 from gevent.wsgi import WSGIServer
 import werkzeug.serving
 from flask import request
+import os
 
 @app.before_request
 def option_autoreply():
@@ -57,6 +58,10 @@ def set_allow_origin(resp):
 @app.route('/')
 def index():
     return app.send_static_file('index.html')
+
+@app.route('/static/styleguide/')
+def style_guide_index():
+    return app.send_static_file('styleguide/index.html')
 
 PORT = 8888
 
