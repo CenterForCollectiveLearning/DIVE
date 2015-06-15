@@ -1,7 +1,6 @@
 <md-sidenav class="site-sidenav md-sidenav-left md-locked-open md-whiteframe-z2"
               md-component-id="left"
-              md-is-locked-open="$mdMedia('gt-sm')"
-              layout-fill>
+              md-is-locked-open="$mdMedia('gt-sm')">
 
   <md-content class="filters" ng-if="categories.length">
 <!--     <h3>Filters</h3> -->
@@ -14,8 +13,8 @@
     <md-checkbox ng-model="stats.shown">Show statistics</md-checkbox>
   </md-content>
   <md-content flex role="navigation">
-   
-<!--   <md-radio-group ng-model="filters.sortOrders">
+<!--    
+  <md-radio-group ng-model="filters.sortOrders">
     <md-radio-button ng-repeat="so in sortOrders">{{ so.display }}</md-radio-button>
   </md-radio-group> -->
 
@@ -28,25 +27,19 @@
           <li ng-repeat="category in categories">
             <md-button aria-label="button" class="md-button-toggle" ng-click="toggle($index)">
                 <div flex layout="row">
-                  <span class="category">
-                    <span class="name">{{category.name | capitalize}}</span> <span class="num-specs">({{category.specs.length}})</span>
-                  </span>
+                  {{category.name | capitalize}} ({{category.specs.length}})
                    <span class="right icons" layout="row" layout-align="end center" flex>
-                    <div class="icon" 
-                      ng-repeat="icon in icons[category.name]" 
-                      ng-class="{ 'active': selectedType === icon.type }" 
-                      ng-click="selectType(icon.type); $event.stopPropagation();"
-                    >
-                      <img ng-src="static/assets/images/{{icon.url}}" />
+                    <div class="icon md-whiteframe-z1" ng-repeat="(type, url) in icons[category.name]">
+                      <img ng-src="/assets/images/{{url}}" />
                     </div>
                   </span>
-<!--                   <span aria-hidden="true" class="md-toggle-icon"
+                  <span aria-hidden="true" class="md-toggle-icon"
                   ng-class="{'toggled' : isOpen($index)}">
                   <md-icon md-svg-src="toggle-arrow"></md-icon>
-                </span> -->
+                </span>
               </div>
               <span class="visually-hidden">
-                Toggle {{isOpen($index) ? 'expanded' : 'collapsed'}}
+                Toggle {{isOpen($index)? 'expanded' : 'collapsed'}}
               </span>
             </md-button>
 
@@ -56,22 +49,15 @@
               </section>
               <li ng-repeat="s in category.specs">
                 <md-button aria-label="button" class="child" ng-class="{'active' : isChildSelected(s)}" ng-click="selectSpec(s)">
-                  <span ng-if="s.category === 'time series' && !s.group.by">
-                      All Data Points
-                  </span>
-                  <span ng-if="s.group.by">Group by:</span>
-                    <span ng-if="s.group.by && (s.category === 'time series' || s.category === 'shares' || s.category === 'distribution')" class="spec">
-                      <b>{{s.group.by.title}}</b>
-                    </span>
+                  <span ng-if="s.category === 'time series' || s.category === 'shares'">
+                      Group by <b>{{s.groupBy.title}}</b>
                   </span>
                   <span ng-if="s.category === 'comparison'">
-                      Compare <b>{{s.compare.title | pluralize}}</b>
+                      Compare <b>{{s.groupBy.title}}</b>
                   </span>
                 </md-button>
                 <div class="stats" ng-if="stats.shown">
-                  {{s.stats.count}}
-                  <span ng-if="s.category !== 'comparison' && s.stats.count">Visual Elements</span>
-                  <span ng-if="s.category === 'comparison'">Comparisons</span>
+                  Number of Elements: {{s.stats.count}}
                 </div>
               </li>
             </ul>
