@@ -103,7 +103,6 @@ gulp.task('watch', function() {
   gulp.watch(sources.html, ['html']);
   gulp.watch(sources.js, ['js']);
   gulp.watch(sources.lib, ['lib']);
-  gulp.watch('./dist/**').on('change', refresh.changed);
 });
 
 gulp.task('clean', function() {
