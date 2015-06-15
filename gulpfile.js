@@ -1,21 +1,17 @@
-var autoprefixer, browserSync, browserify, destinations, gulp, gutil, isProd, jshint, rename, rimraf, runSequence, sass, sources;
+var gulp = require('gulp');
+var gutil = require('gulp-util');
+var jshint = require('gulp-jshint');
+var sass = require('gulp-sass');
+var rename = require('gulp-rename');
+var modRewrite = require('connect-modrewrite');
+var source = require('vinyl-source-stream');
+var watchify = require('watchify');
+var browserify = require('gulp-browserify');
+var autoprefixer = require('gulp-autoprefixer');
+var rimraf = require('gulp-rimraf');
+var runSequence = require('run-sequence');
 
-gulp = require('gulp');
-gutil = require('gulp-util');
-jshint = require('gulp-jshint');
-// browserSync = require('browser-sync');
-sass = require('gulp-sass');
-rename = require('gulp-rename');
-
-modRewrite = require('connect-modrewrite');
-source = require('vinyl-source-stream');
-watchify = require('watchify');
-browserify = require('gulp-browserify');
-autoprefixer = require('gulp-autoprefixer');
-rimraf = require('gulp-rimraf');
-runSequence = require('run-sequence');
-
-isProd = gutil.env.type === 'prod';
+var isProd = gutil.env.type === 'prod';
 
 sources = {
   sass: 'app/styles/*.scss',
@@ -41,25 +37,11 @@ var express = require('express'),
     serverport = 7000;
 
 var server = express();
-server.use(livereload({port: livereloadport}));// Add live reload
+server.use(livereload({ port: livereloadport }));  // Add live reload
 server.use(express.static('./dist')); // Use our 'dist' folder as rootfolder
-server.all('/*', function(req, res) { // Because I like HTML5 pushstate .. this redirects everything back to our index.html
+server.all('/*', function(req, res) {  // Because I like HTML5 pushstate .. this redirects everything back to our index.html
   res.sendFile('index.html', { root: 'dist' });
 });
-
-// gulp.task('browser-sync', function() {
-//   return browserSync({
-//     server: {
-//       baseDir: 'dist/',
-//       middleware: [
-//         modRewrite([
-//           '!\\.\\w+$ /index.html [L]'
-//         ])
-//       ]
-//     },
-//     port: 5000
-//   });
-// });
 
 gulp.task('js', function() {
   return gulp.src('app/scripts/main.js', {
@@ -95,14 +77,16 @@ gulp.task('lib', function() {
 });
 
 gulp.task('watch', function() {
-  server.listen(serverport);// Start webserver
-  refresh.listen(livereloadport);// Start live reload
+  server.listen(serverport);  // Start webserver
+  refresh.listen(livereloadport);  // Start live reload
 
   gulp.watch(sources.sass, ['sass']);
   gulp.watch(sources.assets, ['assets']);
   gulp.watch(sources.html, ['html']);
   gulp.watch(sources.js, ['js']);
   gulp.watch(sources.lib, ['lib']);
+
+  gulp.watch('./dist/**').on('change', refresh.changed);
 });
 
 gulp.task('clean', function() {

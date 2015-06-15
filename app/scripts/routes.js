@@ -18,7 +18,7 @@ angular.module('diveApp.routes').config(function($stateProvider, $urlRouterProvi
   $stateProvider
   .state('landing', {
     url: '^/',
-    templateUrl: 'static/modules/landing/landing.html',
+    templateUrl: 'modules/landing/landing.html',
     controller: function($scope, $rootScope, $state, AuthService, user, loggedIn) {
       $state.go('landing.create');
       $rootScope.user = user;
@@ -44,13 +44,13 @@ angular.module('diveApp.routes').config(function($stateProvider, $urlRouterProvi
     .state('landing.create', {
       url: 'create',
       authenticate: true,
-      templateUrl: 'static/modules/landing/create.html',
+      templateUrl: 'modules/landing/create.html',
       controller: 'CreateProjectCtrl'
     })
     .state('landing.projects', {
       url: 'projects',
       authenticate: true,
-      templateUrl: 'static/modules/landing/projects.html',
+      templateUrl: 'modules/landing/projects.html',
       controller: 'ProjectListCtrl',
       resolve: {
         projects: function(ProjectService, AuthService) {
@@ -63,23 +63,23 @@ angular.module('diveApp.routes').config(function($stateProvider, $urlRouterProvi
     .state('landing.reports', {
       url: 'reports',
       authenticate: true,
-      templateUrl: 'static/modules/landing/reports.html'
+      templateUrl: 'modules/landing/reports.html'
     })
     .state('landing.about', {
       url: 'about',
       authenticate: true,
-      templateUrl: 'static/modules/landing/about.html'
+      templateUrl: 'modules/landing/about.html'
     })
     .state('landing.authenticate', {
       url: 'authenticate',
       authenticate: false,
       controller: 'AuthenticateCtrl',
-      templateUrl: 'static/modules/landing/authenticate.html'
+      templateUrl: 'modules/landing/authenticate.html'
     })
 
   .state('project', {
     url: '/:formattedUserName/:formattedProjectTitle',
-    templateUrl: 'static/modules/project/project.html',
+    templateUrl: 'modules/project/project.html',
     controller: function($scope, $rootScope, $state, $stateParams, AuthService, user) {
       $scope.projectTitle = $stateParams.formattedProjectTitle.split('-').join(' ');
       $rootScope.user = user;
@@ -114,53 +114,53 @@ angular.module('diveApp.routes').config(function($stateProvider, $urlRouterProvi
   })
   .state('project.overview', {
     url: '/overview',
-    templateUrl: 'static/modules/project/project_overview.html',
+    templateUrl: 'modules/project/project_overview.html',
     controller: 'OverviewCtrl'
   })
   .state('project.data', {
     abstract: true,
     authenticate: true,
     url: '/data',
-    templateUrl: 'static/modules/data/data.html',
+    templateUrl: 'modules/data/data.html',
     controller: 'DataCtrl'
   })
     .state('project.data.upload', {
       url: '/upload',
-      templateUrl: 'static/modules/data/upload_datasets.html',
+      templateUrl: 'modules/data/upload_datasets.html',
       controller: 'UploadCtrl'
     })
     .state('project.data.preloaded', {
       url: '/preloaded',
-      templateUrl: 'static/modules/data/preloaded_datasets.html',
+      templateUrl: 'modules/data/preloaded_datasets.html',
       controller: 'PreloadedDataCtrl',
     })
     .state('project.data.inspect', {
       url: '/inspect/:dID',
-      templateUrl: 'static/modules/data/inspect_dataset.html',
+      templateUrl: 'modules/data/inspect_dataset.html',
       controller: 'InspectDataCtrl'
     })
 
   .state('project.visualize', {
     url: '/visualize',
     authenticate: true,
-    templateUrl: 'static/modules/visualization/visualization.html',
+    templateUrl: 'modules/visualization/visualization.html',
     controller: 'VisualizationCtrl'
   })
   .state('project.assemble', {
     url: '/assemble',
     authenticate: true,
-    templateUrl: 'static/modules/export/export.html',
+    templateUrl: 'modules/export/export.html',
     controller: 'AssembleCtrl'
   })
   .state('project.ontology', {
     url: '/ontology',
-    templateUrl: 'static/modules/property/property.html',
+    templateUrl: 'modules/property/property.html',
     controller: 'OntologyEditorCtrl',
   });
 
   // .state('embed', {
   //   url: '/embed/:pID/:sID',
-  //   templateUrl: 'static/modules/embed/embed.html',
+  //   templateUrl: 'modules/embed/embed.html',
   //   controller: 'EmbedCtrl',
   //   resolve: {
   //     vizDataService: function(VizDataService) {
