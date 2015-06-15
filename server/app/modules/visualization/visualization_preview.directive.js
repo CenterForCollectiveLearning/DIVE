@@ -155,7 +155,7 @@ angular.module('diveApp.visualization').directive("visualizationPreview", [
                 .margin("8px")
                 .width(displayParameters.width)
                 .height(displayParameters.height)
-                .font({ family: "Titillium Web" });
+                .font({ family: "Helvetica" });
             }
 
             if (category === 'shares') {

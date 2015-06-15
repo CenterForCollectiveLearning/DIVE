@@ -43,7 +43,7 @@
 @mixin background-transition { @include transition(background, 0.1s, ease-in) }
 
 @mixin small-caps {
-    font-family: "Titillium Web", "Lato", helvetica, sans-serif;
+    font-family: Helvetica, Arial, sans-serif;
     font-size: 12px;
     letter-spacing: 1px;
     line-height: 35px;
@@ -71,5 +71,5 @@
 }
 
 @mixin font {
-   font-family: "Titillium Web", 'Karbon', 'DIN', Helvetica, Sans Serif;
+   font-family: Helvetica, Arial, sans-serif;
 }
