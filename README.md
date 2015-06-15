@@ -13,8 +13,8 @@ See our [Trello](https://trello.com/b/yKWRcTqT). Currently private, PM Kevin for
 Development Build Process
 ---------
 1. Run `npm install` in base directory to get development and client-side dependencies.
-2. In one terminal session, `gulp` in base directory (if gulp is installed globally) else `./node_modules/.bin/gulp` to build `./dist` directory and run development server.
-3. In another terminal session, API (see below).
+2. In one terminal session, `gulp` in base directory (if gulp is installed globally) else `./node_modules/.bin/gulp` to build `./dist` directory and run development server. Access server at localhost:3000 in browser.
+3. In another terminal session, run API (see below, default port 8888).
 
 Deployment Build Process
 ---------
