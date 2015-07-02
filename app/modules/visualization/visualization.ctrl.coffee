@@ -157,6 +157,7 @@ angular.module('diveApp.visualization').controller('VisualizationCtrl', ($scope,
       $scope.hierarchies = properties.hierarchies
       # Getting specifications grouped by category
       SpecificationService.getSpecifications { pID: $scope.pID }, (specs) ->
+        $scope.specs = specs
         $scope.categories = _.map(specs, (v, k) ->
           {
             'name': k
@@ -165,14 +166,60 @@ angular.module('diveApp.visualization').controller('VisualizationCtrl', ($scope,
             'specs': v
           }
         )
-        $scope.selectSpec $scope.categories[1].specs[0]
+
+        _initialSpec = $scope.categories[1].specs[0]
+        $scope.selectedVectorY = { name: _initialSpec.groupBy }
+        $scope.selectedVectorX = 'share'
+
         return
       return
+    return
+
+  $scope.getVectors = (includeExtras) ->
+    _columns = $scope.columnAttrsByDID[$scope.currentdID].slice()
+
+    if includeExtras
+      _columns.unshift { name: 'share' }, { name: 'count' }, name: 'time'
+
+    return _columns
+
+  $scope.onSelectVectorY = (vector) ->
+    if vector and vector.name isnt $scope.graphedVectorYName
+      $scope.selectedVectorY = vector
+      _selectedSpec = _.findWhere($scope.specs['shares'], groupBy: $scope.selectedVectorY.name)
+
+      if _selectedSpec
+        $scope.selectSpec(_selectedSpec)
+
+    return
+
+  $scope.onSelectVectorX = (vector) ->
+    if vector isnt $scope.selectedVectorX
+      if vector
+        $scope.selectedVectorX = vector
+        if vector.name is 'share'
+          _visualizationType = 'shares'
+
+        else if vector.name is 'time'
+          _visualizationType = 'time series'
+
+        else if vector.name is 'count'
+          _visualizationType = 'distribution'
+
+        _selectedSpec = _.findWhere($scope.specs[_visualizationType], groupBy: $scope.selectedVectorY.name)
+
+      else
+        _selectedSpec = _.findWhere($scope.specs['shares'], groupBy: $scope.selectedVectorY.name)
+
+      if _selectedSpec
+        $scope.selectSpec(_selectedSpec)
     return
 
   $scope.selectSpec = (spec) ->
     $scope.selectedChild = spec
     $scope.selectedSpec = spec
+    $scope.graphedVectorYName = spec.groupBy
+
     console.log 'SELECTING SPEC', spec.category, $scope.selectedCategory
     # If changing categories, select default type
     if spec.category != $scope.selectedCategory
