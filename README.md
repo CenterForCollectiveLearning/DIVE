@@ -34,4 +34,5 @@ Using Virtual Env to Manage Server-Side Dependencies
 Run Server-Side Code / API
 ---------
 1. Load virtual environment.
-2. In active virtual environment with all dependencies, in base directory, run shell script to activate Gunicorn server: `sh server/run.sh`.
+2. Run mongod: `mongod --dbpath server/uploads`
+3. In active virtual environment with all dependencies, in base directory, run shell script to activate Gunicorn server: `sh server/run.sh`.
