@@ -6,6 +6,7 @@ from time import time
 from data.db import MongoInstance as MI
 from data.access import get_data, get_column_types
 from analysis.analysis import get_unique
+from scipy import stats
 
 # Retrieve proeprties given dataset_docs
 # TODO Accept list of dIDs
@@ -120,7 +121,7 @@ def compute_properties(pID, dataset_docs):
         print "\tGetting types"
         types = get_column_types(df)
         property_dict['types'] = types
-    
+
         ### Determining normality
         print "\tDetermining normality"
         start_time = time()
@@ -133,14 +134,14 @@ def compute_properties(pID, dataset_docs):
                     d = df[col].astype(np.float)
                     normality_result = stats.normaltest(d)
                 except ValueError:
-                    normality_result = None                    
+                    normality_result = None
             else:
                 normality_result = None
             normality.append(normality_result)
 
         property_dict['normality'] = normality
         print "\t\t", time() - start_time, "seconds"
-    
+
         ### Detecting if a column is unique
         print "\tDetecting uniques"
         start_time = time()
@@ -204,4 +205,3 @@ def detect_unique_list(l):
     if (len(np.unique(l)) / float(len(l))) >= THRESHOLD:
         return True
     return False
-

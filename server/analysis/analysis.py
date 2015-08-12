@@ -62,14 +62,14 @@ def compute_ontologies(pID, datasets) :
         lengths_dict[dID] = [len(df[col]) for col in df]
 
     print "\tIterating through columns"
-    
+
     overlaps = {}
     hierarchies = {}
     for dID_a, dID_b in combinations(all_dIDs, 2):
 
         if (dID_a not in new_dIDs) and (dID_b not in new_dIDs) :
             continue
-        
+
         raw_cols_a = raw_columns_dict[dID_a]
         raw_cols_b = raw_columns_dict[dID_b]
         overlaps['%s\t%s' % (dID_a, dID_b)] = {}
@@ -123,5 +123,3 @@ def get_ontologies(pID, datasets):
         hierarchies['%s\t%s' % (dID_a, dID_b)]['%s\t%s' % (index_a, index_b)] = h
 
     return overlaps, hierarchies
-
-
