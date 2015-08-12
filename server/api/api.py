@@ -6,6 +6,7 @@ import shutil
 from random import sample
 import pandas as pd
 import xlrd
+import numpy as np
 
 import cairocffi as cairo
 import cairosvg
@@ -39,12 +40,16 @@ class RoundedFloat(float):
         return '%.3f' % self
 
 def format_json(obj):
-    if isinstance(obj, float):
+    if isinstance(obj, np.float32) or isinstance(obj, np.float64):
+        return obj.item()
+    elif isinstance(obj, float):
         return RoundedFloat(obj)
     elif isinstance(obj, dict):
         return dict((k, format_json(v)) for k, v in obj.items())
-    elif isinstance(obj, (list, tuple)):
-        return map(format_json, obj)             
+    elif isinstance(obj, (np.ndarray, list, tuple)):
+        return map(format_json, obj)
+    elif isinstance(obj,(pd.DataFrame,pd.Series)):
+        return format_json(obj.to_dict())
     return obj
 
 
@@ -99,7 +104,7 @@ class Public_Data(Resource):
         # Specific dIDs
         if dIDs:
             print "Requested specific dIDs:", dIDs
-            dataLocations = [ MI.getData({'_id': ObjectId(dID)}, pID) for dID in dIDs ] 
+            dataLocations = [ MI.getData({'_id': ObjectId(dID)}, pID) for dID in dIDs ]
 
         # All datasets
         else:
@@ -272,7 +277,7 @@ class Project(Resource):
             os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], result[0]['pID']))
 
         return result
-        
+
     # Delete project and all associated data
     def delete(self):
         args = projectDeleteParser.parse_args()
@@ -460,7 +465,8 @@ class Statistics_From_Spec(Resource):
         spec = args.get('spec')
 
         result, status = getStatisticsFromSpec(spec, pID)
-        print result
+        result = result['stats_data']
+        print format_json(result)
         return make_response(jsonify(format_json(result)), status)
 
 
@@ -515,7 +521,7 @@ class Conditional_Data(Resource):
         pID = args.get('pID').strip().strip('"')
         dID = args.get('dID').strip().strip('"')
         spec = json.loads(args.get('spec'))
-        
+
         return make_response(jsonify(format_json({'result': getConditionalData(spec, dID, pID)})))
 
 
@@ -587,11 +593,11 @@ class Render_SVG(Resource):
         elif format == "pdf":
             print "Rendering PDF"
             cairosvg.svg2pdf(bytestring=bytestring, write_to=fout)
-            cairosvg.svg2pdf(bytestring=bytestring, write_to=img_io)  
+            cairosvg.svg2pdf(bytestring=bytestring, write_to=img_io)
         elif format == "svg":
             print "Rendering SVG"
             cairosvg.svg2svg(bytestring=bytestring, write_to=fout)
-            cairosvg.svg2svg(bytestring=bytestring, write_to=img_io)         
+            cairosvg.svg2svg(bytestring=bytestring, write_to=img_io)
         else:
             cairosvg.svg2png(bytestring=bytestring, write_to=fout)
             cairosvg.svg2png(bytestring=bytestring, write_to=img_io)

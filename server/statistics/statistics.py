@@ -4,6 +4,7 @@ from scipy import stats
 import statsmodels.api as sm
 from time import time
 from itertools import chain, combinations
+from operator import add
 
 from data.access import get_data
 
@@ -25,7 +26,8 @@ def getStatisticsFromSpec(spec, pID):
     model = spec.get('model')
     #arguments is dict, includes compare and dep and datalabals, dep, indep
     arguments = spec.get('arguments')
-    estimator = spec.get('estimator')
+    print arguments
+    estimator = arguments.get('estimator')
     weights = spec.get('weights')
     degree = spec.get('degree')
     funcArray = spec.get('functions')
@@ -41,14 +43,14 @@ def getStatisticsFromSpec(spec, pID):
     # 2) Run test based on test parameters and arguments
     test_result = run_test(df, arguments, model=model, degree=degree, funcArray=funcArray, estimator=estimator, weights=weights, userInput=userInput)
 
-
     return {
         'stats_data': test_result
     }, 200
 
 
 
-def run_test(df, arguments, model=None, degree=1, funcArray=None, estimator='OLS', weights=None, userInput=None):
+def run_test(df, arguments, model='lr', degree=1, funcArray=None, estimator='ols', weights=None, userInput=None):
+    print df
 
     #if no model, assumes comparison
     if model == None:
@@ -192,18 +194,18 @@ def chooseN(array, number):
     return theSolutions
 
 # Multivariate linear regression function
-def reg_m(y, x, typeModel, weights=None):
+def reg_m(y, x, estimator, weights=None):
     ones = np.ones(len(x[0]))
     X = sm.add_constant(np.column_stack((x[0], ones)))
     for ele in x[1:]:
         X = sm.add_constant(np.column_stack((ele, X)))
-    if typeModel=='OLS':
-        results = sm.OLS(y, X).fit()
-    elif typeModel=='WLS':
-        results = sm.WLS(y, X, weights).fit()
-    elif typeModel=='GLS':
-        results = sm.GLS(y, X).fit()
-    return results
+    if estimator=='ols':
+        return sm.OLS(y, X).fit()
+    elif estimator=='wls':
+        return sm.WLS(y, X, weights).fit()
+    elif estimator=='gls':
+        return sm.GLS(y, X).fit()
+    return None
 
 ############################
 #Run general linear regression
@@ -211,9 +213,10 @@ def reg_m(y, x, typeModel, weights=None):
 ####params coefficients are reversed; the first param coefficient corresponds to the last function in func array
 ####notice the independent vectors are given in dictionary format, egs:{'bob':[1,2,3,4,5],'mary':[1,2,3,4,5]}
 
-def multipleRegression(funcArray,xDict,yList, typeModel, weights=None):
+def multipleRegression(funcArray,xDict,yList, estimator, weights=None):
     regressionDict = {}
     xKeys = xDict.keys()
+    regressionDict['keys']=xKeys
     for chooseX in range(1,len(xKeys)+1):
         chooseXKeys = chooseN(xKeys,chooseX)
         for consideredKeys in chooseXKeys:
@@ -223,21 +226,25 @@ def multipleRegression(funcArray,xDict,yList, typeModel, weights=None):
                     consideredData.append(func(np.array(xDict[key])))
                 consideredData = tuple(consideredData)
                 print consideredData
-            model = reg_m(yList,consideredData,typeModel,weights)
-            regressionDict[consideredKeys]={}
-            regressionDict[consideredKeys]['params']= model.params
-            regressionDict[consideredKeys]['rsquared']= model.rsquared
-            regressionDict[consideredKeys]['f_test']= model.fvalue
-            regressionDict[consideredKeys]['std']= model.bse
-            regressionDict[consideredKeys]['stats']= runValidTests_regress(model.resid, yList)
+            model = reg_m(yList,consideredData,estimator,weights)
+            consideredKeysString=str(consideredKeys)
+            if len(consideredKeys)==1:
+                consideredKeysString=consideredKeysString[0:len(consideredKeysString)-2]+')'
+            regressionDict[consideredKeysString]={}
+            regressionDict[consideredKeysString]['params']= model.params
+            regressionDict[consideredKeysString]['rsquared']= model.rsquared
+            regressionDict[consideredKeysString]['f_test']= model.fvalue
+            regressionDict[consideredKeysString]['std']= model.bse
+            regressionDict[consideredKeysString]['stats']= runValidTests_regress(model.resid, yList)
     return regressionDict
 
 ###########################
 #Runs polynomial regression
 
-def multiplePolyRegression(xDict,yList,degree, typeModel, weights=None):
+def multiplePolyRegression(xDict,yList,degree, estimator, weights=None):
     regressionDict = {}
     xKeys = xDict.keys()
+    regressionDict['keys']=xKeys
     for chooseX in range(1,len(xKeys)+1):
         chooseXKeys = chooseN(xKeys,chooseX)
         for consideredKeys in chooseXKeys:
@@ -245,13 +252,16 @@ def multiplePolyRegression(xDict,yList,degree, typeModel, weights=None):
             for key in consideredKeys:
                 for deg in range(1,degree+1):
                     consideredData.append(np.array(xDict[key])**deg)
-            model = reg_m(yList,consideredData, typeModel, weights)
-            regressionDict[consideredKeys]={}
-            regressionDict[consideredKeys]['params']= model.params
-            regressionDict[consideredKeys]['rsquared']= model.rsquared
-            regressionDict[consideredKeys]['f_test']= model.fvalue
-            regressionDict[consideredKeys]['std']= model.bse
-            regressionDict[consideredKeys]['stats']= runValidTests_regress(model.resid, yList)
+            model = reg_m(yList,consideredData, estimator, weights)
+            consideredKeysString=str(consideredKeys)
+            if len(consideredKeys)==1:
+                consideredKeysString=consideredKeysString[0:len(consideredKeysString)-2]+')'
+            regressionDict[consideredKeysString]={}
+            regressionDict[consideredKeysString]['params']= model.params
+            regressionDict[consideredKeysString]['rsquared']= model.rsquared
+            regressionDict[consideredKeysString]['f_test']= model.fvalue
+            regressionDict[consideredKeysString]['std']= model.bse
+            regressionDict[consideredKeysString]['stats']= runValidTests_regress(model.resid, yList)
             if chooseX==1 and degree==1:
-                regressionDict[consideredKeys]['theil-sen']=stats.theilslopes(yList, consideredData)
+                regressionDict[consideredKeysString]['theil-sen']=stats.theilslopes(yList, consideredData)
     return regressionDict
