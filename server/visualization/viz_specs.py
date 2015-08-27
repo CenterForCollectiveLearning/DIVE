@@ -24,7 +24,8 @@ specific_to_general_type = {
     'integer': 'q',
     'string': 'c',
     'continent': 'c',
-    'countryName': 'c'
+    'countryName': 'c',
+    'datetime': 'q'
 }
 
 # TODO How to document defaults?
@@ -36,40 +37,55 @@ aggregation_functions = {
     'count': np.size
 }
 
-pairwise_functions = {
-    'add': '',
-    'subtract': '',
-    'multiply': '',
-    'divide': ''
+elementwise_functions = {
+    'add': '+',
+    'subtract': '-',
+    'multiply': '*',
+    'divide': '/'
 }
 
 def A(label):
     specs = []
+
     # { Index: value }
     index_spec = {
-       'key': 'index',
-       'value': label,
-       'desc': 'Plot %s against its index' % label
+        'structure': 'ind:val',
+        'args': {
+            'field_a': label
+        },
+        'meta': {
+            'desc': 'Plot %s against its index' % label
+        }
     }
     specs.append(index_spec)
 
     # TODO Make this depend on non-unique values
     # { Value: count }
     count_spec = {
-        'key': label,
-        'value': 'count',
-        'desc': 'Plot values of %s against count of occurrences' % label
+        'structure': 'val:count',
+        'args': {
+            'field_a': label
+        },
+        'meta': {
+            'desc': 'Plot values of %s against count of occurrences' % label
+        }
     }
     specs.append(count_spec)
 
     # TODO Implement binning algorithm
     # { Bins: Aggregate(binned values) }
-    for aggregation_function in aggregation_functions.keys():
+    for agg_fn in aggregation_functions.keys():
         bin_spec = {
-            'key': 'bin',
-            'aggregation': 'count',
-            'value': label,
-            'desc': 'Bin %s, then aggregate binned values by %s' % (label, aggregation_function)
+            'structure': 'bin:agg',
+            'args': {
+                'agg_fn': agg_fn,
+                'agg_field_a': label,
+                'binning_spec': 0,
+                'binning_field': label
+            },
+            'meta': {
+                'desc': 'Bin %s, then aggregate binned values by %s' % (label, agg_fn)
+            }
         }
         specs.append(bin_spec)
     return specs
@@ -78,11 +94,68 @@ def B(labels):
     specs = []
     # Function on pairs of columns
     for (field_a, field_b) in combinations(labels, 2):
-        for pairwise_function in pairwise_functions.keys():
-            derived_column_desc = "%s %s %s" % (field_a, pairwise_function, field_b)
+        for ew_fn, ew_op in elementwise_functions.iteritems():
+            derived_column_desc = "%s %s %s" % (field_a, ew_op, field_b)
             A_specs = A(derived_column_desc)
             specs.extend(A_specs)
     return specs
+
+def C(label):
+    specs = []
+
+    # TODO Only create if values are non-unique
+    spec = {
+        'structure': 'val:count',
+        'args': {
+            'field_a': label
+        },
+        'meta': {
+            'desc': 'Unique values of %s mapped to number of occurrences' % (label)
+        }
+    }
+    return specs
+
+def D(c_label, q_label):
+    specs = []
+    c_unique = false
+
+    # One case of A
+    a_spec = A(c_label)
+    specs.append(a_spec)
+
+    # One case of C
+    c_spec = C(q_label)
+    specs.append(q_label)
+
+    # If c_label is unique
+    if c_unique:
+        spec = {
+            'structure': 'val:val',
+            'args': {
+                'field_a': c_label,
+                'field_b': q_label
+            },
+            'meta': {
+                'desc': 'Plotting raw values of %s against corresponding values of %s' % (c_label, q_label)
+            }
+        }
+        spec.append(spec)
+    else:
+        for agg_fn in aggregation_functions.keys():
+            spec = {
+                'structure': 'val:agg',
+                'args': {
+                    'agg_fn': c_label,
+                    'grouped_field': c_label,
+                    'agg_field': q_label,
+                },
+                'meta': {
+                    'desc': 'Plotting raw values of %s against corresponding values of %s, aggregated by %s' % (c_label, q_label, agg_fn)
+                }
+            }
+            specs.append(spec)
+    return specs
+
 
 # TODO Move the case classifying into dataset ingestion (doesn't need to be here!)
 # 1) Enumerated viz specs given data, properties, and ontologies
