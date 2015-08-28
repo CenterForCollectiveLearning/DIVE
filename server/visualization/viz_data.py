@@ -98,7 +98,50 @@ def getConditionedDF(df, conditional_arg):
     conditioned_df.columns = orig_cols
     return conditioned_df
 
+def _get_derived_field(df, label_descriptor):
+    label_a, op, label_b = label.split(' ')
+    return result
 
+# AUTOMATED SPEC VERSION
+def get_viz_data_from_enumerated_spec(spec, dID, pID):
+    structure = spec['structure']
+    args = spec['args']
+    meta = spec['meta']
+
+    df = get_data(pID=pID, dID=dID)
+
+    if structure == 'ind:val':
+        field_a = args['field_a']
+        # If direct field
+        if isinstance(field_a, basestring):
+            data = df[field_a]
+        # If derived field
+        elif isinstance(field_a, dict):
+            return []
+            label_descriptor = field_a['label']
+            data = _get_derived_field(df, label_descriptor)
+        else:
+            # TODO Better warning mechanism
+            print "Ill-formed field_a %s" % (field_a)
+
+        data = df[args['field_a']]
+        result = dict([(ind, d) for (ind, d) in enumerate(data)])
+        return result
+    # TODO Don't aggregate across numeric columns
+    elif structure == 'val:agg':
+        print args
+        grouped_df = df.groupby(args['grouped_field'])
+        agg_df = grouped_df.aggregate(group_fn_from_string[args['agg_fn']])
+        print agg_df[args['agg_field']].to_dict()
+    elif structure == 'val:val':
+        return
+    elif structure == 'val:count':
+        return
+    elif structure == 'agg:agg':
+        return
+    return
+
+# BUILDER VERSION
 # df = pd.DataFrame({'AAA': [4,5,6,7], 'BBB': [10,20,30,40], 'CCC': [100,50,-30,-50]})
 # spec = {'aggregate': {'field': 'AAA', 'operation': 'sum'}, 'condition': {'and': [{'field': 'AAA', 'operation': '>', 'criteria': 5}], 'or': [{'field': 'BBB', 'operation': '==', 'criteria': 10}]}, 'query': 'BBB'}
 def getVisualizationDataFromSpec(spec, conditional, pID):
