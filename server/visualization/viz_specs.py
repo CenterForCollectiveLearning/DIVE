@@ -6,6 +6,7 @@ from scipy import stats as sc_stats
 
 from pprint import pprint
 from time import time
+import math
 
 # Wrapper function
 def get_viz_specs(pID):
@@ -43,6 +44,20 @@ elementwise_functions = {
     'multiply': '*',
     'divide': '/'
 }
+
+# Freedman-Diaconis rule
+# width h = 2 * IQR * n^(-1/3)
+# num_bins = (max - min) / h
+###
+# Get bin specifier (e.g. bin edges) given a numeric vector
+###
+def get_bin_edges(v, procedure='fd'):
+    if procedure is 'fd':
+        IQR = np.subtract(*np.percentile(v, [75, 25]))
+        bin_width = 2 * IQR * len(v)**(-1/3)
+        num_bins = math.floor((max(data) - min(data)) / bin_width)
+        bin_edges = np.histogram(v, num_bins)[1]
+    return bin_edges
 
 ###
 # Functions providing only the new specs for each case (subsumed cases are taken care of elsewhere)
@@ -245,6 +260,14 @@ def H(c_fields, q_fields):
         }
         specs.append(spec)
     return specs
+
+def specs_to_viz_types(specs):
+    result = []
+    return result
+
+def score_specs(specs):
+    scored_specs = specs
+    return scored_specs
 
 # TODO Move the case classifying into dataset ingestion (doesn't need to be here!)
 # 1) Enumerated viz specs given data, properties, and ontologies

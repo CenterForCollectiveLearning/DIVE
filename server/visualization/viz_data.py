@@ -138,8 +138,8 @@ def getVisualizationDataFromSpec(spec, conditional, pID):
             grouped_df = gb.aggregate(group_operation)
             grouped_df.insert(0, 'count', gb.size().tolist())  # Add Count as DF col after first aggregated field
             # grouped_df = grouped_df[[field_b]]  # Just returning all aggregated fields
-        
-        field_a_loc = conditioned_df.columns.get_loc(field_a)  
+
+        field_a_loc = conditioned_df.columns.get_loc(field_a)
         grouped_df.insert(0, field_a, grouped_df.index.tolist())  # Add grouped column to front of list
 
         # Table Data: Dict of matrices
@@ -152,7 +152,7 @@ def getVisualizationDataFromSpec(spec, conditional, pID):
         }
 
         grouped_dict = grouped_df.to_dict()
-    
+
         for k, obj in grouped_dict.iteritems():
             collection = [ { field_a: a, k: b } for a, b in obj.iteritems() ]
             viz_result[k] = collection
@@ -182,7 +182,7 @@ def getVisualizationDataFromSpec(spec, conditional, pID):
         # TODO Implement
         return
 
-    return { 
-        'viz_data': viz_result, 
-        'table_result': table_result 
+    return {
+        'viz_data': viz_result,
+        'table_result': table_result
     }, 200
