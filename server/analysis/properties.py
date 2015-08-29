@@ -1,3 +1,6 @@
+'''
+Functions for analyzing properties of datasets and fields
+'''
 import json
 import numpy as np
 
@@ -5,7 +8,7 @@ from time import time
 
 from data.db import MongoInstance as MI
 from data.access import get_data, get_column_types
-from analysis.analysis import get_unique
+from analysis import get_unique
 from scipy import stats as sc_stats
 
 # Retrieve proeprties given dataset_docs
@@ -82,6 +85,10 @@ def get_attributes(pID, datasets):
     attributes = filter(lambda x: x['type'] in ['float', 'integer'], _properties)
 
     return attributes
+
+# Determine whether a dataset is wide, long, or matrix
+def get_dataset_structure(pID, df):
+    return
 
 # Compute properties of all passed datasets
 # Currently only getting properties by column

@@ -20,7 +20,7 @@ from bson.objectid import ObjectId
 from data.db import MongoInstance as MI
 from data.access import upload_file, get_dataset_data, get_dataset_structure, get_column_types, get_delimiter, is_numeric
 from analysis.analysis import compute_ontologies, get_ontologies
-from properties import get_properties, get_entities, get_attributes, compute_properties
+from analysis.properties import get_properties, get_entities, get_attributes, compute_properties
 from visualization.viz_specs import get_viz_specs
 from visualization.viz_data import getVisualizationDataFromSpec
 from visualization.viz_stats import getVisualizationStats
@@ -313,6 +313,26 @@ class Properties(Resource):
         }
 
         return make_response(jsonify(format_json(results)))
+
+
+datasetPropertyGetParser = reqparse.RequestParser()
+datasetPropertyGetParser.add_argument('pID', type=str, required=True)
+datasetPropertyGetParser.add_argument('dID', type=str, action='append')
+class Dataset_Property(Resource):
+    def get(self, propertyID):
+        print "[GET] Dataset Properties"
+
+        args = datasetPropertyGetParser.parse_args()
+        pID = args.get('pID').strip().strip('"')
+        dIDs = args.get('dID')
+
+        find_doc = {}
+        if dIDs:
+            find_doc = {'dID': {'$in': dIDs}}
+
+        dataset_property = MI.get_dataset_property(find_doc, pID)
+
+        return make_response(json.dumps(format_json(results)))
 
 
 propertyGetParser = reqparse.RequestParser()
@@ -635,6 +655,7 @@ api.add_resource(GetProjectID,                  '/api/getProjectID')
 api.add_resource(Project,                       '/api/project')
 
 api.add_resource(Properties,                    '/api/properties/v1/properties')
+api.add_resource(Dataset_Property,              '/api/properties/v1/dataset_properties')
 api.add_resource(Property,                      '/api/properties/v1/properties/<string:propertyID>')
 api.add_resource(Entities,                      '/api/properties/v1/entities')
 api.add_resource(Attributes,                    '/api/properties/v1/attributes')

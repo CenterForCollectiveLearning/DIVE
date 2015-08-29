@@ -28,7 +28,9 @@ def formatObjectIDs(collectionName, results, fullname = False):
         result[propertyName + 'ID'] = str(result.pop('_id')) # Note the .pop removes the _id from the dict
     return results
 
-class mongoInstance(object):
+
+class Mongo_Instance(object):
+
     # Get Project ID from formattedProjectTitle
     def getProjectID(self, formatted_title, userName):
         print "TITLE: ", formatted_title
@@ -50,7 +52,7 @@ class mongoInstance(object):
 
         dataset_doc = {
             'path': path,
-            'filename': filename, 
+            'filename': filename,
             'title': title,
             'type': file_type
         }
@@ -101,7 +103,7 @@ class mongoInstance(object):
 
     def chooseSpec(self, pID, sID, conditional, stats):
         MongoInstance.client[pID].specifications.find_and_modify(
-            {'_id': ObjectId(sID)}, 
+            {'_id': ObjectId(sID)},
             {'$set': {'chosen': True, 'conditional': conditional, 'stats' : stats }}, upsert=True, new=True)
         return sID
 
@@ -130,6 +132,12 @@ class mongoInstance(object):
         info = MongoInstance.client[pID].properties.find_and_modify({'dID': dID}, {'$set': properties}, upsert=True, new=True)
         tID = str(info['_id'])
         return tID
+
+    def get_dataset_property(self, find_doc, pID):
+        return formatObjectIDs('property', [ t for t in MongoInstance.client[pID].dataset_properties.find(find_doc) ], True)
+
+    def set_dataset_property(self, pID, _property):
+        return MongoInstance.client[pID].dataset_properties.insert(_property)
 
     def getProperty(self, find_doc, pID):
         return formatObjectIDs('property', [ t for t in MongoInstance.client[pID].properties.find(find_doc) ], True)
@@ -186,6 +194,7 @@ class mongoInstance(object):
             db = MongoInstance.client[pID]
             db.create_collection('datasets')
             db.create_collection('visualizations')
+            db.create_collection('dataset_properties')
             db.create_collection('properties')
             db.create_collection('ontologies')
             db.create_collection('exported')
@@ -214,5 +223,5 @@ class mongoInstance(object):
         return self._client
 
 # A Singleton Object
-MongoInstance = mongoInstance()
+MongoInstance = Mongo_Instance()
 MongoInstance.client['dive'].projects.ensure_index([("formattedTitle", True), ("user", True)])
