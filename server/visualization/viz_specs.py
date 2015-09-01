@@ -35,6 +35,16 @@ def specs_to_viz_types(specs):
     return result
 
 
+class Specification(object):
+    '''
+    A visualization specification with the following properties: structure, args, and description.
+    '''
+    def __init__(self, structure, arguments, description={}):
+        self.structure = structure
+        self.arguments = arguments
+        self.description = description
+
+
 # TODO Move the case classifying into dataset ingestion (doesn't need to be here!)
 # 1) Enumerated viz specs given data, properties, and ontologies
 def enumerate_viz_specs(datasets, properties, ontologies, pID):
@@ -62,7 +72,6 @@ def enumerate_viz_specs(datasets, properties, ontologies, pID):
     # Iterate through datasets (no cross-dataset visualizations for now)
     for dID in fields_by_dID.keys():
         specs = []
-
         c_fields = []
         q_fields = []
         fields = fields_by_dID[dID]
@@ -79,7 +88,6 @@ def enumerate_viz_specs(datasets, properties, ontologies, pID):
 
         # Cases A - B
         # Q > 0, C = 0
-        # TODO Formalization for specs
         if q_count and not c_count:
             # Case A) Q = 1, C = 0
             if q_count == 1:

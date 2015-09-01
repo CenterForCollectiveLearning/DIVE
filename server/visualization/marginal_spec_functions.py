@@ -17,6 +17,15 @@ elementwise_functions = {
     'divide': '/'
 }
 
+# Value indicates whether function has been implemented
+binning_procedures = {
+    'freedman': True,
+    'sturges': False,
+    'scott': False,
+    'shimazaki': False,
+    'bayesian': False
+}
+
 ###
 # Functions providing only the new specs for each case (subsumed cases are taken care of elsewhere)
 ###
@@ -53,19 +62,21 @@ def A(q_field):
     # TODO Implement binning algorithm
     # { Bins: Aggregate(binned values) }
     for agg_fn in aggregation_functions.keys():
-        bin_spec = {
-            'structure': 'bin:agg',
-            'args': {
-                'agg_fn': agg_fn,
-                'agg_field_a': q_label,
-                'binning_spec': 0,
-                'binning_field': q_label
-            },
-            'meta': {
-                'desc': 'Bin %s, then aggregate binned values by %s' % (q_label, agg_fn)
-            }
-        }
-        specs.append(bin_spec)
+        for binning_procedure, implemented in binning_procedures.iteritems():
+            if implemented:
+                bin_spec = {
+                    'structure': 'bin:agg',
+                    'args': {
+                        'agg_fn': agg_fn,
+                        'agg_field_a': q_label,
+                        'binning_procedure': binning_procedure,
+                        'binning_field': q_label
+                    },
+                    'meta': {
+                        'desc': 'Bin %s, then aggregate binned values by %s' % (q_label, agg_fn)
+                    }
+                }
+                specs.append(bin_spec)
     return specs
 
 def B(q_fields):

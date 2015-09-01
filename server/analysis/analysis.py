@@ -18,12 +18,11 @@ def get_unique(li):
     return list(np.unique(li))
 
 
-
 ###
 # Get bin specifier (e.g. bin edges) given a numeric vector
 ###
-def get_bin_edges(v, procedure='fd'):
-    if procedure is 'fd':
+def get_bin_edges(v, procedure='freedman'):
+    if procedure is 'freedman':
         IQR = np.subtract(*np.percentile(v, [75, 25]))
         bin_width = 2 * IQR * len(v)**(-1/3)
         num_bins = math.floor((max(data) - min(data)) / bin_width)

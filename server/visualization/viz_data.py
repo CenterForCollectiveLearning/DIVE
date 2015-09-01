@@ -31,12 +31,12 @@ group_fn_from_string = {
     'count': np.size
 }
 
-def makeSafeString(str):
+def makeSafeString(s):
     invalid_chars = '-_.+^$ '
     for invalid_char in invalid_chars:
-        str = str.replace(invalid_char, '_')
-    str = 'temp_' + str
-    return str
+        s = s.replace(invalid_char, '_')
+    s = 'temp_' + s
+    return s
 
 # Given a data frame and a conditional dict ({ and: [{field, operation, criteria}], or: [...]})
 # Return the conditioned data frame in same dimensions as original
@@ -107,6 +107,7 @@ def get_viz_data_from_enumerated_spec(spec, dID, pID):
     structure = spec['structure']
     args = spec['args']
     meta = spec['meta']
+    final_viz_data = []
 
     df = get_data(pID=pID, dID=dID)
 
@@ -125,21 +126,21 @@ def get_viz_data_from_enumerated_spec(spec, dID, pID):
             print "Ill-formed field_a %s" % (field_a)
 
         data = df[args['field_a']]
-        result = dict([(ind, d) for (ind, d) in enumerate(data)])
-        return result
+        final_viz_data = dict([(ind, d) for (ind, d) in enumerate(data)])
     # TODO Don't aggregate across numeric columns
     elif structure == 'val:agg':
-        print args
         grouped_df = df.groupby(args['grouped_field'])
         agg_df = grouped_df.aggregate(group_fn_from_string[args['agg_fn']])
-        print agg_df[args['agg_field']].to_dict()
     elif structure == 'val:val':
-        return
+        final_viz_data = dict(zip(df[args['field_a']], df[args['field_b']]))
     elif structure == 'val:count':
-        return
+        final_viz_data = dict(df[args['field_a']].value_counts())
     elif structure == 'agg:agg':
-        return
-    return
+        grouped_df = df.groupby(args['grouped_field'])
+        agg_df = grouped_df.aggregate(group_fn_from_string[args['agg_fn']])
+        final_viz_data = dict(zip(agg_df[args['agg_field_a']], agg_df[args['agg_field_b']]))
+    return final_viz_data
+
 
 # BUILDER VERSION
 # df = pd.DataFrame({'AAA': [4,5,6,7], 'BBB': [10,20,30,40], 'CCC': [100,50,-30,-50]})
