@@ -61,7 +61,7 @@ angular.module('diveApp.services').service 'ProjectIDService', ($http, $statePar
   }
 
 angular.module('diveApp.services').service('DataService', ($http, $rootScope, $q, API_URL) ->
-  return { 
+  return {
     getDatasets: (params) ->
       q = $q.defer()
 
@@ -78,7 +78,7 @@ angular.module('diveApp.services').service('DataService', ($http, $rootScope, $q
       q = $q.defer()
       console.log 'dID'
       console.log dID
-      
+
       $http.get(API_URL + "/api/datasets/#{dID}", {
         params:
           pID: $rootScope.pID
@@ -258,6 +258,21 @@ angular.module('diveApp.services').service('StatisticsDataService', ($http, $roo
       $http.post(API_URL + '/api/statistics_from_spec', {
         pID: $rootScope.pID,
         spec: params.spec,
+      }).then (r) =>
+        q.resolve(r.data)
+
+      a=new Date()
+      console.log(a.getTime()/1000.0)
+      return q.promise
+
+    getRegressionTime: (params) ->
+      q = $q.defer()
+
+      console.log('Getting time with params:', params)
+      $http.post(API_URL + '/api/regression_estimator', {
+        numInputs: params.numInputs,
+        sizeArray: params.sizeArray,
+        funcArraySize: params.funcArraySize,
       }).then (r) =>
         q.resolve(r.data)
 

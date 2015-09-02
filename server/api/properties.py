@@ -30,7 +30,7 @@ def get_properties(pID, datasets, get_values = False) :
         _properties_by_dID = compute_properties(pID, datasets)
 
     for _dID, _properties_data in _properties_by_dID.iteritems():
-        for _label, _type, _unique, _unique_values, _child, _is_child in zip(_properties_data['label'], _properties_data['types'], _properties_data['unique'], _properties_data['values'], _properties_data['child'], _properties_data['is_child']):
+        for _label, _type, _unique, _unique_values, _child, _is_child, _stats in zip(_properties_data['label'], _properties_data['types'], _properties_data['unique'], _properties_data['values'], _properties_data['child'], _properties_data['is_child'], _properties_data['stats']):
             if _label in _property_labels:
                 properties[_property_labels.index(_label)]['dIDs'].append[_dID]
             else:
@@ -41,7 +41,8 @@ def get_properties(pID, datasets, get_values = False) :
                     'unique': _unique,
                     'child': _child,
                     'is_child': _is_child,
-                    'dIDs': [_dID]
+                    'dIDs': [_dID],
+                    'stats': _stats
                 }
 
                 if get_values:

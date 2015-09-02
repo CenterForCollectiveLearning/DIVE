@@ -7,6 +7,7 @@ from random import sample
 import pandas as pd
 import xlrd
 import numpy as np
+import time
 
 import cairocffi as cairo
 import cairosvg
@@ -25,7 +26,7 @@ from properties import get_properties, get_entities, get_attributes, compute_pro
 from visualization.viz_specs import getVisualizationSpecs
 from visualization.viz_data import getVisualizationDataFromSpec
 from visualization.viz_stats import getVisualizationStats
-from statistics.statistics import getStatisticsFromSpec
+from statistics.statistics import getStatisticsFromSpec, timeEstimator
 
 app = Flask(__name__)
 app.debug = True
@@ -464,10 +465,34 @@ class Statistics_From_Spec(Resource):
         pID = args.get('pID')
         spec = args.get('spec')
 
+        print time.clock()
+
         result, status = getStatisticsFromSpec(spec, pID)
-        result = result['stats_data']
-        print format_json(result)
+        # print format_json(result)
+        print time.clock()
         return make_response(jsonify(format_json(result)), status)
+
+#####################################################################
+# Endpoint returning estimated time for regression
+# INPUT: numInputs, sizeArray, funcArraySize
+# OUTPUT: time
+#####################################################################
+
+# For inferred visualizations
+timeFromParamsPostParser = reqparse.RequestParser()
+timeFromParamsPostParser.add_argument('numInputs', type=int, location='json')
+timeFromParamsPostParser.add_argument('sizeArray', type=int, location='json')
+timeFromParamsPostParser.add_argument('funcArraySize', type=int, location='json')
+class Regression_Estimator(Resource):
+    def post(self):
+        args = request.json
+        # TODO Implement required parameters
+        numInputs = args.get('numInputs')
+        sizeArray = args.get('sizeArray')
+        funcArraySize = args.get('funcArraySize')
+
+        result, status = timeEstimator(numInputs, sizeArray, funcArraySize)
+        return result
 
 
 #####################################################################
@@ -634,6 +659,7 @@ api.add_resource(Reject_Spec,                   '/api/reject_spec')
 api.add_resource(Visualization_Data,            '/api/visualization_data')
 api.add_resource(Data_From_Spec,                '/api/data_from_spec')
 api.add_resource(Statistics_From_Spec,          '/api/statistics_from_spec')
+api.add_resource(Regression_Estimator,          '/api/regression_estimator')
 api.add_resource(Conditional_Data,              '/api/conditional_data')
 api.add_resource(Exported_Visualization_Spec,   '/api/exported_spec')
 
